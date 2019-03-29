@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Set
 {
@@ -45,11 +46,11 @@ namespace Set
             }
         }
 
-        public Card DrawCard()
+        public List<Card> DrawCard(int numCards)
         {
-            Card card = Cards[0];
-            Cards.Remove(card);
-            return card;
+            var cards = Cards.Take(numCards).ToList();
+            Cards.RemoveRange(0, numCards);
+            return cards;
         }
     }
 }

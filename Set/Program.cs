@@ -3,7 +3,6 @@
 namespace Set
 {
 
-
     class Program
     {
 
@@ -11,6 +10,7 @@ namespace Set
         {
             Console.WriteLine("Hello World!");
             Deck game = new Deck();
+            Game g = new Game();
             Console.ReadKey();
         }
     }

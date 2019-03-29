@@ -12,7 +12,7 @@ namespace Tests
             var card1 = new Card(Characteristic.Option1, Characteristic.Option1, Characteristic.Option1, Characteristic.Option1);
             var card2 = new Card(Characteristic.Option1, Characteristic.Option1, Characteristic.Option1, Characteristic.Option1);
             var card3 = new Card(Characteristic.Option1, Characteristic.Option1, Characteristic.Option1, Characteristic.Option1);
-            Assert.AreEqual(true, Card.IsSet(card1, card2, card3));
+            Assert.AreEqual(true, Game.IsSet(card1, card2, card3));
         }
 
         [Test]
@@ -21,7 +21,7 @@ namespace Tests
             var card1 = new Card(Characteristic.Option1, Characteristic.Option1, Characteristic.Option1, Characteristic.Option1);
             var card2 = new Card(Characteristic.Option2, Characteristic.Option2, Characteristic.Option2, Characteristic.Option2);
             var card3 = new Card(Characteristic.Option3, Characteristic.Option3, Characteristic.Option3, Characteristic.Option3);
-            Assert.AreEqual(true, Card.IsSet(card1, card2, card3));
+            Assert.AreEqual(true, Game.IsSet(card1, card2, card3));
         }
 
         [Test]
@@ -30,7 +30,7 @@ namespace Tests
             var card1 = new Card(Characteristic.Option1, Characteristic.Option2, Characteristic.Option3, Characteristic.Option3);
             var card2 = new Card(Characteristic.Option1, Characteristic.Option3, Characteristic.Option3, Characteristic.Option2);
             var card3 = new Card(Characteristic.Option1, Characteristic.Option1, Characteristic.Option3, Characteristic.Option1);
-            Assert.AreEqual(true, Card.IsSet(card1, card2, card3));
+            Assert.AreEqual(true, Game.IsSet(card1, card2, card3));
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace Tests
             var card1 = new Card(Characteristic.Option2, Characteristic.Option2, Characteristic.Option3, Characteristic.Option3);
             var card2 = new Card(Characteristic.Option1, Characteristic.Option3, Characteristic.Option3, Characteristic.Option2);
             var card3 = new Card(Characteristic.Option1, Characteristic.Option1, Characteristic.Option3, Characteristic.Option1);
-            Assert.False(Card.IsSet(card1, card2, card3));
+            Assert.False(Game.IsSet(card1, card2, card3));
         }
     }
 }
