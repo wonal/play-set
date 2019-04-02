@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using Set;
+using SetApi.Models;
 
 namespace Tests
 {
