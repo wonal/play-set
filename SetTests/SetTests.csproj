@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\TodoApi\SetApi\SetApi.csproj" />
+    <ProjectReference Include="..\Set.Api\Set.Api.csproj" />
   </ItemGroup>
 
 </Project>
