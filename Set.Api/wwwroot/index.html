@@ -28,32 +28,12 @@
             padding: 5px;
         }
     </style>
+    <script type="text/javascript" src="site.js"></script>
 </head>
 <body>
     <h1>Play Set</h1>
     <h3>Enter three cards</h3>
-    <form action="javascript:void(0);" method="POST" onsubmit="checkCards()">
-       Card 1   <input type="text" id="color" placeholder="Card Color">
-                <input type="text" id="shape" placeholder="Card Shape">
-                <input type="text" id="fill" placeholder="Card Fill">
-                <input type="text" id="count" placeholder="Card Count"><br />
-       Card 2   <input type="text" id="color2" placeholder="Card Color">
-                <input type="text" id="shape2" placeholder="Card Shape">
-                <input type="text" id="fill2" placeholder="Card Fill">
-                <input type="text" id="count2" placeholder="Card Count"><br />
-       Card 3   <input type="text" id="color3" placeholder="Card Color">
-                <input type="text" id="shape3" placeholder="Card Shape">
-                <input type="text" id="fill3" placeholder="Card Fill">
-                <input type="text" id="count3" placeholder="Card Count">
-        <input type="submit" value="Check">
-    </form>
-
+    <script>createForm()</script>
     <textarea rows="4" cols="50" id="result"> </textarea>
-
-
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-            crossorigin="anonymous"></script>
-    <script src="site.js"></script>
 </body>
 </html>

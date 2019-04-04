@@ -1,23 +1,48 @@
 ﻿const url = "https://localhost:44351/api/set";
 
+function createForm() {
+    const cardForm = document.createElement("form");
+    cardForm.action = "javascript:void(0)";
+    cardForm.method = "POST";
+    cardForm.onsubmit = checkCards;
+    const characteristics = ["color", "shape", "fill", "count"];
+
+    for (i = 1; i < 4; i++) {
+        for (j = 0; j < 4; j++) {
+            const cardInput = document.createElement("input");
+            cardInput.type = "text";
+            cardInput.id = characteristics[j] + String(i);
+            cardInput.placeholder = "Card " + String(i) + " " + characteristics[j]
+            cardForm.appendChild(cardInput);
+        }
+        const br = document.createElement("BR");
+        cardForm.appendChild(br);
+    }
+    const button = document.createElement("input");
+    button.type = "submit";
+    button.value = "Check";
+    cardForm.appendChild(button);
+    document.body.appendChild(cardForm);
+}
+
 function checkCards() {
     const firstCard = {
-        Color: colorToOption($("#color").val()),
-        Shape: shapeToOption($("#shape").val()),
-        Fill: fillToOption($("#fill").val()),
-        Count: countToOption($("#count").val())
+        Color: colorToOption(document.getElementById("color1").value),
+        Shape: shapeToOption(document.getElementById("shape1").value),
+        Fill: fillToOption(document.getElementById("fill1").value),
+        Count: countToOption(document.getElementById("count1").value)
     };
     const secondCard = {
-        Color: colorToOption($("#color2").val()),
-        Shape: shapeToOption($("#shape2").val()),
-        Fill: fillToOption($("#fill2").val()),
-        Count: countToOption($("#count2").val())
+        Color: colorToOption(document.getElementById("color2").value),
+        Shape: shapeToOption(document.getElementById("shape2").value),
+        Fill: fillToOption(document.getElementById("fill2").value),
+        Count: countToOption(document.getElementById("count2").value)
     };
     const thirdCard = {
-        Color: colorToOption($("#color3").val()),
-        Shape: shapeToOption($("#shape3").val()),
-        Fill: fillToOption($("#fill3").val()),
-        Count: countToOption($("#count3").val())
+        Color: colorToOption(document.getElementById("color3").value),
+        Shape: shapeToOption(document.getElementById("shape3").value),
+        Fill: fillToOption(document.getElementById("fill3").value),
+        Count: countToOption(document.getElementById("count3").value)
     };
 
     const cards = [firstCard, secondCard, thirdCard];
@@ -32,7 +57,7 @@ function checkCards() {
     };
     fetch(url, fetchData)
         .then(response => response.json())
-        .then(body => alert(body));
+        .then(body => document.getElementById("result").value = String(body));
 }
 
 function colorToOption(color) {
