@@ -1,4 +1,4 @@
-﻿const uri = "api/set";
+﻿const url = "https://localhost:44351/api/set";
 
 function checkCards() {
     const firstCard = {
@@ -22,20 +22,17 @@ function checkCards() {
 
     const cards = [firstCard, secondCard, thirdCard];
 
-    alert(JSON.stringify(cards));
-    $.ajax({
-        type: "POST",
-        accept: "application/json",
-        url: uri,
-        contentType: "application/json",
-        data: JSON.stringify(cards),
-        error: function (jqXHR, textStatus, errorThrown) {
-            alert("something went wrong!");
-        },
-        success: function (result) {
-            $("#result").data(result.val);
-        }
-    })
+    let fetchData = {
+        method: 'POST',
+        body: JSON.stringify(cards),
+        headers: new Headers({
+            'Content-Type': 'application/json',
+            'Accept-Encoding': 'application/json'
+        })
+    };
+    fetch(url, fetchData)
+        .then(response => response.json())
+        .then(body => alert(body));
 }
 
 function colorToOption(color) {
