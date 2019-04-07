@@ -1,14 +1,12 @@
 ﻿const url = "https://localhost:44351/api/set";
-
 function createForm() {
     const cardForm = document.createElement("form");
     cardForm.action = "javascript:void(0)";
     cardForm.method = "POST";
     cardForm.onsubmit = checkCards;
     const characteristics = ["color", "shape", "fill", "count"];
-
-    for (i = 1; i < 4; i++) {
-        for (j = 0; j < 4; j++) {
+    for (let i = 1; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
             const cardInput = document.createElement("input");
             cardInput.type = "text";
             cardInput.id = characteristics[j] + String(i);
@@ -106,3 +104,7 @@ function countToOption(count) {
         return "Option3"
     }
 }
+
+(function () {
+    createForm();
+})()
