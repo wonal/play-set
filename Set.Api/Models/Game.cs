@@ -37,5 +37,10 @@ namespace SetApi.Models
             }
             return false;
         }
+
+        public List<Card> RefillCards()
+        {
+            return deck.DrawCard(3);
+        }
     }
 }

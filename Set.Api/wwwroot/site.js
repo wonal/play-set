@@ -1,9 +1,11 @@
 ﻿const url = "https://localhost:44351/api/set";
+const colors = ["red", "blue", "yellow"];
+const shapes = ["circle", "triangle", "square"];
+const fills = ["solid", "hollow", "striped"];
+const counts = ["one", "two", "three"];
+
 function createForm() {
     const cardForm = document.createElement("form");
-    cardForm.action = "javascript:void(0)";
-    cardForm.method = "POST";
-    cardForm.onsubmit = checkCards;
     const characteristics = ["color", "shape", "fill", "count"];
     for (let i = 1; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
@@ -13,14 +15,49 @@ function createForm() {
             cardInput.placeholder = "Card " + String(i) + " " + characteristics[j]
             cardForm.appendChild(cardInput);
         }
-        const br = document.createElement("BR");
+        const br = document.createElement("br");
         cardForm.appendChild(br);
     }
-    const button = document.createElement("input");
-    button.type = "submit";
-    button.value = "Check";
-    cardForm.appendChild(button);
+    addButton(cardForm, "check", "Check", checkCards);
+    addButton(cardForm, "refill", "Get Cards", retrieveNewCards);
+    /*
+    const validateButton = document.createElement("button");
+    validateButton.id = "check";
+    validateButton.type = "button";
+    validateButton.innerHTML = "Check";
+    cardForm.appendChild(validateButton);
+    validateButton.addEventListener("click", checkCards);
+    const refillButton = document.createElement("button");
+    refillButton.id = "refill";
+    refillButton.type = "button";
+    refillButton.innerHTML = "Get Cards";
+    cardForm.appendChild(refillButton);
+    refillButton.addEventListener("click", retrieveNewCards);
+    */
     document.body.appendChild(cardForm);
+};
+
+function addButton(form, buttonID, buttonValue, buttonFunc) {
+    const button = document.createElement("button");
+    button.id = buttonID;
+    button.type = "button";
+    button.innerHTML = buttonValue;
+    form.appendChild(button);
+    button.addEventListener("click", buttonFunc);
+}
+
+function retrieveNewCards() {
+    document.getElementById("result").value = "";
+    fetch(url)
+        .then(response => response.json())
+        .then(function (data) {
+            for (let i = 0; i < 3; i++) {
+                document.getElementById("color" + (i + 1)).value = colors[data[i].color];
+                document.getElementById("shape" + (i + 1)).value = shapes[data[i].shape];
+                document.getElementById("fill" + (i + 1)).value = fills[data[i].fill];
+                document.getElementById("count" + (i + 1)).value = counts[data[i].count];
+            }
+        })
 }
 
 function checkCards() {

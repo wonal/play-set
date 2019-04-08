@@ -11,6 +11,17 @@ namespace SetApi.Controllers
     [ApiController]
     public class SetController : Controller
     {
+        private Game GameState;
+        public SetController()
+        {
+            GameState = new Game();
+        }
+
+        [HttpGet]
+        public List<Card> GetCards()
+        {
+            return GameState.RefillCards();
+        }
 
         // POST api/<controller>
         [HttpPost]
