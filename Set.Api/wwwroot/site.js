@@ -20,20 +20,6 @@ function createForm() {
     }
     addButton(cardForm, "check", "Check", checkCards);
     addButton(cardForm, "refill", "Get Cards", retrieveNewCards);
-    /*
-    const validateButton = document.createElement("button");
-    validateButton.id = "check";
-    validateButton.type = "button";
-    validateButton.innerHTML = "Check";
-    cardForm.appendChild(validateButton);
-    validateButton.addEventListener("click", checkCards);
-    const refillButton = document.createElement("button");
-    refillButton.id = "refill";
-    refillButton.type = "button";
-    refillButton.innerHTML = "Get Cards";
-    cardForm.appendChild(refillButton);
-    refillButton.addEventListener("click", retrieveNewCards);
-    */
     document.body.appendChild(cardForm);
 };
 
