@@ -13,10 +13,10 @@ namespace SetApi.Controllers
     {
         private static Game GameState = new Game();
 
-        [HttpGet]
-        public List<Card> GetCards()
+        [HttpGet("{num}")]
+        public List<Card> GetCards(int num)
         {
-            return GameState.RefillCards();
+            return GameState.DrawCards(num);
         }
 
         // POST api/<controller>

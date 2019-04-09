@@ -38,9 +38,9 @@ namespace SetApi.Models
             return false;
         }
 
-        public List<Card> RefillCards()
+        public List<Card> DrawCards(int numCards)
         {
-            return deck.DrawCard(3);
+            return deck.DrawCard(numCards);
         }
     }
 }

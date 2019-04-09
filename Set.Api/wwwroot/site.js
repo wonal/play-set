@@ -6,22 +6,33 @@ const counts = ["one", "two", "three"];
 
 function createForm() {
     const cardForm = document.createElement("form");
-    const characteristics = ["color", "shape", "fill", "count"];
-    for (let i = 1; i < 4; i++) {
-        for (let j = 0; j < 4; j++) {
-            const cardInput = document.createElement("input");
-            cardInput.type = "text";
-            cardInput.id = characteristics[j] + String(i);
-            cardInput.placeholder = "Card " + String(i) + " " + characteristics[j]
-            cardForm.appendChild(cardInput);
-        }
-        const br = document.createElement("br");
-        cardForm.appendChild(br);
-    }
+    addStartingCards(cardForm);
     addButton(cardForm, "check", "Check", checkCards);
-    addButton(cardForm, "refill", "Get Cards", retrieveNewCards);
+    //addButton(cardForm, "refill", "Get Cards", retrieveNewCards);
     document.body.appendChild(cardForm);
 };
+
+function addStartingCards(form) {
+    fetch(url+"/12")
+        .then(response => response.json())
+        .then(function (data) {
+            for (let i = 0; i < 12; i++) {
+                const br = document.createElement("br");
+                form.appendChild(br);
+                const card = document.createElement("input");
+                card.type = "checkbox";
+                card.className = "cardAttributes"
+                card.id = "card" + (i + 1);
+                const cardValue = counts[data[i].count] + "," + fills[data[i].fill] + "," + colors[data[i].color] + "," + shapes[data[i].shape];
+                card.value = cardValue;
+                card.name = "cardCheckbox";
+                form.appendChild(card);
+                const span = document.createElement("span");
+                span.innerHTML = cardValue;
+                form.append(span);
+            }
+        })
+}
 
 function addButton(form, buttonID, buttonValue, buttonFunc) {
     const button = document.createElement("button");
@@ -34,7 +45,7 @@ function addButton(form, buttonID, buttonValue, buttonFunc) {
 
 function retrieveNewCards() {
     document.getElementById("result").value = "";
-    fetch(url)
+    fetch(url+"/3")
         .then(response => response.json())
         .then(function (data) {
             for (let i = 0; i < 3; i++) {
@@ -47,23 +58,28 @@ function retrieveNewCards() {
 }
 
 function checkCards() {
+    const selected1 = document.querySelectorAll('input[name=cardCheckbox]:checked');
+    const selected = findSelected() 
+    const card1 = selected[0].value.split(",");
     const firstCard = {
-        Color: colorToOption(document.getElementById("color1").value),
-        Shape: shapeToOption(document.getElementById("shape1").value),
-        Fill: fillToOption(document.getElementById("fill1").value),
-        Count: countToOption(document.getElementById("count1").value)
+        Color: colorToOption(card1[2]),
+        Shape: shapeToOption(card1[3]),
+        Fill: fillToOption(card1[1]),
+        Count: countToOption(card1[0])
     };
+    const card2 = selected[1].value.split(",");
     const secondCard = {
-        Color: colorToOption(document.getElementById("color2").value),
-        Shape: shapeToOption(document.getElementById("shape2").value),
-        Fill: fillToOption(document.getElementById("fill2").value),
-        Count: countToOption(document.getElementById("count2").value)
+        Color: colorToOption(card2[2]),
+        Shape: shapeToOption(card2[3]),
+        Fill: fillToOption(card2[1]),
+        Count: countToOption(card2[0])
     };
+    const card3 = selected[2].value.split(",");
     const thirdCard = {
-        Color: colorToOption(document.getElementById("color3").value),
-        Shape: shapeToOption(document.getElementById("shape3").value),
-        Fill: fillToOption(document.getElementById("fill3").value),
-        Count: countToOption(document.getElementById("count3").value)
+        Color: colorToOption(card3[2]),
+        Shape: shapeToOption(card3[3]),
+        Fill: fillToOption(card3[1]),
+        Count: countToOption(card3[0])
     };
 
     const cards = [firstCard, secondCard, thirdCard];
@@ -79,6 +95,18 @@ function checkCards() {
     fetch(url, fetchData)
         .then(response => response.json())
         .then(body => document.getElementById("result").value = String(body));
+}
+
+function findSelected() {
+    const cards = document.getElementsByName("cardCheckbox");
+    const cardLength = cards.length;
+    const selected = [];
+    for (let i = 0; i < cardLength; i++) {
+        if (cards[i].checked) {
+            selected.push(cards[i]);
+        }
+    }
+    return selected;
 }
 
 function colorToOption(color) {
