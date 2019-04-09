@@ -4,18 +4,18 @@ namespace SetApi.Models
 {
     public class Card
     {
-        public Card(Characteristic color, Characteristic shape, Characteristic fill, Characteristic count)
+        public Card(Characteristic count, Characteristic fill, Characteristic color, Characteristic shape)
         {
+            Count = count;
+            Fill = fill;
             Color = color;
             Shape = shape;
-            Fill = fill;
-            Count = count;
         }
 
+        public Characteristic Count { get; }
+        public Characteristic Fill { get; }
         public Characteristic Color { get; }
         public Characteristic Shape { get; }
-        public Characteristic Fill { get; }
-        public Characteristic Count { get; }
 
     }
 
