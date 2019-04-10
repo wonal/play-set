@@ -3,6 +3,9 @@ const counts = ["one", "two", "three"];
 const fills = ["solid", "hollow", "striped"];
 const colors = ["red", "blue", "yellow"];
 const shapes = ["circle", "triangle", "square"];
+const OPTION1 = "Option1";
+const OPTION2 = "Option2";
+const OPTION3 = "Option3";
 
 function createForm() {
     addStartingCards();
@@ -68,41 +71,39 @@ function retrieveNewCards() {
         })
 }
 
-function checkCards() {
+function getSelectedImages() {
     const images = document.querySelectorAll('img');
-    const selected = [];
+    const selectedImages = [];
     for (let i = 0; i < images.length; i++) {
         if (images[i].style.border == "3px solid red") {
-            selected.push(images[i]);
+            selectedImages.push(images[i]);
         }
     }
-    const card1 = selected[0].alt.split(",");
-    const firstCard = {
-        Count: countToOption(card1[0]),
-        Fill: fillToOption(card1[1]),
-        Color: colorToOption(card1[2]),
-        Shape: shapeToOption(card1[3])
-    };
-    const card2 = selected[1].alt.split(",");
-    const secondCard = {
-        Count: countToOption(card2[0]),
-        Fill: fillToOption(card2[1]),
-        Color: colorToOption(card2[2]),
-        Shape: shapeToOption(card2[3])
-    };
-    const card3 = selected[2].alt.split(",");
-    const thirdCard = {
-        Count: countToOption(card3[0]),
-        Fill: fillToOption(card3[1]),
-        Color: colorToOption(card3[2]),
-        Shape: shapeToOption(card3[3])
-    };
+    return selectedImages;
+}
 
-    const cards = [firstCard, secondCard, thirdCard];
+function createCards(selectedImages) {
+    const selectedCards = [];
+    for (let j = 0; j < 3; j++) {
+        const card = selectedImages[j].alt.split(",");
+        const selectedCard = {
+            Count: attributeToOption(card[0], "one", "two"),
+            Fill: attributeToOption(card[1], "solid", "hollow"),
+            Color: attributeToOption(card[2], "red", "blue"),
+            Shape: attributeToOption(card[3], "circle", "triangle")
+        };
+        selectedCards.push(selectedCard);
+    }
+    return selectedCards;
+}
+
+function checkCards() {
+    const selectedImages = getSelectedImages();
+    const selectedCards = createCards(selectedImages);
 
     let fetchData = {
         method: 'POST',
-        body: JSON.stringify(cards),
+        body: JSON.stringify(selectedCards),
         headers: new Headers({
             'Content-Type': 'application/json',
             'Accept-Encoding': 'application/json'
@@ -113,50 +114,15 @@ function checkCards() {
         .then(body => document.getElementById("result").value = String(body));
 }
 
-function colorToOption(color) {
-    if (color.toLowerCase() === "red") {
-        return "Option1"
+function attributeToOption(attribute, option1Equivalent, option2Equivalent) {
+    if (attribute.toLowerCase() === option1Equivalent) {
+        return OPTION1;
     }
-    else if (color.toLowerCase() === "blue") {
-        return "Option2"
-    }
-    else {
-        return "Option3"
-    }
-}
-
-function shapeToOption(shape) {
-    if (shape.toLowerCase() === "circle") {
-        return "Option1"
-    }
-    else if (shape.toLowerCase() === "triangle") {
-        return "Option2"
+    else if (attribute.toLowerCase() === option2Equivalent) {
+        return OPTION2;
     }
     else {
-        return "Option3"
-    }
-}
-function fillToOption(fill) {
-    if (fill.toLowerCase() === "solid") {
-        return "Option1"
-    }
-    else if (fill.toLowerCase() === "hollow") {
-        return "Option2"
-    }
-    else {
-        return "Option3"
-    }
-}
-
-function countToOption(count) {
-    if (count.toLowerCase() === "one") {
-        return "Option1"
-    }
-    else if (count.toLowerCase() === "two") {
-        return "Option2"
-    }
-    else {
-        return "Option3"
+        return OPTION3;
     }
 }
 
