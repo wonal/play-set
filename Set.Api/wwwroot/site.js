@@ -6,9 +6,9 @@ const shapes = ["circle", "triangle", "square"];
 
 function createForm() {
     addStartingCards();
-    //addButton(cardForm, "check", "Check", checkCards);
+    addButton("check", "Check", checkCards);
     //addButton(cardForm, "refill", "Get Cards", retrieveNewCards);
-    document.body.appendChild(cardForm);
+    //document.body.appendChild(cardForm);
 };
 
 function addStartingCards() {
@@ -30,17 +30,27 @@ function addStartingCards() {
                     cardImage.src = imgurl + "stripedsix.png";
                 }
                 cardImage.alt = cardValue;
+                cardImage.style.border = "0px solid black";
+                cardImage.setAttribute("onclick", "mark(this)");
                 document.body.appendChild(cardImage);
             }
         })
 }
 
-function addButton(form, buttonID, buttonValue, buttonFunc) {
+function mark(image) {
+    if (image.style.border == "3px solid red") {
+        image.style.border = "0px solid black";
+    } else {
+        image.style.border = "3px solid red";
+    }
+}
+
+function addButton(buttonID, buttonValue, buttonFunc) {
     const button = document.createElement("button");
     button.id = buttonID;
     button.type = "button";
     button.innerHTML = buttonValue;
-    form.appendChild(button);
+    document.body.appendChild(button);
     button.addEventListener("click", buttonFunc);
 }
 
@@ -59,22 +69,28 @@ function retrieveNewCards() {
 }
 
 function checkCards() {
-    const selected = document.querySelectorAll('input[name=cardCheckbox]:checked');
-    const card1 = selected[0].value.split(",");
+    const images = document.querySelectorAll('img');
+    const selected = [];
+    for (let i = 0; i < images.length; i++) {
+        if (images[i].style.border == "3px solid red") {
+            selected.push(images[i]);
+        }
+    }
+    const card1 = selected[0].alt.split(",");
     const firstCard = {
         Count: countToOption(card1[0]),
         Fill: fillToOption(card1[1]),
         Color: colorToOption(card1[2]),
         Shape: shapeToOption(card1[3])
     };
-    const card2 = selected[1].value.split(",");
+    const card2 = selected[1].alt.split(",");
     const secondCard = {
         Count: countToOption(card2[0]),
         Fill: fillToOption(card2[1]),
         Color: colorToOption(card2[2]),
         Shape: shapeToOption(card2[3])
     };
-    const card3 = selected[2].value.split(",");
+    const card3 = selected[2].alt.split(",");
     const thirdCard = {
         Count: countToOption(card3[0]),
         Fill: fillToOption(card3[1]),
@@ -146,4 +162,5 @@ function countToOption(count) {
 
 (function () {
     createForm();
+    document.getElementsByTagName("img").addEventListener("click", mark(this));
 })()
