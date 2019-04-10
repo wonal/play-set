@@ -5,31 +5,32 @@ const colors = ["red", "blue", "yellow"];
 const shapes = ["circle", "triangle", "square"];
 
 function createForm() {
-    const cardForm = document.createElement("form");
-    addStartingCards(cardForm);
-    addButton(cardForm, "check", "Check", checkCards);
+    addStartingCards();
+    //addButton(cardForm, "check", "Check", checkCards);
     //addButton(cardForm, "refill", "Get Cards", retrieveNewCards);
     document.body.appendChild(cardForm);
 };
 
-function addStartingCards(form) {
-    fetch(url+"/12")
+function addStartingCards() {
+    const imgurl = "/images/";
+    fetch(url+"/3")
         .then(response => response.json())
         .then(function (data) {
-            for (let i = 0; i < 12; i++) {
-                const br = document.createElement("br");
-                form.appendChild(br);
-                const card = document.createElement("input");
-                card.type = "checkbox";
-                card.className = "cardAttributes"
-                card.id = "card" + (i + 1);
+            for (let i = 0; i < 3; i++) {
                 const cardValue = counts[data[i].count] + "," + fills[data[i].fill] + "," + colors[data[i].color] + "," + shapes[data[i].shape];
-                card.value = cardValue;
-                card.name = "cardCheckbox";
-                form.appendChild(card);
-                const span = document.createElement("span");
-                span.innerHTML = cardValue;
-                form.append(span);
+                const cardImage = document.createElement("img");
+                const fill = fills[data[i].fill];
+                if (fill === "solid") {
+                    cardImage.src = imgurl + "solidsix.png";
+                }
+                else if (fill === "hollow") {
+                    cardImage.src = imgurl + "hollowsix.png";
+                }
+                else {
+                    cardImage.src = imgurl + "stripedsix.png";
+                }
+                cardImage.alt = cardValue;
+                document.body.appendChild(cardImage);
             }
         })
 }
