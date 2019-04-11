@@ -34,17 +34,18 @@ function addStartingCards() {
                 }
                 cardImage.alt = cardValue;
                 cardImage.style.border = "0px solid black";
-                cardImage.setAttribute("onclick", "mark(this)");
+                //cardImage.setAttribute("onclick", "mark(this)");
+                cardImage.addEventListener("click", mark);
                 document.body.appendChild(cardImage);
             }
         })
 }
 
-function mark(image) {
-    if (image.style.border == "3px solid red") {
-        image.style.border = "0px solid black";
+function mark(e) {
+    if (e.currentTarget.style.border == "3px solid red") {
+        e.currentTarget.style.border = "0px solid black";
     } else {
-        image.style.border = "3px solid red";
+        e.currentTarget.style.border = "3px solid red";
     }
 }
 
@@ -128,5 +129,4 @@ function attributeToOption(attribute, option1Equivalent, option2Equivalent) {
 
 (function () {
     createForm();
-    document.getElementsByTagName("img").addEventListener("click", mark(this));
 })()
