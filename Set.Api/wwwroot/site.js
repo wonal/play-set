@@ -7,6 +7,18 @@ const OPTION1 = "Option1";
 const OPTION2 = "Option2";
 const OPTION3 = "Option3";
 
+const characterToCard = {
+    "one,solid": "one,solid,yellow,circle.png",
+    "one,striped": "one,stacked,yellow,circle.png",
+    "one,hollow": "one,hollow,yellow,circle.png",
+    "two,solid": "three,solid,yellow,circle.png",
+    "two,striped": "three,stacked,yellow,circle.png",
+    "two,hollow": "three,hollow,yellow,circle.png",
+    "three,solid": "six,solid,yellow,circle.png",
+    "three,striped": "six,stacked,yellow,circle.png",
+    "three,hollow": "six,hollow,yellow,circle.png"
+}
+
 function createForm() {
     addStartingCards();
     addButton("check", "Check", checkCards);
@@ -15,30 +27,29 @@ function createForm() {
 };
 
 function addStartingCards() {
-    const imgurl = "/images/";
-    fetch(`${url}/3`)
+    fetch(`${url}/12`)
         .then(response => response.json())
         .then(data => {
-            for (let i = 0; i < 3; i++) {
-                const cardValue = `${counts[data[i].count]},${fills[data[i].fill]},${colors[data[i].color]},${shapes[data[i].shape]}`;
-                const cardImage = document.createElement("img");
+            for (let i = 0; i < 12; i++) {
+                const count = counts[data[i].count];
                 const fill = fills[data[i].fill];
-                if (fill === "solid") {
-                    cardImage.src = imgurl + "solidsix.png";
-                }
-                else if (fill === "hollow") {
-                    cardImage.src = imgurl + "hollowsix.png";
-                }
-                else {
-                    cardImage.src = imgurl + "stripedsix.png";
-                }
-                cardImage.alt = cardValue;
-                //cardImage.style.border = "";
-                //cardImage.setAttribute("onclick", "mark(this)");
-                cardImage.addEventListener("click", mark);
-                document.body.appendChild(cardImage);
+                const color = colors[data[i].color];
+                const shape = shapes[data[i].shape];
+                createCard(count, fill, color, shape);
             }
         })
+}
+
+function createCard(count, fill, color, shape) {
+    const imgurl = "/images/";
+    const cardValue = `${count},${fill},${color},${shape}`;
+    const cardImage = document.createElement("img");
+    const character = count + "," + fill;
+    const img = characterToCard[character];
+    cardImage.src = imgurl + img;
+    cardImage.alt = cardValue;
+    cardImage.addEventListener("click", mark);
+    document.body.appendChild(cardImage);
 }
 
 function mark(e) {
