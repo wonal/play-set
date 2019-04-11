@@ -16,11 +16,11 @@ function createForm() {
 
 function addStartingCards() {
     const imgurl = "/images/";
-    fetch(url+"/3")
+    fetch(`${url}/3`)
         .then(response => response.json())
-        .then(function (data) {
+        .then(data => {
             for (let i = 0; i < 3; i++) {
-                const cardValue = counts[data[i].count] + "," + fills[data[i].fill] + "," + colors[data[i].color] + "," + shapes[data[i].shape];
+                const cardValue = `${counts[data[i].count]},${fills[data[i].fill]},${colors[data[i].color]},${shapes[data[i].shape]}`;
                 const cardImage = document.createElement("img");
                 const fill = fills[data[i].fill];
                 if (fill === "solid") {
@@ -33,7 +33,7 @@ function addStartingCards() {
                     cardImage.src = imgurl + "stripedsix.png";
                 }
                 cardImage.alt = cardValue;
-                cardImage.style.border = "0px solid black";
+                //cardImage.style.border = "";
                 //cardImage.setAttribute("onclick", "mark(this)");
                 cardImage.addEventListener("click", mark);
                 document.body.appendChild(cardImage);
@@ -43,7 +43,7 @@ function addStartingCards() {
 
 function mark(e) {
     if (e.currentTarget.style.border == "3px solid red") {
-        e.currentTarget.style.border = "0px solid black";
+        e.currentTarget.style.border = "";
     } else {
         e.currentTarget.style.border = "3px solid red";
     }
