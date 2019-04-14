@@ -1,12 +1,13 @@
 ﻿const url = "https://localhost:44351/api/set";
-const counts = ["one", "two", "three"];
-const fills = ["solid", "hollow", "striped"];
-const colors = ["red", "blue", "yellow"];
-const shapes = ["circle", "triangle", "square"];
+const counts = ["one", "three", "six"];
+const fills = ["solid", "hollow", "stacked"];
+const colors = ["red", "purple", "yellow"];
+const shapes = ["circle", "diamond", "rectangle"];
 const OPTION1 = "Option1";
 const OPTION2 = "Option2";
 const OPTION3 = "Option3";
 
+/*
 const characterToCard = {
     "one,solid": "one,solid,yellow,circle.png",
     "one,striped": "one,stacked,yellow,circle.png",
@@ -18,6 +19,7 @@ const characterToCard = {
     "three,striped": "six,stacked,yellow,circle.png",
     "three,hollow": "six,hollow,yellow,circle.png"
 }
+*/
 
 function createForm() {
     addStartingCards();
@@ -44,17 +46,18 @@ function createCard(count, fill, color, shape) {
     const imgurl = "/images/";
     const cardValue = `${count},${fill},${color},${shape}`;
     const cardImage = document.createElement("img");
-    const character = count + "," + fill;
-    const img = characterToCard[character];
-    cardImage.src = imgurl + img;
+    //const character = count + "," + fill;
+    //const img = characterToCard[character];
+    cardImage.src = imgurl + cardValue + ".png";
     cardImage.alt = cardValue;
+    cardImage.style.border = "0.5px solid gray";
     cardImage.addEventListener("click", mark);
     document.body.appendChild(cardImage);
 }
 
 function mark(e) {
     if (e.currentTarget.style.border == "3px solid red") {
-        e.currentTarget.style.border = "";
+        e.currentTarget.style.border = "0.5px solid gray";
     } else {
         e.currentTarget.style.border = "3px solid red";
     }
@@ -99,10 +102,10 @@ function createCards(selectedImages) {
     for (let j = 0; j < 3; j++) {
         const card = selectedImages[j].alt.split(",");
         const selectedCard = {
-            Count: attributeToOption(card[0], "one", "two"),
+            Count: attributeToOption(card[0], "one", "three"),
             Fill: attributeToOption(card[1], "solid", "hollow"),
-            Color: attributeToOption(card[2], "red", "blue"),
-            Shape: attributeToOption(card[3], "circle", "triangle")
+            Color: attributeToOption(card[2], "red", "purple"),
+            Shape: attributeToOption(card[3], "circle", "diamond")
         };
         selectedCards.push(selectedCard);
     }
