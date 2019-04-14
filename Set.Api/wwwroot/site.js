@@ -7,19 +7,6 @@ const OPTION1 = "Option1";
 const OPTION2 = "Option2";
 const OPTION3 = "Option3";
 
-/*
-const characterToCard = {
-    "one,solid": "one,solid,yellow,circle.png",
-    "one,striped": "one,stacked,yellow,circle.png",
-    "one,hollow": "one,hollow,yellow,circle.png",
-    "two,solid": "three,solid,yellow,circle.png",
-    "two,striped": "three,stacked,yellow,circle.png",
-    "two,hollow": "three,hollow,yellow,circle.png",
-    "three,solid": "six,solid,yellow,circle.png",
-    "three,striped": "six,stacked,yellow,circle.png",
-    "three,hollow": "six,hollow,yellow,circle.png"
-}
-*/
 
 function createForm() {
     addStartingCards();
@@ -46,8 +33,6 @@ function createCard(count, fill, color, shape) {
     const imgurl = "/images/";
     const cardValue = `${count},${fill},${color},${shape}`;
     const cardImage = document.createElement("img");
-    //const character = count + "," + fill;
-    //const img = characterToCard[character];
     cardImage.src = imgurl + cardValue + ".png";
     cardImage.alt = cardValue;
     cardImage.style.border = "0.5px solid gray";
@@ -126,7 +111,16 @@ function checkCards() {
     };
     fetch(url, fetchData)
         .then(response => response.json())
-        .then(body => document.getElementById("result").value = String(body));
+        .then(body => {
+            if (body) {
+                //selectedImages.forEach((selectedImages) => selectedImages.style.border = "0.5 solid gray");
+                for (let i = 0; i < 3; i++) {
+                    selectedImages[i].style.border = "0.5px solid gray";
+                }
+            }
+            document.getElementById("result").value = String(body); 
+        });
+        
 }
 
 function attributeToOption(attribute, option1Equivalent, option2Equivalent) {
