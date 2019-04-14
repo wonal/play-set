@@ -6,11 +6,31 @@ const shapes = ["circle", "diamond", "rectangle"];
 const OPTION1 = "Option1";
 const OPTION2 = "Option2";
 const OPTION3 = "Option3";
+const DEFAULTBORDER = "0.5px solid gray";
+const SELECTEDBORDER = "3px solid black";
+const INVALIDBORDER = "3px solid red";
+const VALIDBORDER = "3px solid green";
 
+class Counter {
+    count = 0;
+
+    increment() {
+        this.count += 1;
+    }
+
+    getCount() {
+        return this.count;
+    }
+
+    reset() {
+        this.count = 0;
+    }
+}
+const count = new Counter();
 
 function createForm() {
     addStartingCards();
-    addButton("check", "Check", checkCards);
+    //addButton("check", "Check", checkCards);
     //addButton(cardForm, "refill", "Get Cards", retrieveNewCards);
     //document.body.appendChild(cardForm);
 };
@@ -35,16 +55,23 @@ function createCard(count, fill, color, shape) {
     const cardImage = document.createElement("img");
     cardImage.src = imgurl + cardValue + ".png";
     cardImage.alt = cardValue;
-    cardImage.style.border = "0.5px solid gray";
+    cardImage.style.border = DEFAULTBORDER;
     cardImage.addEventListener("click", mark);
     document.body.appendChild(cardImage);
 }
 
 function mark(e) {
-    if (e.currentTarget.style.border == "3px solid red") {
-        e.currentTarget.style.border = "0.5px solid gray";
+    if (e.currentTarget.style.border == SELECTEDBORDER) {
+        e.currentTarget.style.border = DEFAULTBORDER;
     } else {
-        e.currentTarget.style.border = "3px solid red";
+        e.currentTarget.style.border = SELECTEDBORDER;
+    }
+    if (count.getCount() == 2) {
+        checkCards();
+        count.reset();
+    }
+    else {
+        count.increment();
     }
 }
 
@@ -75,7 +102,7 @@ function getSelectedImages() {
     const images = document.querySelectorAll('img');
     const selectedImages = [];
     for (let i = 0; i < images.length; i++) {
-        if (images[i].style.border == "3px solid red") {
+        if (images[i].style.border != DEFAULTBORDER) {
             selectedImages.push(images[i]);
         }
     }
@@ -113,15 +140,22 @@ function checkCards() {
         .then(response => response.json())
         .then(body => {
             if (body) {
-                //selectedImages.forEach((selectedImages) => selectedImages.style.border = "0.5 solid gray");
-                for (let i = 0; i < 3; i++) {
-                    selectedImages[i].style.border = "0.5px solid gray";
-                }
+                setTimeout(function () { changeSelectedBorder(VALIDBORDER)}, 500);
             }
+            else {
+                setTimeout(function () { changeSelectedBorder(INVALIDBORDER)}, 500);
+            }
+            setTimeout(function () { changeSelectedBorder(DEFAULTBORDER)}, 1000);
             document.getElementById("result").value = String(body); 
         });
         
 }
+
+function changeSelectedBorder(toColor) {
+    const selected = getSelectedImages();
+    selected.forEach((image) => image.style.border = toColor);
+}
+
 
 function attributeToOption(attribute, option1Equivalent, option2Equivalent) {
     if (attribute.toLowerCase() === option1Equivalent) {
