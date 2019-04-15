@@ -13,6 +13,12 @@ namespace SetApi.Controllers
     {
         private static Game GameState = new Game();
 
+        [HttpGet]
+        public List<Card> GetBoard()
+        {
+            return GameState.Board;
+        }
+
         [HttpGet("{num}")]
         public List<Card> GetCards(int num)
         {

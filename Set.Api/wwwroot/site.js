@@ -28,15 +28,12 @@ class Counter {
 }
 const count = new Counter();
 
-function createForm() {
+function initializeBoard() {
     addStartingCards();
-    //addButton("check", "Check", checkCards);
-    //addButton(cardForm, "refill", "Get Cards", retrieveNewCards);
-    //document.body.appendChild(cardForm);
 };
 
 function addStartingCards() {
-    fetch(`${url}/12`)
+    fetch(`${url}`)
         .then(response => response.json())
         .then(data => {
             for (let i = 0; i < 12; i++) {
@@ -170,5 +167,5 @@ function attributeToOption(attribute, option1Equivalent, option2Equivalent) {
 }
 
 (function () {
-    createForm();
+    initializeBoard();
 })()

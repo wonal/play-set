@@ -4,13 +4,13 @@ namespace SetApi.Models
 {
     public class Game
     {
-        private List<Card> board;
         private Deck deck;
+        public List<Card> Board { get; }
 
         public Game()
         {
             deck = new Deck();
-            board = deck.DrawCard(12);
+            Board = deck.DrawCard(12);
         }
 
         public static bool IsSet(Card card1, Card card2, Card card3)
@@ -29,10 +29,10 @@ namespace SetApi.Models
         {
             if (IsSet(card1, card2, card3))
             {
-                board.Remove(card1);
-                board.Remove(card2);
-                board.Remove(card3);
-                board.AddRange(deck.DrawCard(3));
+                Board.Remove(card1);
+                Board.Remove(card2);
+                Board.Remove(card3);
+                Board.AddRange(deck.DrawCard(3));
                 return true;
             }
             return false;
