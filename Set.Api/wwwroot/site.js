@@ -33,7 +33,7 @@ function initializeBoard() {
 };
 
 function addStartingCards() {
-    fetch(`${url}`)
+    fetch(`${url}/board`)
         .then(response => response.json())
         .then(data => {
             for (let i = 0; i < 12; i++) {
@@ -52,6 +52,7 @@ function createCard(count, fill, color, shape) {
     const cardImage = document.createElement("img");
     cardImage.src = imgurl + cardValue + ".png";
     cardImage.alt = cardValue;
+    cardImage.id = cardValue;
     cardImage.style.border = DEFAULTBORDER;
     cardImage.addEventListener("click", mark);
     document.body.appendChild(cardImage);
@@ -133,20 +134,45 @@ function checkCards() {
             'Accept-Encoding': 'application/json'
         })
     };
-    fetch(url, fetchData)
+    fetch(`${url}/validate`, fetchData)
         .then(response => response.json())
         .then(body => {
             if (body) {
-                setTimeout(function () { changeSelectedBorder(VALIDBORDER)}, 500);
+                setTimeout(function () { changeSelectedBorder(VALIDBORDER) }, 500);
+                setTimeout(function () { changeSelectedBorder(DEFAULTBORDER) }, 1500);
+                setTimeout(function () { refillValidCards(selectedImages, selectedCards) }, 1500);
             }
             else {
                 setTimeout(function () { changeSelectedBorder(INVALIDBORDER)}, 500);
+                setTimeout(function () { changeSelectedBorder(DEFAULTBORDER) }, 1500);
             }
-            setTimeout(function () { changeSelectedBorder(DEFAULTBORDER)}, 1000);
             document.getElementById("result").value = String(body); 
         });
-        
 }
+
+function refillValidCards(oldImages, oldCards) {
+    let fetchData = {
+        method: 'POST',
+        body: JSON.stringify(oldCards),
+        headers: new Headers({
+            'Content-Type': 'application/json',
+            'Accept-Encoding': 'application/json'
+        })
+    };
+    fetch(`${url}/refill`, fetchData)
+        .then(response => response.json())
+        .then(body => {
+            if (body) {
+                for (let i = 0; i < 3; i++) {
+                    const newValue = `${counts[body[i].count]},${fills[body[i].fill]},${colors[body[i].color]},${shapes[body[i].shape]}`;
+                    oldImages[i].src = `/images/${newValue}.png`;
+                    oldImages[i].alt = newValue;
+                    oldImages[i].id = newValue;
+                }
+            }
+        });
+}
+
 
 function changeSelectedBorder(toColor) {
     const selected = getSelectedImages();

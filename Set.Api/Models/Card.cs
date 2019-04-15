@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SetApi.Models
 {
@@ -17,6 +18,20 @@ namespace SetApi.Models
         public Characteristic Color { get; }
         public Characteristic Shape { get; }
 
+        public override bool Equals(object obj)
+        {
+            var card = obj as Card;
+            return card != null &&
+                   Count == card.Count &&
+                   Fill == card.Fill &&
+                   Color == card.Color &&
+                   Shape == card.Shape;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Count, Fill, Color, Shape);
+        }
     }
 
 

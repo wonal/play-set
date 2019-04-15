@@ -25,17 +25,14 @@ namespace SetApi.Models
         static bool AllSame(Characteristic c1, Characteristic c2, Characteristic c3) => c1 == c2 && c2 == c3;
         static bool AllDifferent(Characteristic c1, Characteristic c2, Characteristic c3) => c1 != c2 && c2 != c3 && c1 != c3;
 
-        public bool MakeGuess(Card card1, Card card2, Card card3)
+        public List<Card> RemoveAndRefill(Card card1, Card card2, Card card3)
         {
-            if (IsSet(card1, card2, card3))
-            {
-                Board.Remove(card1);
-                Board.Remove(card2);
-                Board.Remove(card3);
-                Board.AddRange(deck.DrawCard(3));
-                return true;
-            }
-            return false;
+            Board.Remove(card1);
+            Board.Remove(card2);
+            Board.Remove(card3);
+            List<Card> refills = deck.DrawCard(3);
+            Board.AddRange(refills);
+            return refills;
         }
 
         public List<Card> DrawCards(int numCards)
