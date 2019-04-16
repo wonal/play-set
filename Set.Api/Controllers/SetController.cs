@@ -7,14 +7,13 @@ using SetApi.Models;
 
 namespace SetApi.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class SetController : Controller
     {
         private static Game GameState = new Game();
 
-        [HttpGet]
-        [ActionName("board")]
+        [HttpGet("board")]
         public List<Card> GetBoard()
         {
             return GameState.Board;
@@ -26,15 +25,13 @@ namespace SetApi.Controllers
             return GameState.DrawCards(num);
         }
 
-        [HttpPost]
-        [ActionName("validate")]
+        [HttpPost("validate")]
         public bool PostSelectedCards(IEnumerable<Card> cards)
         {
             return Game.IsSet(cards.ElementAt(0), cards.ElementAt(1), cards.ElementAt(2));
         }
 
-        [HttpPost]
-        [ActionName("refill")]
+        [HttpPost("refill")]
         public List<Card> PostCardsToRefill(IEnumerable<Card> cards)
         {
             return GameState.RemoveAndRefill(cards.ElementAt(0), cards.ElementAt(1), cards.ElementAt(2));
