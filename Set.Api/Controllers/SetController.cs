@@ -19,22 +19,10 @@ namespace SetApi.Controllers
             return GameState.Board;
         }
 
-        [HttpGet("{num}")]
-        public List<Card> GetCards(int num)
-        {
-            return GameState.DrawCards(num);
-        }
-
         [HttpPost("validate")]
-        public bool PostSelectedCards(IEnumerable<Card> cards)
+        public (bool, List<Card>) PostSelectedCards(IEnumerable<Card> cards)
         {
-            return Game.IsSet(cards.ElementAt(0), cards.ElementAt(1), cards.ElementAt(2));
-        }
-
-        [HttpPost("refill")]
-        public List<Card> PostCardsToRefill(IEnumerable<Card> cards)
-        {
-            return GameState.RemoveAndRefill(cards.ElementAt(0), cards.ElementAt(1), cards.ElementAt(2));
+            return GameState.MakeGuess(cards.ElementAt(0), cards.ElementAt(1), cards.ElementAt(2));
         }
     }
 }

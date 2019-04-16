@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SetApi.Models
 {
@@ -25,14 +26,19 @@ namespace SetApi.Models
         static bool AllSame(Characteristic c1, Characteristic c2, Characteristic c3) => c1 == c2 && c2 == c3;
         static bool AllDifferent(Characteristic c1, Characteristic c2, Characteristic c3) => c1 != c2 && c2 != c3 && c1 != c3;
 
-        public List<Card> RemoveAndRefill(Card card1, Card card2, Card card3)
+        public (bool,List<Card>) MakeGuess(Card card1, Card card2, Card card3)
         {
-            Board.Remove(card1);
-            Board.Remove(card2);
-            Board.Remove(card3);
-            List<Card> refills = deck.DrawCard(3);
-            Board.AddRange(refills);
-            return refills;
+            if (Game.IsSet(card1, card2, card3)){
+                List<Card> cards = new List<Card> { card1, card2, card3 };
+                for (int i = 0; i < 3; i++)
+                {
+                    int index = Board.IndexOf(cards[i]);
+                    Board.RemoveAt(index);
+                    Board.Insert(index, deck.DrawCard(1)[0]);
+                }
+                return (true, Board);
+            }
+            return (false, Board);
         }
 
         public List<Card> DrawCards(int numCards)

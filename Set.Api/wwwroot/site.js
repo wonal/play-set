@@ -37,11 +37,7 @@ function addStartingCards() {
         .then(response => response.json())
         .then(data => {
             for (let i = 0; i < 12; i++) {
-                const count = counts[data[i].count];
-                const fill = fills[data[i].fill];
-                const color = colors[data[i].color];
-                const shape = shapes[data[i].shape];
-                createCard(count, fill, color, shape);
+                createCard(counts[data[i].count], fills[data[i].fill], colors[data[i].color], shapes[data[i].shape]);
             }
         })
 }
@@ -50,7 +46,7 @@ function createCard(count, fill, color, shape) {
     const imgurl = "/images/";
     const cardValue = `${count},${fill},${color},${shape}`;
     const cardImage = document.createElement("img");
-    cardImage.src = imgurl + cardValue + ".png";
+    cardImage.src = `${imgurl}${cardValue}.png`;
     cardImage.alt = cardValue;
     cardImage.id = cardValue;
     cardImage.style.border = DEFAULTBORDER;
@@ -71,29 +67,6 @@ function mark(e) {
     else {
         count.increment();
     }
-}
-
-function addButton(buttonID, buttonValue, buttonFunc) {
-    const button = document.createElement("button");
-    button.id = buttonID;
-    button.type = "button";
-    button.innerHTML = buttonValue;
-    document.body.appendChild(button);
-    button.addEventListener("click", buttonFunc);
-}
-
-function retrieveNewCards() {
-    document.getElementById("result").value = "";
-    fetch(url+"/3")
-        .then(response => response.json())
-        .then(function (data) {
-            for (let i = 0; i < 3; i++) {
-                document.getElementById("count" + (i + 1)).value = counts[data[i].count];
-                document.getElementById("fill" + (i + 1)).value = fills[data[i].fill];
-                document.getElementById("color" + (i + 1)).value = colors[data[i].color];
-                document.getElementById("shape" + (i + 1)).value = shapes[data[i].shape];
-            }
-        })
 }
 
 function getSelectedImages() {
@@ -137,48 +110,33 @@ function checkCards() {
     fetch(`${url}/validate`, fetchData)
         .then(response => response.json())
         .then(body => {
-            if (body) {
+            if (body.item1) {
                 setTimeout(function () { changeSelectedBorder(VALIDBORDER) }, 500);
                 setTimeout(function () { changeSelectedBorder(DEFAULTBORDER) }, 1500);
-                setTimeout(function () { refillValidCards(selectedImages, selectedCards) }, 1500);
+                setTimeout(function () { renderBoard(body.item2) }, 1500);
             }
             else {
                 setTimeout(function () { changeSelectedBorder(INVALIDBORDER)}, 500);
                 setTimeout(function () { changeSelectedBorder(DEFAULTBORDER) }, 1500);
             }
-            document.getElementById("result").value = String(body); 
+            document.getElementById("result").value = String(body.item1); 
         });
 }
 
-function refillValidCards(oldImages, oldCards) {
-    let fetchData = {
-        method: 'POST',
-        body: JSON.stringify(oldCards),
-        headers: new Headers({
-            'Content-Type': 'application/json',
-            'Accept-Encoding': 'application/json'
-        })
-    };
-    fetch(`${url}/refill`, fetchData)
-        .then(response => response.json())
-        .then(body => {
-            if (body) {
-                for (let i = 0; i < 3; i++) {
-                    const newValue = `${counts[body[i].count]},${fills[body[i].fill]},${colors[body[i].color]},${shapes[body[i].shape]}`;
-                    oldImages[i].src = `/images/${newValue}.png`;
-                    oldImages[i].alt = newValue;
-                    oldImages[i].id = newValue;
-                }
-            }
-        });
+function renderBoard(cards) {
+    const oldCards = document.querySelectorAll('img'); 
+    for (let i = 0; i < oldCards.length; i++) {
+        document.body.removeChild(oldCards[i]);
+    }
+    for (let j = 0; j < cards.length; j++) {
+        createCard(counts[cards[j].count], fills[cards[j].fill], colors[cards[j].color], shapes[cards[j].shape]);
+    }
 }
-
 
 function changeSelectedBorder(toColor) {
     const selected = getSelectedImages();
     selected.forEach((image) => image.style.border = toColor);
 }
-
 
 function attributeToOption(attribute, option1Equivalent, option2Equivalent) {
     if (attribute.toLowerCase() === option1Equivalent) {
