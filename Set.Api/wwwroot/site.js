@@ -95,11 +95,11 @@ function createCards(selectedImages) {
     return selectedCards;
 }
 
-function checkCards() {
+async function checkCards() {
     const selectedImages = getSelectedImages();
     const selectedCards = createCards(selectedImages);
 
-    let fetchData = {
+    const fetchData = {
         method: 'POST',
         body: JSON.stringify(selectedCards),
         headers: new Headers({
@@ -107,24 +107,35 @@ function checkCards() {
             'Accept-Encoding': 'application/json'
         })
     };
-    fetch(`${url}/validate`, fetchData)
-        .then(response => response.json())
-        .then(body => {
-            if (body.item1) {
-                setTimeout(function () { changeSelectedBorder(VALIDBORDER) }, 500);
-                setTimeout(function () { changeSelectedBorder(DEFAULTBORDER) }, 1500);
-                setTimeout(function () { renderBoard(body.item2) }, 1500);
-            }
-            else {
-                setTimeout(function () { changeSelectedBorder(INVALIDBORDER)}, 500);
-                setTimeout(function () { changeSelectedBorder(DEFAULTBORDER) }, 1500);
-            }
-            document.getElementById("result").value = String(body.item1); 
-        });
+    const response = await fetch(`${url}/validate`, fetchData);
+    const body = await response.json();
+    if (body.item1) {
+        await sleep(500);
+        changeSelectedBorder(VALIDBORDER);
+        await sleep(1000);
+        changeSelectedBorder(DEFAULTBORDER);
+        renderBoard(body.item2);
+    }
+    else {
+        await sleep(500);
+        changeSelectedBorder(INVALIDBORDER);
+        await sleep(1000);
+        changeSelectedBorder(DEFAULTBORDER);
+    }
+    //document.getElementById("result").value = String(body.item1); 
+}
+
+function sleep(time) {
+    const promise = new Promise(function (resolve, reject) {
+        setTimeout(function () {
+            resolve();
+        }, time);
+    });
+    return promise;
 }
 
 function renderBoard(cards) {
-    const oldCards = document.querySelectorAll('img'); 
+    const oldCards = document.querySelectorAll('img');
     for (let i = 0; i < oldCards.length; i++) {
         document.body.removeChild(oldCards[i]);
     }
