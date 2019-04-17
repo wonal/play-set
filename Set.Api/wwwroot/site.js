@@ -35,8 +35,10 @@ function initializeBoard() {
 async function addStartingCards() {
     const response = await fetch(`${url}/board`);
     const data = await response.json();
+    const board = document.getElementById("board");
     for (let i = 0; i < 12; i++) {
-        createCard(counts[data[i].count], fills[data[i].fill], colors[data[i].color], shapes[data[i].shape]);
+        const card = createCard(counts[data[i].count], fills[data[i].fill], colors[data[i].color], shapes[data[i].shape]);
+        board.appendChild(card);
     }
 }
 
@@ -47,9 +49,11 @@ function createCard(count, fill, color, shape) {
     cardImage.src = `${imgurl}${cardValue}.png`;
     cardImage.alt = cardValue;
     cardImage.id = cardValue;
-    cardImage.style.border = DEFAULTBORDER;
+    cardImage.className = "card";
+    //cardImage.style.border = DEFAULTBORDER;
     cardImage.addEventListener("click", mark);
-    document.body.appendChild(cardImage);
+    //document.body.appendChild(cardImage);
+    return cardImage;
 }
 
 function mark(e) {
@@ -134,11 +138,13 @@ function sleep(time) {
 
 function renderBoard(cards) {
     const oldCards = document.querySelectorAll('img');
+    const board = document.getElementById('board');
     for (let i = 0; i < oldCards.length; i++) {
-        document.body.removeChild(oldCards[i]);
+        board.removeChild(oldCards[i]);
     }
     for (let j = 0; j < cards.length; j++) {
-        createCard(counts[cards[j].count], fills[cards[j].fill], colors[cards[j].color], shapes[cards[j].shape]);
+        const newCard = createCard(counts[cards[j].count], fills[cards[j].fill], colors[cards[j].color], shapes[cards[j].shape]);
+        board.appendChild(newCard);
     }
 }
 
