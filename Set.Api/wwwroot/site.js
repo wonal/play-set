@@ -32,14 +32,12 @@ function initializeBoard() {
     addStartingCards();
 };
 
-function addStartingCards() {
-    fetch(`${url}/board`)
-        .then(response => response.json())
-        .then(data => {
-            for (let i = 0; i < 12; i++) {
-                createCard(counts[data[i].count], fills[data[i].fill], colors[data[i].color], shapes[data[i].shape]);
-            }
-        })
+async function addStartingCards() {
+    const response = await fetch(`${url}/board`);
+    const data = await response.json();
+    for (let i = 0; i < 12; i++) {
+        createCard(counts[data[i].count], fills[data[i].fill], colors[data[i].color], shapes[data[i].shape]);
+    }
 }
 
 function createCard(count, fill, color, shape) {
