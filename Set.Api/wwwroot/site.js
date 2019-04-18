@@ -6,10 +6,10 @@ const shapes = ["circle", "diamond", "rectangle"];
 const OPTION1 = "Option1";
 const OPTION2 = "Option2";
 const OPTION3 = "Option3";
-const DEFAULTBORDER = "0.5px solid gray";
-const SELECTEDBORDER = "3px solid black";
-const INVALIDBORDER = "3px solid red";
-const VALIDBORDER = "3px solid green";
+const DEFAULTBORDER = "card";
+const SELECTEDBORDER = "selected";
+const INVALIDBORDER = "invalid";
+const VALIDBORDER = "valid";
 
 class SelectedCards {
     count = 0;
@@ -17,6 +17,15 @@ class SelectedCards {
 
     getCount() {
         return this.count;
+    }
+
+    hasCard(card) {
+        for (let i = 0; i < this.count; i++) {
+            if (this.selectedCards[i] === card) {
+                return true;
+            }
+        }
+        return false;
     }
 
     getSelectedCards() {
@@ -35,7 +44,7 @@ class SelectedCards {
 
     removeCard(card) {
         for (let i = 0; i < this.count; i++) {
-            if (this.selectedCards[i].alt === card.alt) {
+            if (this.selectedCards[i] === card) {
                 this.selectedCards.splice(i, 1);
             }
         }
@@ -66,19 +75,16 @@ function createCard(count, fill, color, shape) {
     cardImage.alt = cardValue;
     cardImage.id = cardValue;
     cardImage.className = "card";
-  
-    //cardImage.style.border = DEFAULTBORDER;
     cardImage.addEventListener("click", mark);
-    //document.body.appendChild(cardImage);
     return cardImage;
 }
 
 function mark(e) {
-    if (e.currentTarget.style.border == SELECTEDBORDER) {
-        e.currentTarget.style.border = DEFAULTBORDER;
+    if (selected.hasCard(e.currentTarget)) {
+        e.currentTarget.className = "card";
         selected.removeCard(e.currentTarget);
     } else {
-        e.currentTarget.style.border = SELECTEDBORDER;
+        e.currentTarget.className = "selected";
         selected.addCard(e.currentTarget);
         if (selected.getCount() == 3) {
             checkCards();
@@ -166,7 +172,7 @@ function renderBoard(cards) {
 
 function changeSelectedBorder(toColor) {
     const selectedCards = selected.getSelectedCards();
-    selectedCards.forEach((image) => image.style.border = toColor);
+    selectedCards.forEach((image) => image.className = toColor);
 }
 
 function attributeToOption(attribute, option1Equivalent, option2Equivalent) {

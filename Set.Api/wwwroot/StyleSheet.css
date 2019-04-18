@@ -2,6 +2,19 @@
     width: 150px;
     height: 200px;
 }
+
 .card{
     border: 0.5px solid gray
+}
+
+.selected{
+    border: 3px solid black
+}
+
+.valid{
+    border: 3px solid green
+}
+
+.invalid{
+    border: 3px solid red
 }
