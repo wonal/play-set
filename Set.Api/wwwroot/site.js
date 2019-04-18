@@ -11,22 +11,38 @@ const SELECTEDBORDER = "3px solid black";
 const INVALIDBORDER = "3px solid red";
 const VALIDBORDER = "3px solid green";
 
-class Counter {
+class SelectedCards {
     count = 0;
-
-    increment() {
-        this.count += 1;
-    }
+    selectedCards = [];
 
     getCount() {
         return this.count;
     }
 
+    getSelectedCards() {
+        return this.selectedCards;
+    }
+
     reset() {
+        this.selectedCards = []
         this.count = 0;
     }
+
+    addCard(card) {
+        this.selectedCards.push(card);
+        this.count += 1;
+    }
+
+    removeCard(card) {
+        for (let i = 0; i < this.count; i++) {
+            if (this.selectedCards[i].alt === card.alt) {
+                this.selectedCards.splice(i, 1);
+            }
+        }
+        this.count -= 1;
+    }
 }
-const count = new Counter();
+const selected = new SelectedCards();
 
 function initializeBoard() {
     addStartingCards();
@@ -50,6 +66,7 @@ function createCard(count, fill, color, shape) {
     cardImage.alt = cardValue;
     cardImage.id = cardValue;
     cardImage.className = "card";
+  
     //cardImage.style.border = DEFAULTBORDER;
     cardImage.addEventListener("click", mark);
     //document.body.appendChild(cardImage);
@@ -59,15 +76,13 @@ function createCard(count, fill, color, shape) {
 function mark(e) {
     if (e.currentTarget.style.border == SELECTEDBORDER) {
         e.currentTarget.style.border = DEFAULTBORDER;
+        selected.removeCard(e.currentTarget);
     } else {
         e.currentTarget.style.border = SELECTEDBORDER;
-    }
-    if (count.getCount() == 2) {
-        checkCards();
-        count.reset();
-    }
-    else {
-        count.increment();
+        selected.addCard(e.currentTarget);
+        if (selected.getCount() == 3) {
+            checkCards();
+        }
     }
 }
 
@@ -98,7 +113,7 @@ function createCards(selectedImages) {
 }
 
 async function checkCards() {
-    const selectedImages = getSelectedImages();
+    const selectedImages = selected.getSelectedCards();
     const selectedCards = createCards(selectedImages);
 
     const fetchData = {
@@ -124,6 +139,7 @@ async function checkCards() {
         await sleep(1000);
         changeSelectedBorder(DEFAULTBORDER);
     }
+    selected.reset();
     //document.getElementById("result").value = String(body.item1); 
 }
 
@@ -149,8 +165,8 @@ function renderBoard(cards) {
 }
 
 function changeSelectedBorder(toColor) {
-    const selected = getSelectedImages();
-    selected.forEach((image) => image.style.border = toColor);
+    const selectedCards = selected.getSelectedCards();
+    selectedCards.forEach((image) => image.style.border = toColor);
 }
 
 function attributeToOption(attribute, option1Equivalent, option2Equivalent) {
