@@ -7,10 +7,10 @@
     OPTION1,
     OPTION2,
     OPTION3,
-    DEFAULTBORDER,
-    SELECTEDBORDER,
-    INVALIDBORDER,
-    VALIDBORDER
+    DEFAULT_BORDER,
+    SELECTED_BORDER,
+    INVALID_BORDER,
+    VALID_BORDER
 } from './constants.js'
 
 class SelectedCards {
@@ -76,33 +76,22 @@ function createCard(count, fill, color, shape) {
     cardImage.src = `${imgurl}${cardValue}.png`;
     cardImage.alt = cardValue;
     cardImage.id = cardValue;
-    cardImage.className = "card";
+    cardImage.className = DEFAULT_BORDER;
     cardImage.addEventListener("click", mark);
     return cardImage;
 }
 
 function mark(e) {
     if (selected.hasCard(e.currentTarget)) {
-        e.currentTarget.className = "card";
+        e.currentTarget.className = DEFAULT_BORDER;
         selected.removeCard(e.currentTarget);
     } else {
-        e.currentTarget.className = "selected";
+        e.currentTarget.className = SELECTED_BORDER;
         selected.addCard(e.currentTarget);
         if (selected.getCount() == 3) {
             checkCards();
         }
     }
-}
-
-function getSelectedImages() {
-    const images = document.querySelectorAll('img');
-    const selectedImages = [];
-    for (let i = 0; i < images.length; i++) {
-        if (images[i].style.border != DEFAULTBORDER) {
-            selectedImages.push(images[i]);
-        }
-    }
-    return selectedImages;
 }
 
 function createCards(selectedImages) {
@@ -136,16 +125,16 @@ async function checkCards() {
     const body = await response.json();
     if (body.item1) {
         await sleep(500);
-        changeSelectedBorder(VALIDBORDER);
+        changeSelectedBorder(VALID_BORDER);
         await sleep(1000);
-        changeSelectedBorder(DEFAULTBORDER);
+        changeSelectedBorder(DEFAULT_BORDER);
         renderBoard(body.item2);
     }
     else {
         await sleep(500);
-        changeSelectedBorder(INVALIDBORDER);
+        changeSelectedBorder(INVALID_BORDER);
         await sleep(1000);
-        changeSelectedBorder(DEFAULTBORDER);
+        changeSelectedBorder(DEFAULT_BORDER);
     }
     selected.reset();
     //document.getElementById("result").value = String(body.item1); 
