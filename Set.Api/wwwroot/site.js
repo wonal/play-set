@@ -1,15 +1,17 @@
-﻿const url = "https://localhost:44351/api/set";
-const counts = ["one", "three", "six"];
-const fills = ["solid", "hollow", "stacked"];
-const colors = ["red", "purple", "yellow"];
-const shapes = ["circle", "diamond", "rectangle"];
-const OPTION1 = "Option1";
-const OPTION2 = "Option2";
-const OPTION3 = "Option3";
-const DEFAULTBORDER = "card";
-const SELECTEDBORDER = "selected";
-const INVALIDBORDER = "invalid";
-const VALIDBORDER = "valid";
+﻿import {
+    url,
+    counts,
+    fills,
+    colors,
+    shapes,
+    OPTION1,
+    OPTION2,
+    OPTION3,
+    DEFAULTBORDER,
+    SELECTEDBORDER,
+    INVALIDBORDER,
+    VALIDBORDER
+} from './constants.js'
 
 class SelectedCards {
     count = 0;
