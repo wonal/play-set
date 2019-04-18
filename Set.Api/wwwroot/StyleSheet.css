@@ -1,20 +1,41 @@
 ﻿img {
     width: 150px;
     height: 200px;
+    margin: 5px;
 }
 
-.card{
-    border: 0.5px solid gray
+.image{
+    border: 3px solid #cccccc
 }
 
 .selected{
-    border: 3px solid black
+    border: 3px solid #333333
 }
 
 .valid{
-    border: 3px solid green
+    border: 3px solid #76d500
 }
 
 .invalid{
     border: 3px solid red
+}
+
+.board{
+    width: 700px;
+    height: 1000px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+}
+
+h1{
+    display: flex;
+    justify-content: center;
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    align-content: center;
 }
