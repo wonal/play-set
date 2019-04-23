@@ -34,7 +34,7 @@ namespace SetApi.Models
             return deck;
         }
 
-        private static void Shuffle(List<Card> cards)
+        public static void Shuffle(List<Card> cards)
         {
             Random r = new Random();
             for (int i = cards.Count-1; i > -1; i -= 1)
