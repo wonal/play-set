@@ -14,6 +14,24 @@ namespace SetApi.Models
             Board = deck.DrawCard(12);
         }
 
+        public static bool BoardContainsSet(List<Card> board)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                for(int j = i+1; j < 11; j++)
+                {
+                    for (int k = j+1; k < 12; k++)
+                    {
+                        if (Game.IsSet(board[i], board[j], board[k]))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
         public static bool IsSet(Card card1, Card card2, Card card3)
         {
             return IsCharacteristicSet(card1.Color, card2.Color, card3.Color) &&

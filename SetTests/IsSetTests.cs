@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using SetApi.Models;
 
-namespace Tests
+namespace SetTests
 {
     public class IsSetTests
     {
