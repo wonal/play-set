@@ -48,6 +48,10 @@ namespace SetApi.Models
 
         public List<Card> DrawCard(int numCards)
         {
+            if (Cards.Count == 0)
+            {
+                return new List<Card>();
+            }
             var cards = Cards.Take(numCards).ToList();
             Cards.RemoveRange(0, numCards);
             return cards;

@@ -8,7 +8,6 @@ namespace SetApi.Models
         private Deck deck;
         public List<Card> Board { get; }
 
-
         public Game()
         {
             deck = new Deck();
@@ -40,7 +39,6 @@ namespace SetApi.Models
             return false;
         }
 
-        public List<Card> AddCardsIfNoSet(List<Card> board) => !BoardContainsSet(board) ? deck.DrawCard(3) : new List<Card>();
         public static bool IsSet(Card card1, Card card2, Card card3) => IsCharacteristicSet(card1.Color, card2.Color, card3.Color) &&
                                                                         IsCharacteristicSet(card1.Shape, card2.Shape, card3.Shape) &&
                                                                         IsCharacteristicSet(card1.Fill, card2.Fill, card3.Fill) &&
@@ -51,51 +49,60 @@ namespace SetApi.Models
 
         public (bool,List<Card>) MakeGuess(Card card1, Card card2, Card card3)
         {
-            if (Game.IsSet(card1, card2, card3)){
-                List<Card> cards = new List<Card> { card1, card2, card3 };
-                if (Board.Count > 12)
-                {
-                    UpdateExtendedBoard(cards);
-                }
-                else
-                {
-                    UpdateNormalBoard(cards);
-                }
-                return (true, Board);
-            }
-            return (false, Board);
-        }
-
-        private void UpdateNormalBoard(List<Card> cards)
-        {
-            for (int i = 0; i < 3; i++)
+            if (!IsSet(card1, card2, card3))
             {
-                int index = Board.IndexOf(cards[i]);
-                Board.RemoveAt(index);
-                Board.Insert(index, deck.DrawCard(1)[0]);
+                return (false, Board);
             }
-            Board.AddRange(AddCardsIfNoSet(Board));
-  
+
+            List<Card> cards = new List<Card> { card1, card2, card3 };
+            if (deck.Cards.Count == 0)
+            {
+                RemoveFromBoard(cards);
+            }
+            else
+            {
+                UpdateBoard(cards);
+            }
+
+            return (true, Board);
         }
 
-        private void UpdateExtendedBoard(List<Card> cards)
+        private void RemoveFromBoard(List<Card>cards)
+        {
+            foreach (Card card in cards)
+            {
+                Board.Remove(card);
+            }
+        }
+
+        private void UpdateBoard(List<Card> cards)
         {
             List<int> indices = new List<int>();
-            for (int i = 0; i < 3; i++)
+            foreach (Card card in cards)
             {
-                indices.Add(Board.IndexOf(cards[i]));
+                indices.Add(Board.IndexOf(card));
             }
-            cards.ForEach(card => Board.Remove(card));
-            List<Card> cardsToAdd = AddCardsIfNoSet(Board);
-            if (cardsToAdd.Count != 0)
+            indices.Sort();
+            foreach (Card card in cards)
             {
-                indices.Sort();
-                for(int i = 0; i < 3; i++)
+                Board.Remove(card);
+            }
+
+            bool boardContainsSet = BoardContainsSet(Board);
+            if ((Board.Count >= 12 && !boardContainsSet) || Board.Count < 12)
+            {
+                foreach (int index in indices)
                 {
-                    Board.Insert(indices[i], cardsToAdd[i]);
+                    Board.Insert(index, deck.DrawCard(1)[0]);
                 }
             }
-        }
 
+            boardContainsSet = BoardContainsSet(Board);
+            while (!boardContainsSet)
+            {
+                Board.AddRange(deck.DrawCard(3));
+                boardContainsSet = BoardContainsSet(Board);
+            }
+        }
     }
 }
