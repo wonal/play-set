@@ -1,15 +1,21 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace SetApi.Models
 {
     public class Game
     {
+        [JsonIgnore]
         private Deck deck;
         public List<Card> Board { get; }
+        public bool validSet { get; set; }
+        public bool winState { get; set; }
 
         public Game()
         {
+            validSet = false;
+            winState = false;
             deck = new Deck();
             Board = deck.DrawCard(12);
             while (!BoardContainsSet(Board))
@@ -18,6 +24,11 @@ namespace SetApi.Models
                 Deck.Shuffle(deck.Cards);
                 Board = deck.DrawCard(12);
             }
+        }
+
+        private bool EmptyDeck()
+        {
+            return deck.Cards.Count == 0;
         }
 
         public static bool BoardContainsSet(List<Card> board)
@@ -47,15 +58,16 @@ namespace SetApi.Models
         private static bool AllSame(Characteristic c1, Characteristic c2, Characteristic c3) => c1 == c2 && c2 == c3;
         private static bool AllDifferent(Characteristic c1, Characteristic c2, Characteristic c3) => c1 != c2 && c2 != c3 && c1 != c3;
 
-        public (bool,List<Card>) MakeGuess(Card card1, Card card2, Card card3)
+        public void MakeGuess(Card card1, Card card2, Card card3)
         {
             if (!IsSet(card1, card2, card3))
             {
-                return (false, Board);
+                validSet = false;
+                return;
             }
 
             List<Card> cards = new List<Card> { card1, card2, card3 };
-            if (deck.Cards.Count == 0)
+            if (EmptyDeck())
             {
                 RemoveFromBoard(cards);
             }
@@ -64,7 +76,8 @@ namespace SetApi.Models
                 UpdateBoard(cards);
             }
 
-            return (true, Board);
+            validSet = true;
+            return;
         }
 
         private void RemoveFromBoard(List<Card>cards)

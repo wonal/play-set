@@ -123,12 +123,12 @@ async function checkCards() {
     };
     const response = await fetch(`${url}/validate`, fetchData);
     const body = await response.json();
-    if (body.item1) {
+    if (body.validSet) {
         await sleep(100);
         changeSelectedBorder(VALID_BORDER);
         await sleep(1000);
         changeSelectedBorder(DEFAULT_BORDER);
-        renderBoard(body.item2);
+        renderBoard(body.board);
     }
     else {
         await sleep(100);
