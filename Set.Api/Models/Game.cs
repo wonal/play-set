@@ -9,13 +9,13 @@ namespace SetApi.Models
         [JsonIgnore]
         private Deck deck;
         public List<Card> Board { get; }
-        public bool validSet { get; set; }
-        public bool winState { get; set; }
+        public bool ValidSet { get; set; }
+        public bool WinState { get; set; }
 
         public Game()
         {
-            validSet = false;
-            winState = false;
+            ValidSet = false;
+            WinState = false;
             deck = new Deck();
             Board = deck.DrawCard(12);
             while (!BoardContainsSet(Board))
@@ -62,7 +62,7 @@ namespace SetApi.Models
         {
             if (!IsSet(card1, card2, card3))
             {
-                validSet = false;
+                ValidSet = false;
                 return;
             }
 
@@ -70,13 +70,17 @@ namespace SetApi.Models
             if (EmptyDeck())
             {
                 RemoveFromBoard(cards);
+                if (!BoardContainsSet(Board))
+                {
+                    WinState = true;
+                }
             }
             else
             {
                 UpdateBoard(cards);
             }
 
-            validSet = true;
+            ValidSet = true;
             return;
         }
 
@@ -115,6 +119,11 @@ namespace SetApi.Models
             {
                 Board.AddRange(deck.DrawCard(3));
                 boardContainsSet = BoardContainsSet(Board);
+                if (!boardContainsSet)
+                {
+                    WinState = true;
+                    break;
+                }
             }
         }
     }

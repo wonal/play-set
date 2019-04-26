@@ -11,3 +11,4 @@ export const DEFAULT_BORDER = "image";
 export const SELECTED_BORDER = "selected";
 export const INVALID_BORDER = "invalid";
 export const VALID_BORDER = "valid";
+export const WIN_STATE = "win";

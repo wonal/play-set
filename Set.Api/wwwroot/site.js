@@ -10,7 +10,8 @@
     DEFAULT_BORDER,
     SELECTED_BORDER,
     INVALID_BORDER,
-    VALID_BORDER
+    VALID_BORDER,
+    WIN_STATE
 } from './constants.js'
 
 class SelectedCards {
@@ -53,7 +54,21 @@ class SelectedCards {
         this.count -= 1;
     }
 }
+
+class WinStatus {
+    gameWon = false;
+
+    getStatus() {
+        return this.gameWon;
+    }
+
+    updateStatus(status) {
+        this.gameWon = status;
+    }
+}
+
 const selected = new SelectedCards();
+const winStatus = new WinStatus();
 
 function initializeBoard() {
     addStartingCards();
@@ -82,6 +97,9 @@ function createCard(count, fill, color, shape) {
 }
 
 function mark(e) {
+    if (winStatus.gameWon) {
+        return;
+    }
     if (selected.hasCard(e.currentTarget)) {
         e.currentTarget.className = DEFAULT_BORDER;
         selected.removeCard(e.currentTarget);
@@ -127,6 +145,11 @@ async function checkCards() {
         await sleep(100);
         changeSelectedBorder(VALID_BORDER);
         await sleep(1000);
+        if (body.winState) {
+            winStatus.updateStatus(true);
+            changeSelectedBorder(WIN_STATE);
+            await sleep(2000);
+        }
         changeSelectedBorder(DEFAULT_BORDER);
         renderBoard(body.board);
     }
