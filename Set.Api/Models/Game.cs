@@ -8,7 +8,7 @@ namespace SetApi.Models
     {
         [JsonIgnore]
         private Deck deck;
-        public List<Card> Board { get; }
+        public List<Card> Board { get; private set;}
         public bool ValidSet { get; set; }
         public bool WinState { get; set; }
 
@@ -16,6 +16,11 @@ namespace SetApi.Models
         {
             ValidSet = false;
             WinState = false;
+            InitGame();
+        }
+
+        private void InitGame()
+        {
             deck = new Deck();
             Board = deck.DrawCard(12);
             while (!BoardContainsSet(Board))
@@ -24,6 +29,12 @@ namespace SetApi.Models
                 Deck.Shuffle(deck.Cards);
                 Board = deck.DrawCard(12);
             }
+        }
+
+        public List<Card> ReturnNewGame()
+        {
+            InitGame();
+            return Board;
         }
 
         private bool EmptyDeck()

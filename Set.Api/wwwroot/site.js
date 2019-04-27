@@ -72,6 +72,7 @@ const winStatus = new WinStatus();
 
 function initializeBoard() {
     addStartingCards();
+    addResetButton();
 };
 
 async function addStartingCards() {
@@ -94,6 +95,21 @@ function createCard(count, fill, color, shape) {
     cardImage.className = DEFAULT_BORDER;
     cardImage.addEventListener("click", mark);
     return cardImage;
+}
+
+function addResetButton() {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.innerHTML = "New Game";
+    document.body.appendChild(button);
+    button.addEventListener("click", resetGame)
+}
+
+async function resetGame() {
+    const response = await fetch(`${url}/newgame`);
+    const data = await response.json();
+    renderBoard(data);
+    winStatus.updateStatus(false);
 }
 
 function mark(e) {
