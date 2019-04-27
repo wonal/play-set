@@ -6,21 +6,22 @@ namespace SetApi.Models
 {
     public class Game
     {
-        [JsonIgnore]
         private Deck deck;
         public List<Card> Board { get; private set;}
         public bool ValidSet { get; set; }
         public bool WinState { get; set; }
+        public int CardsRemaining { get; set; }
 
         public Game()
         {
-            ValidSet = false;
-            WinState = false;
             InitGame();
         }
 
         private void InitGame()
         {
+            ValidSet = false;
+            WinState = false;
+            CardsRemaining = 69;
             deck = new Deck();
             Board = deck.DrawCard(12);
             while (!BoardContainsSet(Board))
@@ -88,6 +89,7 @@ namespace SetApi.Models
             }
             else
             {
+                CardsRemaining -= 3;
                 UpdateBoard(cards);
             }
 

@@ -72,6 +72,10 @@ const winStatus = new WinStatus();
 
 function initializeBoard() {
     addStartingCards();
+    const deckCount = document.createElement("div");
+    deckCount.id = "deckCount";
+    deckCount.innerText = "Cards remaining: 69";
+    document.body.appendChild(deckCount);
     addResetButton();
 };
 
@@ -110,6 +114,7 @@ async function resetGame() {
     const data = await response.json();
     renderBoard(data);
     winStatus.updateStatus(false);
+    document.getElementById("deckCount").innerText = "Cards remaining: 69";
 }
 
 function mark(e) {
@@ -162,12 +167,13 @@ async function checkCards() {
         changeSelectedBorder(VALID_BORDER);
         await sleep(1000);
         if (body.winState) {
-            winStatus.updateStatus(true);
+            WinStatus.updateStatus(true);
             changeSelectedBorder(WIN_STATE);
             await sleep(2000);
         }
         changeSelectedBorder(DEFAULT_BORDER);
         renderBoard(body.board);
+        document.getElementById("deckCount").innerText = "Cards remaining:" + body.cardsRemaining;
     }
     else {
         await sleep(100);
@@ -176,7 +182,6 @@ async function checkCards() {
         changeSelectedBorder(DEFAULT_BORDER);
     }
     selected.reset();
-    //document.getElementById("result").value = String(body.item1); 
 }
 
 function sleep(time) {
