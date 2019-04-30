@@ -14,38 +14,32 @@ namespace SetApi.Controllers
         private static readonly Games GameHolder = new Games();
 
         [HttpGet("initgame")]
-        public GameDTO GetBoard()
+        public BoardDTO GetBoard()
         {
             int id = GameHolder.CreateGame();
-            return new GameDTO
+            return new BoardDTO
             {
                 GameID = id,
-                Board = GameHolder.RetrieveGame(id).Board,
-                ValidSet = false,
-                WinState = false,
-                CardsRemaining = 81
+                Cards = GameHolder.RetrieveGame(id).Board,
             };
         }
 
         [HttpGet("newgame/{id}")]
-        public GameDTO NewGame(int id)
+        public BoardDTO NewGame(int id)
         {
             GameHolder.RetrieveGame(id).CreateGame();
             Game game = GameHolder.RetrieveGame(id);
-            return new GameDTO
+            return new BoardDTO
             {
                 GameID = id,
-                Board = game.Board,
-                ValidSet = false,
-                WinState = false,
-                CardsRemaining = 81
+                Cards = game.Board,
             };
         }
 
         [HttpPost("validate")]
-        public GameDTO PostSelectedCards(GameDTO state)
+        public GameDTO PostSelectedCards(BoardDTO state)
         {
-            GameHolder.RetrieveGame(state.GameID).MakeGuess(state.Board.ElementAt(0), state.Board.ElementAt(1), state.Board.ElementAt(2));
+            GameHolder.RetrieveGame(state.GameID).MakeGuess(state.Cards.ElementAt(0), state.Cards.ElementAt(1), state.Cards.ElementAt(2));
             Game game = GameHolder.RetrieveGame(state.GameID);
             return new GameDTO
             {

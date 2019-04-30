@@ -19,9 +19,19 @@ namespace SetApi.Models
         public int CreateGame()
         {
             Game game = new Game();
-            gameID += 1;
+            UpdateGameID();
             GamesList.Add(gameID, game);
             return gameID;
+        }
+
+        private void UpdateGameID()
+        {
+            if (gameID > 1000)
+            {
+                gameID = 0;
+            }
+            gameID += 1;
+            return;
         }
 
         public Game RetrieveGame(int id)

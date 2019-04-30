@@ -1,9 +1,9 @@
 ﻿import {
-    url,
-    counts,
-    fills,
-    colors,
-    shapes,
+    URL,
+    COUNTS,
+    FILLS,
+    COLORS,
+    SHAPES,
     OPTION1,
     OPTION2,
     OPTION3,
@@ -12,70 +12,10 @@
     INVALID_BORDER,
     VALID_BORDER,
     WIN_STATE,
-    CARDS_REMAINING
+    CARDS_REMAINING,
+    SelectedCards,
+    GameStatus
 } from './constants.js'
-
-class SelectedCards {
-    count = 0;
-    selectedCards = [];
-
-    getCount() {
-        return this.count;
-    }
-
-    hasCard(card) {
-        for (let i = 0; i < this.count; i++) {
-            if (this.selectedCards[i] === card) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    getSelectedCards() {
-        return this.selectedCards;
-    }
-
-    reset() {
-        this.selectedCards = []
-        this.count = 0;
-    }
-
-    addCard(card) {
-        this.selectedCards.push(card);
-        this.count += 1;
-    }
-
-    removeCard(card) {
-        for (let i = 0; i < this.count; i++) {
-            if (this.selectedCards[i] === card) {
-                this.selectedCards.splice(i, 1);
-            }
-        }
-        this.count -= 1;
-    }
-}
-
-class GameStatus {
-    gameWon = false;
-    gameID = 1;
-
-    getStatus() {
-        return this.gameWon;
-    }
-
-    updateStatus(status) {
-        this.gameWon = status;
-    }
-
-    setGameID(id) {
-        this.gameID = id;
-    }
-
-    getGameID() {
-        return this.gameID;
-    }
-}
 
 const selected = new SelectedCards();
 const gameStatus = new GameStatus();
@@ -84,20 +24,31 @@ function initializeBoard() {
     addStartingCards();
     const deckCount = document.createElement("div");
     deckCount.id = "deckCount";
+    deckCount.className = "deckCount";
     deckCount.innerText = CARDS_REMAINING;
+    document.body.appendChild(document.createElement("br"));
     document.body.appendChild(deckCount);
+    document.body.appendChild(document.createElement("br"));
     addResetButton();
 };
 
 async function addStartingCards() {
-    const response = await fetch(`${url}/initgame`);
+    const response = await fetch(`${URL}/initgame`);
     const data = await response.json();
-    const board = document.getElementById("board");
-    for (let i = 0; i < 12; i++) {
-        const card = createCard(counts[data.board[i].count], fills[data.board[i].fill], colors[data.board[i].color], shapes[data.board[i].shape]);
-        board.appendChild(card);
-    }
+    renderBoard(data.cards);
     gameStatus.setGameID(data.gameID);
+}
+
+function renderBoard(cards) {
+    const oldCards = document.querySelectorAll('img');
+    const board = document.getElementById('board');
+    for (const card of oldCards) {
+        board.removeChild(card);
+    }
+    for (const card of cards) {
+        const newCard = createCard(COUNTS[card.count], FILLS[card.fill], COLORS[card.color], SHAPES[card.shape]);
+        board.appendChild(newCard);
+    }
 }
 
 function createCard(count, fill, color, shape) {
@@ -115,17 +66,17 @@ function createCard(count, fill, color, shape) {
 function addResetButton() {
     const button = document.createElement("button");
     button.type = "button";
-    button.innerHTML = "New Game";
+    button.innerText = "New Game";
     document.body.appendChild(button);
     button.addEventListener("click", resetGame)
 }
 
 async function resetGame() {
     const id = gameStatus.getGameID();
-    const response = await fetch(`${url}/newgame/${id}`);
+    const response = await fetch(`${URL}/newgame/${id}`);
     const data = await response.json();
-    renderBoard(data.board);
-    gameStatus.updateStatus(data.winState);
+    renderBoard(data.cards);
+    gameStatus.updateStatus(false);
     document.getElementById("deckCount").innerText = CARDS_REMAINING;
 }
 
@@ -133,6 +84,7 @@ function mark(e) {
     if (gameStatus.gameWon) {
         return;
     }
+
     if (selected.hasCard(e.currentTarget)) {
         e.currentTarget.className = DEFAULT_BORDER;
         selected.removeCard(e.currentTarget);
@@ -167,13 +119,13 @@ async function checkCards() {
 
     const fetchData = {
         method: 'POST',
-        body: JSON.stringify({ GameID: id, Board: selectedCards, ValidSet: false, WinState: false, CardsRemaining: 0 }),
+        body: JSON.stringify({ GameID: id, Cards: selectedCards}),
         headers: new Headers({
             'Content-Type': 'application/json',
             'Accept-Encoding': 'application/json'
         })
     };
-    const response = await fetch(`${url}/validate`, fetchData);
+    const response = await fetch(`${URL}/validate`, fetchData);
     const body = await response.json();
     if (body.validSet) {
         await sleep(100);
@@ -206,21 +158,12 @@ function sleep(time) {
     return promise;
 }
 
-function renderBoard(cards) {
-    const oldCards = document.querySelectorAll('img');
-    const board = document.getElementById('board');
-    for (let i = 0; i < oldCards.length; i++) {
-        board.removeChild(oldCards[i]);
-    }
-    for (let j = 0; j < cards.length; j++) {
-        const newCard = createCard(counts[cards[j].count], fills[cards[j].fill], colors[cards[j].color], shapes[cards[j].shape]);
-        board.appendChild(newCard);
-    }
-}
 
 function changeSelectedBorder(toColor) {
     const selectedCards = selected.getSelectedCards();
-    selectedCards.forEach((image) => image.className = toColor);
+    for (const card of selectedCards) {
+        card.className = toColor;
+    }
 }
 
 function attributeToOption(attribute, option1Equivalent, option2Equivalent) {

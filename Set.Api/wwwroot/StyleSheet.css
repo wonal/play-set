@@ -43,3 +43,8 @@ body{
     align-items: center;
     flex-direction: column;
 }
+
+.deckCount{
+    font-size: 24px;
+    font-family: Arial;
+}
