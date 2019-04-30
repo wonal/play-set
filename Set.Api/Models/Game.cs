@@ -21,7 +21,7 @@ namespace SetApi.Models
         {
             ValidSet = false;
             WinState = false;
-            CardsRemaining = 69;
+            CardsRemaining = 81;
             deck = new Deck();
             Board = deck.DrawCard(12);
             while (!BoardContainsSet(Board))

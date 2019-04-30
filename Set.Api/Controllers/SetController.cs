@@ -11,7 +11,7 @@ namespace SetApi.Controllers
     [ApiController]
     public class SetController : Controller
     {
-        private static Game GameState = new Game();
+        private static readonly Game GameState = new Game();
 
         [HttpGet("board")]
         public List<Card> GetBoard()
@@ -26,10 +26,16 @@ namespace SetApi.Controllers
         }
 
         [HttpPost("validate")]
-        public Game PostSelectedCards(IEnumerable<Card> cards)
+        public GameDTO PostSelectedCards(IEnumerable<Card> cards)
         {
             GameState.MakeGuess(cards.ElementAt(0), cards.ElementAt(1), cards.ElementAt(2));
-            return GameState;
+            return new GameDTO
+            {
+                Board = GameState.Board,
+                ValidSet = GameState.ValidSet,
+                WinState = GameState.WinState,
+                CardsRemaining = GameState.CardsRemaining
+            };
         }
     }
 }

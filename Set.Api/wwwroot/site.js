@@ -11,7 +11,8 @@
     SELECTED_BORDER,
     INVALID_BORDER,
     VALID_BORDER,
-    WIN_STATE
+    WIN_STATE,
+    CARDS_REMAINING
 } from './constants.js'
 
 class SelectedCards {
@@ -74,7 +75,7 @@ function initializeBoard() {
     addStartingCards();
     const deckCount = document.createElement("div");
     deckCount.id = "deckCount";
-    deckCount.innerText = "Cards remaining: 69";
+    deckCount.innerText = CARDS_REMAINING;
     document.body.appendChild(deckCount);
     addResetButton();
 };
@@ -114,7 +115,7 @@ async function resetGame() {
     const data = await response.json();
     renderBoard(data);
     winStatus.updateStatus(false);
-    document.getElementById("deckCount").innerText = "Cards remaining: 69";
+    document.getElementById("deckCount").innerText = CARDS_REMAINING;
 }
 
 function mark(e) {
