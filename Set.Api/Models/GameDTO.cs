@@ -7,7 +7,8 @@ namespace SetApi.Models
 {
     public class GameDTO
     {
-        public List<Card> Board { get; set;}
+        public int GameID { get; set; }
+        public List<Card> Board { get; set; }
         public bool ValidSet { get; set; }
         public bool WinState { get; set; }
         public int CardsRemaining { get; set; }

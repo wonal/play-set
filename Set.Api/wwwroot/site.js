@@ -56,8 +56,9 @@ class SelectedCards {
     }
 }
 
-class WinStatus {
+class GameStatus {
     gameWon = false;
+    gameID = 1;
 
     getStatus() {
         return this.gameWon;
@@ -66,10 +67,18 @@ class WinStatus {
     updateStatus(status) {
         this.gameWon = status;
     }
+
+    setGameID(id) {
+        this.gameID = id;
+    }
+
+    getGameID() {
+        return this.gameID;
+    }
 }
 
 const selected = new SelectedCards();
-const winStatus = new WinStatus();
+const gameStatus = new GameStatus();
 
 function initializeBoard() {
     addStartingCards();
@@ -81,13 +90,14 @@ function initializeBoard() {
 };
 
 async function addStartingCards() {
-    const response = await fetch(`${url}/board`);
+    const response = await fetch(`${url}/initgame`);
     const data = await response.json();
     const board = document.getElementById("board");
     for (let i = 0; i < 12; i++) {
-        const card = createCard(counts[data[i].count], fills[data[i].fill], colors[data[i].color], shapes[data[i].shape]);
+        const card = createCard(counts[data.board[i].count], fills[data.board[i].fill], colors[data.board[i].color], shapes[data.board[i].shape]);
         board.appendChild(card);
     }
+    gameStatus.setGameID(data.gameID);
 }
 
 function createCard(count, fill, color, shape) {
@@ -111,15 +121,16 @@ function addResetButton() {
 }
 
 async function resetGame() {
-    const response = await fetch(`${url}/newgame`);
+    const id = gameStatus.getGameID();
+    const response = await fetch(`${url}/newgame/${id}`);
     const data = await response.json();
-    renderBoard(data);
-    winStatus.updateStatus(false);
+    renderBoard(data.board);
+    gameStatus.updateStatus(data.winState);
     document.getElementById("deckCount").innerText = CARDS_REMAINING;
 }
 
 function mark(e) {
-    if (winStatus.gameWon) {
+    if (gameStatus.gameWon) {
         return;
     }
     if (selected.hasCard(e.currentTarget)) {
@@ -152,10 +163,11 @@ function createCards(selectedImages) {
 async function checkCards() {
     const selectedImages = selected.getSelectedCards();
     const selectedCards = createCards(selectedImages);
+    const id = gameStatus.getGameID();
 
     const fetchData = {
         method: 'POST',
-        body: JSON.stringify(selectedCards),
+        body: JSON.stringify({ GameID: id, Board: selectedCards, ValidSet: false, WinState: false, CardsRemaining: 0 }),
         headers: new Headers({
             'Content-Type': 'application/json',
             'Accept-Encoding': 'application/json'
@@ -168,7 +180,7 @@ async function checkCards() {
         changeSelectedBorder(VALID_BORDER);
         await sleep(1000);
         if (body.winState) {
-            WinStatus.updateStatus(true);
+            gameStatus.updateStatus(true);
             changeSelectedBorder(WIN_STATE);
             await sleep(2000);
         }

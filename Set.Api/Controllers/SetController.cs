@@ -11,30 +11,49 @@ namespace SetApi.Controllers
     [ApiController]
     public class SetController : Controller
     {
-        private static readonly Game GameState = new Game();
+        private static readonly Games GameHolder = new Games();
 
-        [HttpGet("board")]
-        public List<Card> GetBoard()
+        [HttpGet("initgame")]
+        public GameDTO GetBoard()
         {
-            return GameState.Board;
+            int id = GameHolder.CreateGame();
+            return new GameDTO
+            {
+                GameID = id,
+                Board = GameHolder.RetrieveGame(id).Board,
+                ValidSet = false,
+                WinState = false,
+                CardsRemaining = 81
+            };
         }
 
-        [HttpGet("newgame")]
-        public List<Card> NewGame()
+        [HttpGet("newgame/{id}")]
+        public GameDTO NewGame(int id)
         {
-            return GameState.ReturnNewGame();
+            GameHolder.RetrieveGame(id).CreateGame();
+            Game game = GameHolder.RetrieveGame(id);
+            return new GameDTO
+            {
+                GameID = id,
+                Board = game.Board,
+                ValidSet = false,
+                WinState = false,
+                CardsRemaining = 81
+            };
         }
 
         [HttpPost("validate")]
-        public GameDTO PostSelectedCards(IEnumerable<Card> cards)
+        public GameDTO PostSelectedCards(GameDTO state)
         {
-            GameState.MakeGuess(cards.ElementAt(0), cards.ElementAt(1), cards.ElementAt(2));
+            GameHolder.RetrieveGame(state.GameID).MakeGuess(state.Board.ElementAt(0), state.Board.ElementAt(1), state.Board.ElementAt(2));
+            Game game = GameHolder.RetrieveGame(state.GameID);
             return new GameDTO
             {
-                Board = GameState.Board,
-                ValidSet = GameState.ValidSet,
-                WinState = GameState.WinState,
-                CardsRemaining = GameState.CardsRemaining
+                GameID = state.GameID,
+                Board = game.Board,
+                ValidSet = game.ValidSet,
+                WinState = game.WinState,
+                CardsRemaining = game.CardsRemaining
             };
         }
     }

@@ -14,10 +14,10 @@ namespace SetApi.Models
 
         public Game()
         {
-            InitGame();
+            CreateGame();
         }
 
-        private void InitGame()
+        public void CreateGame()
         {
             ValidSet = false;
             WinState = false;
@@ -30,12 +30,6 @@ namespace SetApi.Models
                 Deck.Shuffle(deck.Cards);
                 Board = deck.DrawCard(12);
             }
-        }
-
-        public List<Card> ReturnNewGame()
-        {
-            InitGame();
-            return Board;
         }
 
         private bool EmptyDeck()
@@ -89,10 +83,10 @@ namespace SetApi.Models
             }
             else
             {
-                CardsRemaining -= 3;
                 UpdateBoard(cards);
             }
 
+            CardsRemaining -= 3;
             ValidSet = true;
             return;
         }
