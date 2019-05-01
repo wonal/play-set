@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SetApi.Models;
 
 
@@ -37,13 +35,13 @@ namespace SetApi.Controllers
         }
 
         [HttpPost("validate")]
-        public GameDTO PostSelectedCards(BoardDTO state)
+        public GameDTO PostSelectedCards(GuessDTO guess)
         {
-            GameHolder.RetrieveGame(state.GameID).MakeGuess(state.Cards.ElementAt(0), state.Cards.ElementAt(1), state.Cards.ElementAt(2));
-            Game game = GameHolder.RetrieveGame(state.GameID);
+            GameHolder.RetrieveGame(guess.GameID).MakeGuess(guess.Card1, guess.Card2, guess.Card3);
+            Game game = GameHolder.RetrieveGame(guess.GameID);
             return new GameDTO
             {
-                GameID = state.GameID,
+                GameID = guess.GameID,
                 Board = game.Board,
                 ValidSet = game.ValidSet,
                 WinState = game.WinState,

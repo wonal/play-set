@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace SetApi.Models
 {
@@ -9,6 +6,7 @@ namespace SetApi.Models
     {
         public Dictionary<int, Game> GamesList;
         private int gameID;
+        private readonly object lockObject = new object();
 
         public Games()
         {
@@ -18,10 +16,13 @@ namespace SetApi.Models
 
         public int CreateGame()
         {
-            Game game = new Game();
-            UpdateGameID();
-            GamesList.Add(gameID, game);
-            return gameID;
+            lock (lockObject)
+            {
+                Game game = new Game();
+                UpdateGameID();
+                GamesList.Add(gameID, game);
+                return gameID;
+            }
         }
 
         private void UpdateGameID()

@@ -35,11 +35,11 @@ function initializeBoard() {
 async function addStartingCards() {
     const response = await fetch(`${URL}/initgame`);
     const data = await response.json();
-    renderBoard(data.cards);
+    renderBoard(data.cards, false);
     gameStatus.setGameID(data.gameID);
 }
 
-function renderBoard(cards) {
+function renderBoard(cards, gameWon) {
     const oldCards = document.querySelectorAll('img');
     const board = document.getElementById('board');
     for (const card of oldCards) {
@@ -47,6 +47,9 @@ function renderBoard(cards) {
     }
     for (const card of cards) {
         const newCard = createCard(COUNTS[card.count], FILLS[card.fill], COLORS[card.color], SHAPES[card.shape]);
+        if (gameWon) {
+            newCard.className = WIN_STATE;
+        }
         board.appendChild(newCard);
     }
 }
@@ -75,7 +78,7 @@ async function resetGame() {
     const id = gameStatus.getGameID();
     const response = await fetch(`${URL}/newgame/${id}`);
     const data = await response.json();
-    renderBoard(data.cards);
+    renderBoard(data.cards, false);
     gameStatus.updateStatus(false);
     document.getElementById("deckCount").innerText = CARDS_REMAINING;
 }
@@ -119,7 +122,7 @@ async function checkCards() {
 
     const fetchData = {
         method: 'POST',
-        body: JSON.stringify({ GameID: id, Cards: selectedCards}),
+        body: JSON.stringify({ GameID: id, Card1: selectedCards[0], Card2: selectedCards[1], Card3: selectedCards[2]}),
         headers: new Headers({
             'Content-Type': 'application/json',
             'Accept-Encoding': 'application/json'
@@ -133,12 +136,14 @@ async function checkCards() {
         await sleep(1000);
         if (body.winState) {
             gameStatus.updateStatus(true);
-            changeSelectedBorder(WIN_STATE);
-            await sleep(2000);
+            renderBoard(body.board, true);
+            document.getElementById("deckCount").innerText = "No more sets present!";
         }
-        changeSelectedBorder(DEFAULT_BORDER);
-        renderBoard(body.board);
-        document.getElementById("deckCount").innerText = "Cards remaining:" + body.cardsRemaining;
+        else {
+            changeSelectedBorder(DEFAULT_BORDER);
+            renderBoard(body.board, false);
+            document.getElementById("deckCount").innerText = "Cards remaining:" + body.cardsRemaining;
+        }
     }
     else {
         await sleep(100);
