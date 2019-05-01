@@ -57,7 +57,7 @@ export class SelectedCards {
 
 export class GameStatus {
     gameWon = false;
-    gameID = 1;
+    gameID = "";
 
     getStatus() {
         return this.gameWon;

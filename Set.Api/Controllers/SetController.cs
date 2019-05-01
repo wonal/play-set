@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SetApi.Models;
-
-
+using System;
 
 namespace SetApi.Controllers
 {
@@ -14,7 +13,7 @@ namespace SetApi.Controllers
         [HttpGet("initgame")]
         public BoardDTO GetBoard()
         {
-            int id = GameHolder.CreateGame();
+            Guid id = GameHolder.CreateGame();
             return new BoardDTO
             {
                 GameID = id,
@@ -23,7 +22,7 @@ namespace SetApi.Controllers
         }
 
         [HttpGet("newgame/{id}")]
-        public BoardDTO NewGame(int id)
+        public BoardDTO NewGame(Guid id)
         {
             GameHolder.RetrieveGame(id).CreateGame();
             Game game = GameHolder.RetrieveGame(id);

@@ -1,41 +1,46 @@
 ﻿using System.Collections.Generic;
+using System;
 
 namespace SetApi.Models
 {
     public class Games
     {
-        public Dictionary<int, Game> GamesList;
-        private int gameID;
+        private Dictionary<int, Guid> gameIDs;
+        private int numGames;
         private readonly object lockObject = new object();
+        public Dictionary<Guid, Game> GamesList;
 
         public Games()
         {
-            GamesList = new Dictionary<int, Game>();
-            gameID = 0;
+            gameIDs = new Dictionary<int, Guid>();
+            GamesList = new Dictionary<Guid, Game>();
+            numGames = 0;
         }
 
-        public int CreateGame()
+        public Guid CreateGame()
         {
             lock (lockObject)
             {
                 Game game = new Game();
                 UpdateGameID();
-                GamesList.Add(gameID, game);
-                return gameID;
+                Guid guid = Guid.NewGuid();
+                gameIDs.Add(numGames, guid);
+                GamesList.Add(guid, game);
+                return guid;
             }
         }
 
         private void UpdateGameID()
         {
-            if (gameID > 1000)
+            if (numGames > 1000)
             {
-                gameID = 0;
+                numGames = 0;
             }
-            gameID += 1;
+            numGames += 1;
             return;
         }
 
-        public Game RetrieveGame(int id)
+        public Game RetrieveGame(Guid id)
         {
             return GamesList[id];
         }
