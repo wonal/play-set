@@ -27,6 +27,21 @@ namespace SetTests
         }
 
         [Test]
+        public void TestSmallerBoardWithNoValidSet()
+        {
+            List<Card> board = new List<Card> { new Card(Characteristic.Option1, Characteristic.Option1, Characteristic.Option2, Characteristic.Option1),
+                                                new Card(Characteristic.Option1, Characteristic.Option1, Characteristic.Option2, Characteristic.Option1),
+                                                new Card(Characteristic.Option2, Characteristic.Option1, Characteristic.Option2, Characteristic.Option1),
+                                                new Card(Characteristic.Option3, Characteristic.Option2, Characteristic.Option3, Characteristic.Option3),
+                                                new Card(Characteristic.Option3, Characteristic.Option2, Characteristic.Option3, Characteristic.Option3),
+                                                new Card(Characteristic.Option1, Characteristic.Option2, Characteristic.Option3, Characteristic.Option3),
+                                                new Card(Characteristic.Option3, Characteristic.Option1, Characteristic.Option1, Characteristic.Option3),
+                                                new Card(Characteristic.Option3, Characteristic.Option1, Characteristic.Option1, Characteristic.Option3),
+                                                new Card(Characteristic.Option3, Characteristic.Option2, Characteristic.Option1, Characteristic.Option2)};
+            Assert.IsFalse(Game.BoardContainsSet(board));
+        }
+
+        [Test]
         public void TestBoardContainingSet()
         {
             List<Card> board = new List<Card> {
@@ -42,6 +57,21 @@ namespace SetTests
                                                 new Card(Characteristic.Option3, Characteristic.Option3, Characteristic.Option3, Characteristic.Option2),
                                                 new Card(Characteristic.Option3, Characteristic.Option3, Characteristic.Option2, Characteristic.Option1),
                                                 new Card(Characteristic.Option3, Characteristic.Option3, Characteristic.Option1, Characteristic.Option3)};
+            Assert.IsTrue(Game.BoardContainsSet(board));
+        }
+
+        [Test]
+        public void TestSmallerBoardContainingSet()
+        {
+            List<Card> board = new List<Card> { new Card(Characteristic.Option1, Characteristic.Option1, Characteristic.Option2, Characteristic.Option1),
+                                                new Card(Characteristic.Option1, Characteristic.Option1, Characteristic.Option2, Characteristic.Option1),
+                                                new Card(Characteristic.Option3, Characteristic.Option1, Characteristic.Option1, Characteristic.Option3),
+                                                new Card(Characteristic.Option3, Characteristic.Option2, Characteristic.Option3, Characteristic.Option3),
+                                                new Card(Characteristic.Option3, Characteristic.Option2, Characteristic.Option3, Characteristic.Option3),
+                                                new Card(Characteristic.Option1, Characteristic.Option2, Characteristic.Option3, Characteristic.Option3),
+                                                new Card(Characteristic.Option3, Characteristic.Option1, Characteristic.Option1, Characteristic.Option3),
+                                                new Card(Characteristic.Option3, Characteristic.Option1, Characteristic.Option1, Characteristic.Option3),
+                                                new Card(Characteristic.Option3, Characteristic.Option2, Characteristic.Option1, Characteristic.Option2)};
             Assert.IsTrue(Game.BoardContainsSet(board));
         }
     }
