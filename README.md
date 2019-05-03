@@ -1,7 +1,25 @@
-## play-set
+## Play-Set
 
-This will be a web application of the game Set.  
+Copyright (c) 2019 Allison Wong
 
-#### Planned features
+This will be an ASP.NET Core application based on the card game Set.  
 
-Eventually the hope is to implement both a single player and two-player version of Set.  There will be both a single player version to practice or get the best time, and two player version to play with a friend or a random person.
+#### Current Features
+
+This is a work in progress and at this point, only a single-player version is implemented.  Game logic follows the [official rules of Set](https://www.setgame.com/file/set-english) with the exception of points and penalty points since there is only single-player mode.      
+
+#### Future Plans
+
+- Timed mode
+- Two-player version
+- Database integration (high scores)
+- React
+
+
+
+
+
+
+
+
+
