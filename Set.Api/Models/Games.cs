@@ -5,16 +5,16 @@ namespace SetApi.Models
 {
     public class Games
     {
-        private Dictionary<int, Guid> gameIDs;
-        private int numGames;
+        private readonly Dictionary<int, Guid> gameCounter;
+        private readonly Dictionary<Guid, Game> idToGame;
+        private int gameNum;
         private readonly object lockObject = new object();
-        public Dictionary<Guid, Game> GamesList;
 
         public Games()
         {
-            gameIDs = new Dictionary<int, Guid>();
-            GamesList = new Dictionary<Guid, Game>();
-            numGames = 0;
+            gameCounter = new Dictionary<int, Guid>();
+            idToGame = new Dictionary<Guid, Game>();
+            gameNum = 0;
         }
 
         public Guid CreateGame()
@@ -23,26 +23,31 @@ namespace SetApi.Models
             {
                 Game game = new Game();
                 UpdateGameID();
+                if (gameCounter.ContainsKey(gameNum))
+                {
+                    Guid oldGuid = gameCounter[gameNum];
+                    idToGame.Remove(oldGuid);
+                }
                 Guid guid = Guid.NewGuid();
-                gameIDs.Add(numGames, guid);
-                GamesList.Add(guid, game);
+                gameCounter[gameNum] = guid;
+                idToGame[guid] = game;
                 return guid;
             }
         }
 
         private void UpdateGameID()
         {
-            if (numGames > 1000)
+            if (gameNum > 1000)
             {
-                numGames = 0;
+                gameNum = 0;
             }
-            numGames += 1;
+            gameNum += 1;
             return;
         }
 
         public Game RetrieveGame(Guid id)
         {
-            return GamesList[id];
+            return idToGame[id];
         }
     }
 }

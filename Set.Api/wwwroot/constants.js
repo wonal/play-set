@@ -1,5 +1,5 @@
 ﻿
-export const URL = "https://localhost:44351/api/set";
+export const URL = "/api/set";
 export const COUNTS = ["one", "three", "six"];
 export const FILLS = ["solid", "hollow", "stacked"];
 export const COLORS = ["red", "purple", "yellow"];
