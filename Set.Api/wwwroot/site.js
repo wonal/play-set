@@ -13,12 +13,10 @@
     VALID_BORDER,
     WIN_STATE,
     CARDS_REMAINING,
-    SelectedCards,
-    GameStatus
 } from './constants.js'
+import { GameState } from './gamestate.js'
 
-const selected = new SelectedCards();
-const gameStatus = new GameStatus();
+const gameState = new GameState();
 
 function initializeBoard() {
     addStartingCards();
@@ -36,7 +34,7 @@ async function addStartingCards() {
     const response = await fetch(`${URL}/initgame`);
     const data = await response.json();
     renderBoard(data.cards, false);
-    gameStatus.setGameID(data.gameID);
+    gameState.setGameID(data.gameID);
 }
 
 function renderBoard(cards, gameWon) {
@@ -75,26 +73,26 @@ function addResetButton() {
 }
 
 async function resetGame() {
-    const id = gameStatus.getGameID();
+    const id = gameState.getGameID();
     const response = await fetch(`${URL}/newgame/${id}`);
     const data = await response.json();
     renderBoard(data.cards, false);
-    gameStatus.updateStatus(false);
+    gameState.updateStatus(false);
     document.getElementById("deckCount").innerText = CARDS_REMAINING;
 }
 
 function mark(e) {
-    if (gameStatus.gameWon) {
+    if (gameState.gameWon) {
         return;
     }
 
-    if (selected.hasCard(e.currentTarget)) {
+    if (gameState.hasCard(e.currentTarget)) {
         e.currentTarget.className = DEFAULT_BORDER;
-        selected.removeCard(e.currentTarget);
+        gameState.removeCard(e.currentTarget);
     } else {
         e.currentTarget.className = SELECTED_BORDER;
-        selected.addCard(e.currentTarget);
-        if (selected.getCount() == 3) {
+        gameState.addCard(e.currentTarget);
+        if (gameState.getCount() == 3) {
             checkCards();
         }
     }
@@ -116,9 +114,9 @@ function createCards(selectedImages) {
 }
 
 async function checkCards() {
-    const selectedImages = selected.getSelectedCards();
+    const selectedImages = gameState.getSelectedCards();
     const selectedCards = createCards(selectedImages);
-    const id = gameStatus.getGameID();
+    const id = gameState.getGameID();
 
     const fetchData = {
         method: 'POST',
@@ -135,7 +133,7 @@ async function checkCards() {
         changeSelectedBorder(VALID_BORDER);
         await sleep(1000);
         if (body.winState) {
-            gameStatus.updateStatus(true);
+            gameState.updateStatus(true);
             renderBoard(body.board, true);
             document.getElementById("deckCount").innerText = "No more sets present!";
         }
@@ -151,7 +149,7 @@ async function checkCards() {
         await sleep(1000);
         changeSelectedBorder(DEFAULT_BORDER);
     }
-    selected.reset();
+    gameState.reset();
 }
 
 function sleep(time) {
@@ -165,7 +163,7 @@ function sleep(time) {
 
 
 function changeSelectedBorder(toColor) {
-    const selectedCards = selected.getSelectedCards();
+    const selectedCards = gameState.getSelectedCards();
     for (const card of selectedCards) {
         card.className = toColor;
     }
