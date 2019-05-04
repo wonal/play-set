@@ -38,10 +38,12 @@ async function addStartingCards() {
 }
 
 function renderBoard(cards, gameWon) {
-    const oldCards = document.querySelectorAll('img');
+    //const oldCards = document.querySelectorAll('img');
+    //const board = document.getElementById('board');
     const board = document.getElementById('board');
-    for (const card of oldCards) {
-        board.removeChild(card);
+    const numNodes = board.childNodes.length;
+    for (let i = 0; i < numNodes; i++) {
+        board.removeChild(board.childNodes[0]);
     }
     for (const card of cards) {
         const newCard = createCard(COUNTS[card.count], FILLS[card.fill], COLORS[card.color], SHAPES[card.shape]);
@@ -181,6 +183,24 @@ function attributeToOption(attribute, option1Equivalent, option2Equivalent) {
     }
 }
 
+
+var modal = document.querySelector(".modal");
+var trigger = document.querySelector(".trigger");
+var closeButton = document.querySelector(".close-button");
+
+function toggleModal() {
+    modal.classList.toggle("show-modal");
+}
+
+function windowOnClick(event) {
+    if (event.target === modal) {
+        toggleModal();
+    }
+}
+
 (function () {
     initializeBoard();
+    trigger.addEventListener("click", toggleModal);
+    closeButton.addEventListener("click", toggleModal);
+    window.addEventListener("click", windowOnClick);
 })()
