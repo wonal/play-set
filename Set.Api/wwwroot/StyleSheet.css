@@ -49,6 +49,9 @@ body{
     font-family: Arial;
 }
 
+/*
+    Styling for modal box taken from: https://sabe.io/tutorials/how-to-create-modal-popup-box
+*/
 .modal {
     position: fixed;
     left: 0;

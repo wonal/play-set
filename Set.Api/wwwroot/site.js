@@ -184,6 +184,7 @@ function attributeToOption(attribute, option1Equivalent, option2Equivalent) {
 }
 
 
+//logic for modal box taken from: https://sabe.io/tutorials/how-to-create-modal-popup-box
 var modal = document.querySelector(".modal");
 var trigger = document.querySelector(".trigger");
 var closeButton = document.querySelector(".close-button");
