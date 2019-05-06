@@ -20,14 +20,6 @@ const gameState = new GameState();
 
 function initializeBoard() {
     addStartingCards();
-    const deckCount = document.createElement("div");
-    deckCount.id = "deckCount";
-    deckCount.className = "deckCount";
-    deckCount.innerText = CARDS_REMAINING;
-    document.body.appendChild(document.createElement("br"));
-    document.body.appendChild(deckCount);
-    document.body.appendChild(document.createElement("br"));
-    addResetButton();
 };
 
 async function addStartingCards() {
@@ -38,8 +30,6 @@ async function addStartingCards() {
 }
 
 function renderBoard(cards, gameWon) {
-    //const oldCards = document.querySelectorAll('img');
-    //const board = document.getElementById('board');
     const board = document.getElementById('board');
     const numNodes = board.childNodes.length;
     for (let i = 0; i < numNodes; i++) {
@@ -64,14 +54,6 @@ function createCard(count, fill, color, shape) {
     cardImage.className = DEFAULT_BORDER;
     cardImage.addEventListener("click", mark);
     return cardImage;
-}
-
-function addResetButton() {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.innerText = "New Game";
-    document.body.appendChild(button);
-    button.addEventListener("click", resetGame)
 }
 
 async function resetGame() {
@@ -185,9 +167,9 @@ function attributeToOption(attribute, option1Equivalent, option2Equivalent) {
 
 
 //logic for modal box taken from: https://sabe.io/tutorials/how-to-create-modal-popup-box
-var modal = document.querySelector(".modal");
-var trigger = document.querySelector(".trigger");
-var closeButton = document.querySelector(".close-button");
+const modal = document.querySelector(".modal");
+const trigger = document.querySelector(".trigger");
+const closeButton = document.querySelector(".close-button");
 
 function toggleModal() {
     modal.classList.toggle("show-modal");
@@ -204,4 +186,6 @@ function windowOnClick(event) {
     trigger.addEventListener("click", toggleModal);
     closeButton.addEventListener("click", toggleModal);
     window.addEventListener("click", windowOnClick);
+    const button = document.getElementById("resetButton");
+    button.addEventListener("click", resetGame);
 })()
