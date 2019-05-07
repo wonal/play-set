@@ -1,10 +1,8 @@
-﻿export class GameState {
+﻿export class SelectedCards {
 
     constructor (){
         this.count = 0;
         this.selectedCards = [];
-        this.gameWon = false;
-        this.gameID = "";
     }
 
     getCount() {
@@ -41,21 +39,5 @@
             }
         }
         this.count -= 1;
-    }
-
-    getStatus() {
-        return this.gameWon;
-    }
-
-    updateStatus(status) {
-        this.gameWon = status;
-    }
-
-    setGameID(id) {
-        this.gameID = id;
-    }
-
-    getGameID() {
-        return this.gameID;
     }
 };

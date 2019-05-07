@@ -14,16 +14,16 @@
     WIN_STATE,
     CARDS_REMAINING,
 } from './constants.js'
+import { SelectedCards } from './gamestate.js'
 
 class Game {
     constructor() {
         this.winStatus = false;
         this.validSet = false;
-        this.selectedCards = [];
+        this.selectedCards = new SelectedCards();
         this.board = [];
         this.gameID = 0;
         this.createBoard();
-        console.log("game created");
     }
 
     async createBoard() {
@@ -34,7 +34,6 @@ class Game {
         for (const card of data.cards) {
             this.board.push([COUNTS[card.count], FILLS[card.fill], COLORS[card.color], SHAPES[card.shape]]);
         }
-        console.log("fetched initial game cards");
         this.renderBoard(this.board, this.winStatus);
     }
 
@@ -46,19 +45,29 @@ class Game {
         cardImage.alt = cardValue;
         cardImage.id = cardValue;
         cardImage.className = DEFAULT_BORDER;
-        cardImage.addEventListener("click", this.mark);
+        cardImage.addEventListener("click", this.mark.bind(this));
+        let a = { name: 'a' }
         return cardImage;
     }
 
     mark(e) {
-        if (this.gameWon) {
+        if (this.winStatus) {
             return;
         }
-        return;
+
+        if (this.selectedCards.hasCard(e.currentTarget)) {
+            e.currentTarget.className = DEFAULT_BORDER;
+            this.selectedCards.removeCard(e.currentTarget);
+        } else {
+            e.currentTarget.className = SELECTED_BORDER;
+            this.selectedCards.addCard(e.currentTarget);
+            if (this.selectedCards.getCount() == 3) {
+                //checkCards();
+            }
+        }
     }
 
     renderBoard() {
-        console.log("render board");
         const board = document.getElementById('board');
         const numNodes = board.childNodes.length;
         for (let i = 0; i < numNodes; i++) {
@@ -74,24 +83,5 @@ class Game {
     }
 }
 
-const game = new Game();
-const modal = document.querySelector(".modal");
-const trigger = document.querySelector(".trigger");
-const closeButton = document.querySelector(".close-button");
 
-function toggleModal() {
-    modal.classList.toggle("show-modal");
-}
-
-function windowOnClick(event) {
-    if (event.target === modal) {
-        toggleModal();
-    }
-}
-
-(function () {
-    trigger.addEventListener("click", toggleModal);
-    closeButton.addEventListener("click", toggleModal);
-    window.addEventListener("click", windowOnClick);
-
-})
+var game = new Game();

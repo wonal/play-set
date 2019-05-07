@@ -14,9 +14,9 @@
     WIN_STATE,
     CARDS_REMAINING,
 } from './constants.js'
-import { GameState } from './gamestate.js'
+import { SelectedCards } from './gamestate.js'
 
-const gameState = new GameState();
+const gameState = new SelectedCards();
 
 function initializeBoard() {
     addStartingCards();
