@@ -16,6 +16,8 @@
 } from './constants.js'
 import { SelectedCards, Card } from './gamestate.js'
 
+var game = new Game();
+
 class Game {
     constructor() {
         this.winStatus = false;
@@ -31,13 +33,18 @@ class Game {
         const data = await response.json();
         this.gameID = data.gameID;
         this.board = [];
-        for (const card of data.cards) {
-            this.board.push(new Card(COUNTS[card.count], FILLS[card.fill], COLORS[card.color], SHAPES[card.shape]));
-        }
-        this.renderBoard(this.board, this.winStatus);
+        this.updateBoard(data.cards);
+        this.renderBoard();
     }
 
-    createCard(count, fill, color, shape, border) {
+    updateBoard(cards) {
+        this.board = [];
+        for (const card of cards) {
+            this.board.push(new Card(COUNTS[card.count], FILLS[card.fill], COLORS[card.color], SHAPES[card.shape]));
+        }
+    }
+
+    createCardImage(count, fill, color, shape, border) {
         const imgurl = "/images/";
         const cardValue = `${count},${fill},${color},${shape}`;
         const cardImage = document.createElement("img");
@@ -49,29 +56,31 @@ class Game {
         return cardImage;
     }
 
-    mark = (e) => {
+    mark = async (e) => {
         if (this.winStatus) {
             return;
         }
 
         if (this.selectedCards.hasCard(e.currentTarget.id)) {
-            this.changeBorder(e.currentTarget.id, DEFAULT_BORDER);
+            this.changeBorder([e.currentTarget.id], DEFAULT_BORDER);
             this.selectedCards.removeCard(e.currentTarget.id);
         } else {
-            this.changeBorder(e.currentTarget.id, SELECTED_BORDER);
+            this.changeBorder([e.currentTarget.id], SELECTED_BORDER);
             this.selectedCards.addCard(e.currentTarget.id);
             if (this.selectedCards.getCount() == 3) {
-                //checkCards();
+                this.renderBoard();
+                await this.checkCards();
             }
         }
         this.renderBoard();
     }
 
-    changeBorder(cardID, border) {
+    changeBorder(cardIDs, borderColor) {
         for (const card of this.board) {
-            if (`${card.count},${card.fill},${card.color},${card.shape}` === cardID) {
-                card.cardBorder = border;
-                break;
+            for (const cardID of cardIDs) {
+                if (`${card.count},${card.fill},${card.color},${card.shape}` === cardID) {
+                    card.cardBorder = borderColor;
+                }
             }
         }
     }
@@ -83,14 +92,88 @@ class Game {
             board.removeChild(board.childNodes[0]);
         }
         for (const cardObj of this.board) {
-            const newCard = this.createCard(cardObj.count, cardObj.fill, cardObj.color, cardObj.shape, cardObj.cardBorder);
+            const newCard = this.createCardImage(cardObj.count, cardObj.fill, cardObj.color, cardObj.shape, cardObj.cardBorder);
             if (this.winStatus) {
                 newCard.cardBorder = WIN_STATE;
             }
             board.appendChild(newCard);
         }
     }
+
+    async checkCards() {
+        const selectedCards = this.createCards();
+        const id = this.gameID;
+
+        const fetchData = {
+            method: 'POST',
+            body: JSON.stringify({ GameID: id, Card1: selectedCards[0], Card2: selectedCards[1], Card3: selectedCards[2] }),
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                'Accept-Encoding': 'application/json'
+            })
+        };
+        const response = await fetch(`${URL}/validate`, fetchData);
+        const body = await response.json();
+        if (body.validSet) {
+            this.changeBorder(this.selectedCards.selectedCards, VALID_BORDER);
+            this.renderBoard();
+            await this.sleep(600);
+            this.updateBoard(body.board);
+            if (body.winState) {
+                this.winStatus = true;
+                renderBoard();
+                document.getElementById("deckCount").innerText = "No more sets present!";
+            }
+            else {
+                this.changeBorder(this.selectedCards.selectedCards, DEFAULT_BORDER);
+                document.getElementById("deckCount").innerText = "Cards remaining:" + body.cardsRemaining;
+            }
+        }
+        else {
+            this.changeBorder(this.selectedCards.selectedCards, INVALID_BORDER);
+            this.renderBoard();
+            await this.sleep(600);
+            this.changeBorder(this.selectedCards.selectedCards, DEFAULT_BORDER);
+            this.updateBoard(body.board);
+        }
+        this.selectedCards.reset();
+    }
+
+    createCards() {
+        const cards = [];
+        for (let j = 0; j < 3; j++) {
+            const card = this.selectedCards.selectedCards[j].split(",");
+            const selectedCard = {
+                Count: this.attributeToOption(card[0], "one", "three"),
+                Fill: this.attributeToOption(card[1], "solid", "hollow"),
+                Color: this.attributeToOption(card[2], "red", "purple"),
+                Shape: this.attributeToOption(card[3], "circle", "diamond")
+            };
+            cards.push(selectedCard);
+        }
+        return cards;
+    }
+
+    attributeToOption(attribute, option1Equivalent, option2Equivalent) {
+        if (attribute.toLowerCase() === option1Equivalent) {
+            return OPTION1;
+        }
+        else if (attribute.toLowerCase() === option2Equivalent) {
+            return OPTION2;
+        }
+        else {
+            return OPTION3;
+        }
+    }
+    
+    sleep(time) {
+        const promise = new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                resolve();
+            }, time);
+        });
+        return promise;
+    }
 }
 
 
-var game = new Game();
