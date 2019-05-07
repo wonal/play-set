@@ -9,9 +9,9 @@
         return this.count;
     }
 
-    hasCard(card) {
+    hasCard(cardID) {
         for (let i = 0; i < this.count; i++) {
-            if (this.selectedCards[i] === card) {
+            if (this.selectedCards[i] === cardID) {
                 return true;
             }
         }
@@ -32,12 +32,22 @@
         this.count += 1;
     }
 
-    removeCard(card) {
+    removeCard(cardID) {
         for (let i = 0; i < this.count; i++) {
-            if (this.selectedCards[i] === card) {
+            if (this.selectedCards[i] === cardID) {
                 this.selectedCards.splice(i, 1);
             }
         }
         this.count -= 1;
     }
 };
+
+export class Card {
+    constructor(count, fill, color, shape) {
+        this.count = count;
+        this.fill = fill;
+        this.color = color; 
+        this.shape = shape;
+        this.cardBorder = "default";
+    }
+}

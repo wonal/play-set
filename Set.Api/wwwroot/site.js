@@ -113,9 +113,8 @@ async function checkCards() {
     const response = await fetch(`${URL}/validate`, fetchData);
     const body = await response.json();
     if (body.validSet) {
-        await sleep(100);
         changeSelectedBorder(VALID_BORDER);
-        await sleep(1000);
+        await sleep(600);
         if (body.winState) {
             gameState.updateStatus(true);
             renderBoard(body.board, true);
@@ -128,9 +127,8 @@ async function checkCards() {
         }
     }
     else {
-        await sleep(100);
         changeSelectedBorder(INVALID_BORDER);
-        await sleep(1000);
+        await sleep(600);
         changeSelectedBorder(DEFAULT_BORDER);
     }
     gameState.reset();

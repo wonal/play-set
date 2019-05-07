@@ -14,7 +14,7 @@
     WIN_STATE,
     CARDS_REMAINING,
 } from './constants.js'
-import { SelectedCards } from './gamestate.js'
+import { SelectedCards, Card } from './gamestate.js'
 
 class Game {
     constructor() {
@@ -32,37 +32,46 @@ class Game {
         this.gameID = data.gameID;
         this.board = [];
         for (const card of data.cards) {
-            this.board.push([COUNTS[card.count], FILLS[card.fill], COLORS[card.color], SHAPES[card.shape]]);
+            this.board.push(new Card(COUNTS[card.count], FILLS[card.fill], COLORS[card.color], SHAPES[card.shape]));
         }
         this.renderBoard(this.board, this.winStatus);
     }
 
-    createCard(count, fill, color, shape) {
+    createCard(count, fill, color, shape, border) {
         const imgurl = "/images/";
         const cardValue = `${count},${fill},${color},${shape}`;
         const cardImage = document.createElement("img");
         cardImage.src = `${imgurl}${cardValue}.png`;
         cardImage.alt = cardValue;
         cardImage.id = cardValue;
-        cardImage.className = DEFAULT_BORDER;
-        cardImage.addEventListener("click", this.mark.bind(this));
-        let a = { name: 'a' }
+        cardImage.className = border;
+        cardImage.addEventListener("click", this.mark);
         return cardImage;
     }
 
-    mark(e) {
+    mark = (e) => {
         if (this.winStatus) {
             return;
         }
 
-        if (this.selectedCards.hasCard(e.currentTarget)) {
-            e.currentTarget.className = DEFAULT_BORDER;
-            this.selectedCards.removeCard(e.currentTarget);
+        if (this.selectedCards.hasCard(e.currentTarget.id)) {
+            this.changeBorder(e.currentTarget.id, DEFAULT_BORDER);
+            this.selectedCards.removeCard(e.currentTarget.id);
         } else {
-            e.currentTarget.className = SELECTED_BORDER;
-            this.selectedCards.addCard(e.currentTarget);
+            this.changeBorder(e.currentTarget.id, SELECTED_BORDER);
+            this.selectedCards.addCard(e.currentTarget.id);
             if (this.selectedCards.getCount() == 3) {
                 //checkCards();
+            }
+        }
+        this.renderBoard();
+    }
+
+    changeBorder(cardID, border) {
+        for (const card of this.board) {
+            if (`${card.count},${card.fill},${card.color},${card.shape}` === cardID) {
+                card.cardBorder = border;
+                break;
             }
         }
     }
@@ -73,10 +82,10 @@ class Game {
         for (let i = 0; i < numNodes; i++) {
             board.removeChild(board.childNodes[0]);
         }
-        for (const cardCharacteristic of this.board) {
-            const newCard = this.createCard(cardCharacteristic[0], cardCharacteristic[1], cardCharacteristic[2], cardCharacteristic[3]);
+        for (const cardObj of this.board) {
+            const newCard = this.createCard(cardObj.count, cardObj.fill, cardObj.color, cardObj.shape, cardObj.cardBorder);
             if (this.winStatus) {
-                newCard.className = WIN_STATE;
+                newCard.cardBorder = WIN_STATE;
             }
             board.appendChild(newCard);
         }
