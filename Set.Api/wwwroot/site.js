@@ -23,6 +23,7 @@ class Game {
         this.selectedCards = new SelectedCards();
         this.board = [];
         this.gameID = 0;
+        this.gameText = CARDS_REMAINING;
         this.createBoard();
     }
 
@@ -74,10 +75,16 @@ class Game {
     }
 
     changeBorder(cardIDs, borderColor) {
+        const length = cardIDs.length;
+        let numChanged = 0;
         for (const card of this.board) {
             for (const cardID of cardIDs) {
+                if (numChanged >= length) {
+                    return;
+                }
                 if (`${card.count},${card.fill},${card.color},${card.shape}` === cardID) {
                     card.cardBorder = borderColor;
+                    numChanged += 1;
                 }
             }
         }
@@ -96,6 +103,7 @@ class Game {
             }
             board.appendChild(newCard);
         }
+        document.getElementById("deckCount").innerText = this.gameText;
     }
 
     resetGame = async () => {
@@ -106,7 +114,7 @@ class Game {
         this.renderBoard();
         this.winStatus = false;
         this.validSet = false;
-        document.getElementById("deckCount").innerText = CARDS_REMAINING;
+        this.gameText = CARDS_REMAINING;
     }
 
     async checkCards() {
@@ -130,12 +138,13 @@ class Game {
             this.updateBoard(body.board);
             if (body.winState) {
                 this.winStatus = true;
+                this.changeBorder(this.board, WIN_STATE);
                 this.renderBoard();
-                document.getElementById("deckCount").innerText = "No more sets present!";
+                this.gameText = "No more sets present!";
             }
             else {
                 this.changeBorder(this.selectedCards.selectedCards, DEFAULT_BORDER);
-                document.getElementById("deckCount").innerText = "Cards remaining:" + body.cardsRemaining;
+                this.gameText = "Cards remaining:" + body.cardsRemaining;
             }
         }
         else {
