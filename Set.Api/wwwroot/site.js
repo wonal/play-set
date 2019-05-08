@@ -107,8 +107,7 @@ class Game {
     }
 
     resetGame = async () => {
-        const id = this.gameID;
-        const response = await fetch(`${URL}/newgame/${id}`);
+        const response = await fetch(`${URL}/newgame/${this.gameID}`);
         const data = await response.json();
         this.updateBoard(data.cards);
         this.renderBoard();
