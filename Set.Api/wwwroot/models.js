@@ -57,7 +57,7 @@ export class Stopwatch {
     constructor() {
         this.startTime = 0;
         this.endTime = 0;
-        this.totalTime = "Time --H:--M:--S";
+        this.totalTime = "Time --h:--m:--s";
     }
 
     markStart() {
@@ -66,7 +66,7 @@ export class Stopwatch {
 
     markEnd() {
         this.endTime = Date.now();
-        this.totalTime = this.getTotalTime;
+        this.totalTime = this.getTotalTime();
     }
 
     getTotalTime() {
@@ -76,11 +76,11 @@ export class Stopwatch {
         const hours = Math.floor(duration / (1000 * 60 * 60)) % 60;
 
         return "Time: " + (hours < 10 ? "0" + hours : hours) +
-            "H:" + (minutes < 10 ? "0" + minutes : minutes) +
-            "M:" + (seconds < 10 ? "0" + seconds : seconds) + "S";
+            "h:" + (minutes < 10 ? "0" + minutes : minutes) +
+            "m:" + (seconds < 10 ? "0" + seconds : seconds) + "s";
     }
 
     reset() {
-        this.totalTime = "Time --H:--M:--S";
+        this.totalTime = "Time --h:--m:--s";
     }
 }

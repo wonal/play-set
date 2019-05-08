@@ -145,7 +145,9 @@ class Game {
             this.updateBoard(body.board);
             if (body.winState) {
                 this.winStatus = true;
-                this.changeBorder(this.board, WIN_STATE);
+                for (const card of this.board) {
+                    this.changeBorder([`${card.count},${card.fill},${card.color},${card.shape}`], WIN_STATE);
+                }
                 this.stopwatch.markEnd();
                 this.renderBoard();
                 this.gameText = "No more sets present!";
