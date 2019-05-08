@@ -3,6 +3,7 @@
     constructor (){
         this.count = 0;
         this.selectedCards = [];
+        this.firstSelect = false;
     }
 
     getCount() {
@@ -49,5 +50,37 @@ export class Card {
         this.color = color; 
         this.shape = shape;
         this.cardBorder = "default";
+    }
+}
+
+export class Stopwatch {
+    constructor() {
+        this.startTime = 0;
+        this.endTime = 0;
+        this.totalTime = "Time --H:--M:--S";
+    }
+
+    markStart() {
+        this.startTime = Date.now();
+    }
+
+    markEnd() {
+        this.endTime = Date.now();
+        this.totalTime = this.getTotalTime;
+    }
+
+    getTotalTime() {
+        const duration = this.endTime - this.startTime;
+        const seconds = Math.floor(duration / 1000) % 60;
+        const minutes = Math.floor(duration / (1000 * 60)) % 60;
+        const hours = Math.floor(duration / (1000 * 60 * 60)) % 60;
+
+        return "Time: " + (hours < 10 ? "0" + hours : hours) +
+            "H:" + (minutes < 10 ? "0" + minutes : minutes) +
+            "M:" + (seconds < 10 ? "0" + seconds : seconds) + "S";
+    }
+
+    reset() {
+        this.totalTime = "Time --H:--M:--S";
     }
 }

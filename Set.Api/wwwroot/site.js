@@ -14,16 +14,18 @@
     WIN_STATE,
     CARDS_REMAINING,
 } from './constants.js'
-import { SelectedCards, Card } from './models.js'
+import { SelectedCards, Card, Stopwatch } from './models.js'
 
 class Game {
     constructor() {
         this.winStatus = false;
         this.validSet = false;
+        this.firstSelect = false;
         this.selectedCards = new SelectedCards();
         this.board = [];
         this.gameID = 0;
         this.gameText = CARDS_REMAINING;
+        this.stopwatch = new Stopwatch();
         this.createBoard();
     }
 
@@ -58,6 +60,11 @@ class Game {
     markCard = async (e) => {
         if (this.winStatus) {
             return;
+        }
+
+        if (this.firstSelect == false) {
+            this.stopwatch.markStart();
+            this.firstSelect = true;
         }
 
         if (this.selectedCards.hasCard(e.currentTarget.id)) {
@@ -98,11 +105,10 @@ class Game {
         }
         for (const cardObj of this.board) {
             const newCard = this.createCardImage(cardObj.count, cardObj.fill, cardObj.color, cardObj.shape, cardObj.cardBorder);
-            if (this.winStatus) {
-                newCard.cardBorder = WIN_STATE;
-            }
             board.appendChild(newCard);
         }
+        const time = document.getElementById("time");
+        time.innerText = this.stopwatch.totalTime;
         document.getElementById("deckCount").innerText = this.gameText;
     }
 
@@ -110,10 +116,12 @@ class Game {
         const response = await fetch(`${URL}/newgame/${this.gameID}`);
         const data = await response.json();
         this.updateBoard(data.cards);
-        this.renderBoard();
+        this.gameText = CARDS_REMAINING;
+        this.stopwatch.reset();
         this.winStatus = false;
         this.validSet = false;
-        this.gameText = CARDS_REMAINING;
+        this.firstSelect = false;
+        this.renderBoard();
     }
 
     async checkCards() {
@@ -138,6 +146,7 @@ class Game {
             if (body.winState) {
                 this.winStatus = true;
                 this.changeBorder(this.board, WIN_STATE);
+                this.stopwatch.markEnd();
                 this.renderBoard();
                 this.gameText = "No more sets present!";
             }

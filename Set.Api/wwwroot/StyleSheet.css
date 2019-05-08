@@ -43,8 +43,8 @@ body{
     flex-direction: column;
 }
 
-.deckCount{
-    font-size: 24px;
+.gameInfo{
+    font-size: 26px;
     font-family: 'Righteous', cursive;
 }
 
