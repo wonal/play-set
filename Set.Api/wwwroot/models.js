@@ -1,19 +1,17 @@
-﻿export class GameState {
+﻿export class SelectedCards {
 
     constructor (){
         this.count = 0;
         this.selectedCards = [];
-        this.gameWon = false;
-        this.gameID = "";
     }
 
     getCount() {
         return this.count;
     }
 
-    hasCard(card) {
+    hasCard(cardID) {
         for (let i = 0; i < this.count; i++) {
-            if (this.selectedCards[i] === card) {
+            if (this.selectedCards[i] === cardID) {
                 return true;
             }
         }
@@ -34,28 +32,22 @@
         this.count += 1;
     }
 
-    removeCard(card) {
+    removeCard(cardID) {
         for (let i = 0; i < this.count; i++) {
-            if (this.selectedCards[i] === card) {
+            if (this.selectedCards[i] === cardID) {
                 this.selectedCards.splice(i, 1);
             }
         }
         this.count -= 1;
     }
-
-    getStatus() {
-        return this.gameWon;
-    }
-
-    updateStatus(status) {
-        this.gameWon = status;
-    }
-
-    setGameID(id) {
-        this.gameID = id;
-    }
-
-    getGameID() {
-        return this.gameID;
-    }
 };
+
+export class Card {
+    constructor(count, fill, color, shape) {
+        this.count = count;
+        this.fill = fill;
+        this.color = color; 
+        this.shape = shape;
+        this.cardBorder = "default";
+    }
+}
