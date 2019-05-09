@@ -9,6 +9,7 @@ namespace SetApi.Models
         public bool ValidSet { get; set; }
         public bool WinState { get; set; }
         public int CardsRemaining { get; set; }
+        public Stopwatch GameTime { get; private set; }
 
         public Game()
         {
@@ -28,6 +29,7 @@ namespace SetApi.Models
                 Deck.Shuffle(deck.Cards);
                 Board = deck.DrawCard(12);
             }
+            GameTime = new Stopwatch();
         }
 
         private bool EmptyDeck()
@@ -77,6 +79,7 @@ namespace SetApi.Models
                 if (!BoardContainsSet(Board))
                 {
                     WinState = true;
+                    GameTime.MarkEnd();
                 }
             }
             else
@@ -127,9 +130,11 @@ namespace SetApi.Models
                 if (!boardContainsSet)
                 {
                     WinState = true;
+                    GameTime.MarkEnd();
                     break;
                 }
             }
         }
+
     }
 }

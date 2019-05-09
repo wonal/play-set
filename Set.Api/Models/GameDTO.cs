@@ -10,5 +10,6 @@ namespace SetApi.Models
         public bool ValidSet { get; set; }
         public bool WinState { get; set; }
         public int CardsRemaining { get; set; }
+        public string Time { get; set; }
     }
 }

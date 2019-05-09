@@ -33,6 +33,15 @@ namespace SetApi.Controllers
             };
         }
 
+        [HttpGet("markstart/{id}")]
+        public ActionResult StartStopwatch(Guid id)
+        {
+            Game game = GameHolder.RetrieveGame(id);
+            string startingDisplay = game.GameTime.GetTotalTime();
+            game.GameTime.MarkStart();
+            return Content(startingDisplay, "text/plain");
+        }
+
         [HttpPost("validate")]
         public GameDTO PostSelectedCards(GuessDTO guess)
         {
@@ -44,7 +53,8 @@ namespace SetApi.Controllers
                 Board = game.Board,
                 ValidSet = game.ValidSet,
                 WinState = game.WinState,
-                CardsRemaining = game.CardsRemaining
+                CardsRemaining = game.CardsRemaining,
+                Time = game.GameTime.GetTotalTime()
             };
         }
     }

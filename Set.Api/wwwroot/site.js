@@ -13,19 +13,19 @@
     VALID_BORDER,
     WIN_STATE,
     CARDS_REMAINING,
+    DEFAULT_TIME
 } from './constants.js'
-import { SelectedCards, Card, Stopwatch } from './models.js'
+import { SelectedCards, Card } from './models.js'
 
 class Game {
     constructor() {
         this.winStatus = false;
         this.validSet = false;
-        this.firstSelect = false;
         this.selectedCards = new SelectedCards();
         this.board = [];
         this.gameID = 0;
         this.gameText = CARDS_REMAINING;
-        this.stopwatch = new Stopwatch();
+        this.gameTime = DEFAULT_TIME;
         this.createBoard();
     }
 
@@ -36,6 +36,7 @@ class Game {
         this.board = [];
         this.updateBoard(data.cards);
         this.renderBoard();
+        const timeResponse = await fetch(`${URL}/markstart/${this.gameID}`);
     }
 
     updateBoard(cards) {
@@ -60,11 +61,6 @@ class Game {
     markCard = async (e) => {
         if (this.winStatus) {
             return;
-        }
-
-        if (this.firstSelect == false) {
-            this.stopwatch.markStart();
-            this.firstSelect = true;
         }
 
         if (this.selectedCards.hasCard(e.currentTarget.id)) {
@@ -108,7 +104,7 @@ class Game {
             board.appendChild(newCard);
         }
         const time = document.getElementById("time");
-        time.innerText = this.stopwatch.totalTime;
+        time.innerText = this.gameTime;
         document.getElementById("deckCount").innerText = this.gameText;
     }
 
@@ -117,10 +113,9 @@ class Game {
         const data = await response.json();
         this.updateBoard(data.cards);
         this.gameText = CARDS_REMAINING;
-        this.stopwatch.reset();
         this.winStatus = false;
         this.validSet = false;
-        this.firstSelect = false;
+        this.gameTime = DEFAULT_TIME;  
         this.renderBoard();
     }
 
@@ -145,10 +140,10 @@ class Game {
             this.updateBoard(body.board);
             if (body.winState) {
                 this.winStatus = true;
+                this.gameTime = body.time;
                 for (const card of this.board) {
                     this.changeBorder([`${card.count},${card.fill},${card.color},${card.shape}`], WIN_STATE);
                 }
-                this.stopwatch.markEnd();
                 this.renderBoard();
                 this.gameText = "No more sets present!";
             }
