@@ -9,12 +9,14 @@ namespace SetApi.Models
         private readonly Dictionary<Guid, Game> idToGame;
         private int gameNum;
         private readonly object lockObject = new object();
+        public int PlayerID { get; private set; }
 
         public Games()
         {
             gameCounter = new Dictionary<int, Guid>();
             idToGame = new Dictionary<Guid, Game>();
             gameNum = 0;
+            PlayerID = 0;
         }
 
         public Guid CreateGame()
@@ -48,6 +50,12 @@ namespace SetApi.Models
         public Game RetrieveGame(Guid id)
         {
             return idToGame[id];
+        }
+        
+        public int AssignPlayerID()
+        {
+            PlayerID += 1;
+            return PlayerID;
         }
     }
 }

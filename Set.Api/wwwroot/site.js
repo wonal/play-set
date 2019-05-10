@@ -26,6 +26,7 @@ class Game {
         this.gameID = 0;
         this.gameText = CARDS_REMAINING;
         this.gameTime = DEFAULT_TIME;
+        this.topScores = [];
         this.createBoard();
     }
 
@@ -106,6 +107,18 @@ class Game {
         const time = document.getElementById("time");
         time.innerText = this.gameTime;
         document.getElementById("deckCount").innerText = this.gameText;
+        const scoreBoard = document.getElementById("topscore");
+        let scores = "Top Scores:\n";
+        const actualScores = this.topScores.length;
+        for (let i = 0; i < 5; i++) {
+            if (i < actualScores) {
+                scores += `${i+1}. ${this.topScores[i].name} : ${this.topScores[i].time}\n`
+            }
+            else {
+                scores += `${i+1}.\n`
+            }
+        }
+        scoreBoard.innerText = scores;
     }
 
     resetGame = async () => {
@@ -125,7 +138,7 @@ class Game {
 
         const fetchData = {
             method: 'POST',
-            body: JSON.stringify({ GameID: id, Card1: selectedCards[0], Card2: selectedCards[1], Card3: selectedCards[2] }),
+            body: JSON.stringify({ GameID: id, PlayerName: "Placeholder", Card1: selectedCards[0], Card2: selectedCards[1], Card3: selectedCards[2] }),
             headers: new Headers({
                 'Content-Type': 'application/json',
                 'Accept-Encoding': 'application/json'
@@ -144,6 +157,7 @@ class Game {
                 for (const card of this.board) {
                     this.changeBorder([`${card.count},${card.fill},${card.color},${card.shape}`], WIN_STATE);
                 }
+                this.topScores = body.topScores;  
                 this.renderBoard();
                 this.gameText = "No more sets present!";
             }
