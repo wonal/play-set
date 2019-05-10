@@ -17,12 +17,12 @@ namespace Set.Api.Migrations
 
             modelBuilder.Entity("SetApi.Models.Player", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("Time");
+                    b.Property<int>("Time");
 
                     b.HasKey("Id");
 

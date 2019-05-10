@@ -34,6 +34,7 @@ class Game {
         const response = await fetch(`${URL}/initgame`);
         const data = await response.json();
         this.gameID = data.gameID;
+        this.topScores = data.topScores;
         this.board = [];
         this.updateBoard(data.cards);
         this.renderBoard();
@@ -94,6 +95,16 @@ class Game {
         }
     }
 
+    formatTime(ms) {
+        const seconds = Math.floor(ms / 1000) % 60;
+        const minutes = Math.floor(ms / (1000 * 60)) % 60;
+        const hours = Math.floor(ms / (1000 * 60 * 60)) % 60;
+
+        return "Time: " + (hours < 10 ? "0" + hours : hours) +
+            "h:" + (minutes < 10 ? "0" + minutes : minutes) +
+            "m:" + (seconds < 10 ? "0" + seconds : seconds) + "s";
+    }
+
     renderBoard() {
         const board = document.getElementById('board');
         const numNodes = board.childNodes.length;
@@ -112,7 +123,7 @@ class Game {
         const actualScores = this.topScores.length;
         for (let i = 0; i < 5; i++) {
             if (i < actualScores) {
-                scores += `${i+1}. ${this.topScores[i].name} : ${this.topScores[i].time}\n`
+                scores += `${i+1}. ${this.topScores[i].name} -- ${this.formatTime(this.topScores[i].time)}\n`
             }
             else {
                 scores += `${i+1}.\n`
@@ -153,7 +164,7 @@ class Game {
             this.updateBoard(body.board);
             if (body.winState) {
                 this.winStatus = true;
-                this.gameTime = body.time;
+                this.gameTime = this.formatTime(body.time);
                 for (const card of this.board) {
                     this.changeBorder([`${card.count},${card.fill},${card.color},${card.shape}`], WIN_STATE);
                 }

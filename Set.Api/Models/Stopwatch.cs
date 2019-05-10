@@ -21,17 +21,9 @@ namespace SetApi.Models
             EndTime = DateTime.Now;
         }
 
-        public string GetTotalTime()
+        public int GetTotalTime()
         {
-            TimeSpan time = EndTime - StartTime;
-            if (time.Seconds == 0 && time.Minutes == 0 && time.Hours == 0)
-            {
-                return "Time: --h:--m:--s";
-            }
-            string hours = time.Hours < 10 ? $"0{time.Hours}h:" : $"{time.Hours}h:";
-            string minutes = time.Minutes < 10 ? $"0{time.Minutes}m:" : $"{time.Minutes}m:";
-            string seconds = time.Seconds < 10 ? $"0{time.Seconds}s" : $"{time.Seconds}s";
-            return $"Time: {hours + minutes + seconds}";
+            return Convert.ToInt32((EndTime - StartTime).TotalMilliseconds);
         }
     }
 }

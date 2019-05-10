@@ -2,7 +2,7 @@
 
 namespace Set.Api.Migrations
 {
-    public partial class MyFirstMigration : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -10,9 +10,10 @@ namespace Set.Api.Migrations
                 name: "Players",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(nullable: true),
-                    Time = table.Column<string>(nullable: true)
+                    Time = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

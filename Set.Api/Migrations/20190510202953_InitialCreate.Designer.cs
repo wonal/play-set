@@ -8,8 +8,8 @@ using SetApi.Models;
 namespace Set.Api.Migrations
 {
     [DbContext(typeof(PlayerContext))]
-    [Migration("20190509025511_MyFirstMigration")]
-    partial class MyFirstMigration
+    [Migration("20190510202953_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,12 +19,12 @@ namespace Set.Api.Migrations
 
             modelBuilder.Entity("SetApi.Models.Player", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("Time");
+                    b.Property<int>("Time");
 
                     b.HasKey("Id");
 

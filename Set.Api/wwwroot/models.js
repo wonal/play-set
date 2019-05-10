@@ -24,7 +24,7 @@
     }
 
     reset() {
-        this.selectedCards = []
+        this.selectedCards = [];
         this.count = 0;
     }
 

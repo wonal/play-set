@@ -7,5 +7,6 @@ namespace SetApi.Models
     {
         public Guid GameID { get; set; }
         public List<Card> Cards { get; set; }
+        public List<Player> TopScores { get; set; }
     }
 }
