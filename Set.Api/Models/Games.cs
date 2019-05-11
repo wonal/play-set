@@ -17,7 +17,6 @@ namespace SetApi.Models
             gameCounter = new Dictionary<int, Guid>();
             idToGame = new Dictionary<Guid, Game>();
             gameNum = 0;
-            PlayerID = 0;
         }
 
         public Guid CreateGame()
@@ -53,12 +52,6 @@ namespace SetApi.Models
             return idToGame[id];
         }
         
-        public int AssignPlayerID()
-        {
-            PlayerID += 1;
-            return PlayerID;
-        }
-
         public object GetDBLock()
         {
             return dbLockObject;

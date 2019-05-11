@@ -8,7 +8,7 @@ using SetApi.Models;
 namespace Set.Api.Migrations
 {
     [DbContext(typeof(PlayerContext))]
-    [Migration("20190510202953_InitialCreate")]
+    [Migration("20190510230708_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

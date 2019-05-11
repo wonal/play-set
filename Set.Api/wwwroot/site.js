@@ -95,16 +95,6 @@ class Game {
         }
     }
 
-    formatTime(ms) {
-        const seconds = Math.floor(ms / 1000) % 60;
-        const minutes = Math.floor(ms / (1000 * 60)) % 60;
-        const hours = Math.floor(ms / (1000 * 60 * 60)) % 60;
-
-        return "Time: " + (hours < 10 ? "0" + hours : hours) +
-            "h:" + (minutes < 10 ? "0" + minutes : minutes) +
-            "m:" + (seconds < 10 ? "0" + seconds : seconds) + "s";
-    }
-
     renderBoard() {
         const board = document.getElementById('board');
         const numNodes = board.childNodes.length;
@@ -123,7 +113,7 @@ class Game {
         const actualScores = this.topScores.length;
         for (let i = 0; i < 5; i++) {
             if (i < actualScores) {
-                scores += `${i+1}. ${this.topScores[i].name} -- ${this.formatTime(this.topScores[i].time)}\n`
+                scores += `${i+1}. ${this.topScores[i].name} -- ${formatTime(this.topScores[i].time)}\n`
             }
             else {
                 scores += `${i+1}.\n`
@@ -160,17 +150,10 @@ class Game {
         if (body.validSet) {
             this.changeBorder(this.selectedCards.selectedCards, VALID_BORDER);
             this.renderBoard();
-            await this.sleep(600);
+            await sleep(600);
             this.updateBoard(body.board);
             if (body.winState) {
-                this.winStatus = true;
-                this.gameTime = this.formatTime(body.time);
-                for (const card of this.board) {
-                    this.changeBorder([`${card.count},${card.fill},${card.color},${card.shape}`], WIN_STATE);
-                }
-                this.topScores = body.topScores;  
-                this.renderBoard();
-                this.gameText = "No more sets present!";
+                await this.enterWinState();
             }
             else {
                 this.changeBorder(this.selectedCards.selectedCards, DEFAULT_BORDER);
@@ -180,11 +163,32 @@ class Game {
         else {
             this.changeBorder(this.selectedCards.selectedCards, INVALID_BORDER);
             this.renderBoard();
-            await this.sleep(600);
+            await sleep(600);
             this.changeBorder(this.selectedCards.selectedCards, DEFAULT_BORDER);
             this.updateBoard(body.board);
         }
         this.selectedCards.reset();
+    }
+
+    async enterWinState() {
+        this.winStatus = true;
+        const fetchData = {
+            method: 'POST',
+            body: JSON.stringify({ GameID: this.gameID, PlayerName: "Placeholder", GameTime: 0, TopScores: []}),
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                'Accept-Encoding': 'application/json'
+            })
+        };
+        const response = await fetch(`${URL}/markend`, fetchData);
+        const body = await response.json();
+        this.gameTime = formatTime(body.gameTime);
+        for (const card of this.board) {
+            this.changeBorder([`${card.count},${card.fill},${card.color},${card.shape}`], WIN_STATE);
+        }
+        this.topScores = body.topScores;
+        this.renderBoard();
+        this.gameText = "No more sets present!";
     }
 
     createCards() {
@@ -192,36 +196,46 @@ class Game {
         for (let j = 0; j < 3; j++) {
             const card = this.selectedCards.selectedCards[j].split(",");
             const selectedCard = {
-                Count: this.attributeToOption(card[0], "one", "three"),
-                Fill: this.attributeToOption(card[1], "solid", "hollow"),
-                Color: this.attributeToOption(card[2], "red", "purple"),
-                Shape: this.attributeToOption(card[3], "circle", "diamond")
+                Count: attributeToOption(card[0], "one", "three"),
+                Fill: attributeToOption(card[1], "solid", "hollow"),
+                Color: attributeToOption(card[2], "red", "purple"),
+                Shape: attributeToOption(card[3], "circle", "diamond")
             };
             cards.push(selectedCard);
         }
         return cards;
     }
+}
 
-    attributeToOption(attribute, option1Equivalent, option2Equivalent) {
-        if (attribute.toLowerCase() === option1Equivalent) {
-            return OPTION1;
-        }
-        else if (attribute.toLowerCase() === option2Equivalent) {
-            return OPTION2;
-        }
-        else {
-            return OPTION3;
-        }
+function attributeToOption(attribute, option1Equivalent, option2Equivalent) {
+    if (attribute.toLowerCase() === option1Equivalent) {
+        return OPTION1;
     }
-    
-    sleep(time) {
-        const promise = new Promise(function (resolve, reject) {
-            setTimeout(function () {
-                resolve();
-            }, time);
-        });
-        return promise;
+    else if (attribute.toLowerCase() === option2Equivalent) {
+        return OPTION2;
     }
+    else {
+        return OPTION3;
+    }
+}
+
+function formatTime(ms) {
+    const seconds = Math.floor(ms / 1000) % 60;
+    const minutes = Math.floor(ms / (1000 * 60)) % 60;
+    const hours = Math.floor(ms / (1000 * 60 * 60)) % 60;
+
+    return "Time: " + (hours < 10 ? "0" + hours : hours) +
+        "h:" + (minutes < 10 ? "0" + minutes : minutes) +
+        "m:" + (seconds < 10 ? "0" + seconds : seconds) + "s";
+}
+
+function sleep(time) {
+    const promise = new Promise(function (resolve, reject) {
+        setTimeout(function () {
+            resolve();
+        }, time);
+    });
+    return promise;
 }
 
 const game = new Game();
