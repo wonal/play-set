@@ -31,7 +31,7 @@ class Game {
     }
 
     async createBoard() {
-        const response = await fetch(`${URL}/initgame`);
+        const response = await fetch(`${URL}/newgame`);
         const data = await response.json();
         this.gameID = data.gameID;
         this.topScores = data.topScores;
@@ -123,9 +123,10 @@ class Game {
     }
 
     async resetGame () {
-        const response = await fetch(`${URL}/newgame/${this.gameID}`);
+        const response = await fetch(`${URL}/newgame`);
         const data = await response.json();
         this.updateBoard(data.cards);
+        this.gameID = data.gameID;
         this.gameText = CARDS_REMAINING;
         this.winStatus = false;
         this.validSet = false;
@@ -139,7 +140,7 @@ class Game {
 
         const fetchData = {
             method: 'POST',
-            body: JSON.stringify({ GameID: id, PlayerName: "Placeholder", Card1: selectedCards[0], Card2: selectedCards[1], Card3: selectedCards[2] }),
+            body: JSON.stringify({ GameID: id, Card1: selectedCards[0], Card2: selectedCards[1], Card3: selectedCards[2] }),
             headers: new Headers({
                 'Content-Type': 'application/json',
                 'Accept-Encoding': 'application/json'

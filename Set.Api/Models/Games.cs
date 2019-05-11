@@ -9,7 +9,6 @@ namespace SetApi.Models
         private readonly Dictionary<Guid, Game> idToGame;
         private int gameNum;
         private readonly object lockObject = new object();
-        private readonly object dbLockObject = new object();
         public int PlayerID { get; private set; }
 
         public Games()
@@ -50,11 +49,6 @@ namespace SetApi.Models
         public Game RetrieveGame(Guid id)
         {
             return idToGame[id];
-        }
-        
-        public object GetDBLock()
-        {
-            return dbLockObject;
         }
     }
 }

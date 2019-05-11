@@ -12,8 +12,9 @@ namespace SetApi.Controllers
     public class SetController : Controller
     {
         private static readonly Games GameHolder = new Games();
+        private static readonly object dbLockObject = new object();
 
-        [HttpGet("initgame")]
+        [HttpGet("newgame")]
         public BoardDTO GetBoard()
         {
             Guid id = GameHolder.CreateGame();
@@ -23,27 +24,6 @@ namespace SetApi.Controllers
                 Cards = GameHolder.RetrieveGame(id).Board,
                 TopScores = new List<Player>()
             };
-            using (PlayerContext context = new PlayerContext())
-            {
-                List<Player> player = context.Players.OrderBy(p => p.Time).Take(5).ToList();
-                boardDTO.TopScores = player;
-            }
-
-            return boardDTO;
-        }
-
-        [HttpGet("newgame/{id}")]
-        public BoardDTO NewGame(Guid id)
-        {
-            GameHolder.RetrieveGame(id).CreateGame();
-            Game game = GameHolder.RetrieveGame(id);
-            BoardDTO boardDTO = new BoardDTO
-            {
-                GameID = id,
-                Cards = game.Board,
-                TopScores = new List<Player>()
-            };
-
             using (PlayerContext context = new PlayerContext())
             {
                 List<Player> player = context.Players.OrderBy(p => p.Time).Take(5).ToList();
@@ -94,7 +74,7 @@ namespace SetApi.Controllers
                 TopScores = new List<Player>()
             };
 
-            lock (GameHolder.GetDBLock())
+            lock (dbLockObject)
             {
                 using (PlayerContext context = new PlayerContext())
                 {
