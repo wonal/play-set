@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
+using Set.Api.Models;
 
 namespace SetApi.Models
 {
@@ -46,9 +47,25 @@ namespace SetApi.Models
             return;
         }
 
-        public Game RetrieveGame(Guid id)
+        public GameResult RetrieveGame(Guid id)
         {
-            return idToGame[id];
+            if (idToGame.ContainsKey(id))
+            {
+                return new GameResult
+                {
+                    Success = true,
+                    Error = "",
+                    GameObj = idToGame[id]
+                };
+            }
+            else
+            {
+                return new GameResult
+                {
+                    Success = false,
+                    Error = "Game ID not valid",
+                };
+            }
         }
     }
 }

@@ -21,9 +21,10 @@ namespace SetApi.Controllers
             BoardDTO boardDTO = new BoardDTO
             {
                 GameID = id,
-                Cards = GameHolder.RetrieveGame(id).Board,
+                Cards = GameHolder.RetrieveGame(id).GameObj.Board,
                 TopScores = new List<Player>()
             };
+
             using (PlayerContext context = new PlayerContext())
             {
                 List<Player> player = context.Players.OrderBy(p => p.Time).Take(5).ToList();
@@ -36,16 +37,39 @@ namespace SetApi.Controllers
         [HttpGet("markstart/{id}")]
         public ActionResult StartStopwatch(Guid id)
         {
-            Game game = GameHolder.RetrieveGame(id);
+            GameResult gameResult = GameHolder.RetrieveGame(id);
+            if (!gameResult.Success)
+            {
+                return BadRequest();
+            }
+
+            Game game = gameResult.GameObj;
+            if(game.GameStarted)
+            {
+                return BadRequest();
+            }
+
             game.GameTime.MarkStart();
+            game.GameStarted = true;
             return Ok();
         }
 
         [HttpPost("validate")]
-        public GameDTO PostSelectedCards(GuessDTO guess)
+        public IActionResult PostSelectedCards(GuessDTO guess)
         {
-            GameHolder.RetrieveGame(guess.GameID).MakeGuess(guess.Card1, guess.Card2, guess.Card3);
-            Game game = GameHolder.RetrieveGame(guess.GameID);
+            GameResult gameResult = GameHolder.RetrieveGame(guess.GameID);
+            if (!gameResult.Success)
+            {
+                return BadRequest();
+            }
+
+            Game game = gameResult.GameObj;
+            if (!game.ValidCards(guess.Card1, guess.Card2, guess.Card3) || game.WinState)
+            {
+                return BadRequest();
+            }
+
+            game.MakeGuess(guess.Card1, guess.Card2, guess.Card3);
             GameDTO gameDTO = new GameDTO
             {
                 GameID = guess.GameID,
@@ -53,18 +77,27 @@ namespace SetApi.Controllers
                 ValidSet = game.ValidSet,
                 WinState = game.WinState,
                 CardsRemaining = game.CardsRemaining,
-                Time = 0,
-                PlayerName = "",
                 TopScores = new List<Player>()
             };
 
-            return gameDTO;
+            return Ok(gameDTO);
         }
 
         [HttpPost("markend")]
-        public WinnerDTO PostWinningPlayer(WinnerDTO winner)
+        public IActionResult PostWinningPlayer(WinnerDTO winner)
         {
-            Game game = GameHolder.RetrieveGame(winner.GameID);
+            GameResult gameResult = GameHolder.RetrieveGame(winner.GameID);
+            if (!gameResult.Success)
+            {
+                return BadRequest();
+            }
+
+            Game game = gameResult.GameObj;
+            if(!game.WinState || game.InDatabase)
+            {
+                return BadRequest();
+            }
+
             int time = game.GameTime.GetTotalTime();
             WinnerDTO winnerDTO = new WinnerDTO
             {
@@ -83,9 +116,10 @@ namespace SetApi.Controllers
                     context.SaveChanges();
                     List<Player> player = context.Players.OrderBy(p => p.Time).Take(5).ToList();
                     winnerDTO.TopScores = player;
+                    game.InDatabase = true;
                 }
             }
-            return winnerDTO;
+            return Ok(winnerDTO);
         }
     }
 }

@@ -10,6 +10,8 @@ namespace SetApi.Models
         public bool WinState { get; set; }
         public int CardsRemaining { get; set; }
         public Stopwatch GameTime { get; private set; }
+        public bool GameStarted { get; set; }
+        public bool InDatabase { get; set; }
 
         public Game()
         {
@@ -30,6 +32,8 @@ namespace SetApi.Models
                 Board = deck.DrawCard(12);
             }
             GameTime = new Stopwatch();
+            GameStarted = false;
+            InDatabase = false;
         }
 
         private bool EmptyDeck()
@@ -63,6 +67,22 @@ namespace SetApi.Models
         private static bool IsCharacteristicSet(Characteristic c1, Characteristic c2, Characteristic c3) => AllDifferent(c1, c2, c3) || AllSame(c1, c2, c3);
         private static bool AllSame(Characteristic c1, Characteristic c2, Characteristic c3) => c1 == c2 && c2 == c3;
         private static bool AllDifferent(Characteristic c1, Characteristic c2, Characteristic c3) => c1 != c2 && c2 != c3 && c1 != c3;
+
+        public bool ValidCards(Card card1, Card card2, Card card3)
+        {
+            if(Board.Count == 0)
+            {
+                return false;
+            }
+
+            int matches = 0;
+            foreach (Card card in Board)
+            {
+                matches += (card.Equals(card1) || card.Equals(card2) || card.Equals(card3)) ?  1 :  0;
+            }
+
+            return matches == 3;
+        }
 
         public void MakeGuess(Card card1, Card card2, Card card3)
         {
