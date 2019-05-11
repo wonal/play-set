@@ -58,7 +58,7 @@ namespace SetApi.Controllers
         {
             Game game = GameHolder.RetrieveGame(id);
             game.GameTime.MarkStart();
-            return Content("", "text/plain");
+            return Ok();
         }
 
         [HttpPost("validate")]
@@ -99,13 +99,7 @@ namespace SetApi.Controllers
                 using (PlayerContext context = new PlayerContext())
                 {
                     List<Player> players = context.Players.ToList();
-                    int id = 0;
-                    if (players.Count != 0)
-                    {
-                        id = context.Players.OrderByDescending(p => p.Id).First().Id + 1;
-
-                    }
-                    context.Add(new Player { Id = id, Name = winner.PlayerName, Time = time });
+                    context.Add(new Player { Name = winner.PlayerName, Time = time });
                     context.SaveChanges();
                     List<Player> player = context.Players.OrderBy(p => p.Time).Take(5).ToList();
                     winnerDTO.TopScores = player;
