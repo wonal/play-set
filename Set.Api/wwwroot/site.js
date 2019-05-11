@@ -56,11 +56,11 @@ class Game {
         cardImage.alt = cardValue;
         cardImage.id = cardValue;
         cardImage.className = border;
-        cardImage.addEventListener("click", this.markCard);
+        cardImage.addEventListener("click", this.markCard.bind(this));
         return cardImage;
     }
 
-    markCard = async (e) => {
+    async markCard (e) {
         if (this.winStatus) {
             return;
         }
@@ -122,16 +122,16 @@ class Game {
         scoreBoard.innerText = scores;
     }
 
-    resetGame = async () => {
+    async resetGame () {
         const response = await fetch(`${URL}/newgame/${this.gameID}`);
         const data = await response.json();
         this.updateBoard(data.cards);
         this.gameText = CARDS_REMAINING;
         this.winStatus = false;
         this.validSet = false;
-        this.gameTime = DEFAULT_TIME;  
+        this.gameTime = DEFAULT_TIME;
         this.renderBoard();
-    }
+    };
 
     async checkCards() {
         const selectedCards = this.createCards();
@@ -260,5 +260,5 @@ function windowOnClick(event) {
     closeButton.addEventListener("click", toggleModal);
     window.addEventListener("click", windowOnClick);
     const button = document.getElementById("resetButton");
-    button.addEventListener("click", game.resetGame);
+    button.addEventListener("click", game.resetGame.bind(game));
 })()
