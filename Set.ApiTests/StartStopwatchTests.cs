@@ -2,14 +2,15 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using SetApi.Models;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace ApiTests
+namespace Set.ApiTests
 {
     public class StartStopWatchTests
     {
-        private string url = "http://localhost:5000/api/set";
+        private readonly string url = "http://localhost:5000/api/set";
 
         [Test]
         public async Task TestOkResult()
@@ -21,7 +22,7 @@ namespace ApiTests
                 Guid id = JsonConvert.DeserializeObject<BoardDTO>(content).GameID;
 
                 HttpResponseMessage startResponse = await client.GetAsync($"{url}/markstart/{id}");
-                Assert.AreEqual("OK", startResponse.ReasonPhrase);
+                Assert.AreEqual(HttpStatusCode.OK, startResponse.StatusCode);
             }
         }
 
@@ -36,7 +37,7 @@ namespace ApiTests
 
                 HttpResponseMessage startResponse1 = await client.GetAsync($"{url}/markstart/{id}");
                 HttpResponseMessage startResponse2 = await client.GetAsync($"{url}/markstart/{id}");
-                Assert.AreEqual("Bad Request", startResponse2.ReasonPhrase);
+                Assert.AreEqual(HttpStatusCode.BadRequest, startResponse2.StatusCode);
             }
         }
     }
