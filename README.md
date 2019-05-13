@@ -23,19 +23,19 @@ This is a work in progress and at this point, only a single-player version is im
 
 Windows (Visual Studio 2019, PowerShell):
 
-Clone the repository: `git clone https://github.com/wonal/play-set.git`
-Open PowerShell and navigate to the `play-set/Set.Api` directory
-Create the database schema: `dotnet ef database update`
-Open the project in Visual Studio.
-Press `F5` to build and run the project.
+- Clone the repository: `git clone https://github.com/wonal/play-set.git`
+- Open PowerShell and navigate to the `play-set/Set.Api` directory
+- Create the database schema: `dotnet ef database update`
+- Open the project in Visual Studio.
+- Press `F5` to build and run the project.
 
 
 Windows (PowerShell only):
-Clone the repository: `git clone https://github.com/wonal/play-set.git`
-Navigate to the Set.Api directory: `cd Set.Api`
-Create the database schema: `dotnet ef database update`
-Run the project: `dotnet run`
-Open a browser window and navigate to `http://localhost:5000`
+- Clone the repository: `git clone https://github.com/wonal/play-set.git`
+- Navigate to the Set.Api directory: `cd Set.Api`
+- Create the database schema: `dotnet ef database update`
+- Run the project: `dotnet run`
+- Open a browser window and navigate to `http://localhost:5000`
 
 
 
