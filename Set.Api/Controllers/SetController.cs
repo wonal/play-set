@@ -14,10 +14,11 @@ namespace SetApi.Controllers
         private static readonly Games GameHolder = new Games();
         private static readonly object dbLockObject = new object();
 
-        [HttpGet("newgame")]
-        public BoardDTO GetBoard()
+        [HttpPost("newgame")]
+        public BoardDTO GetBoard(SeedDTO seedDTO)
         {
-            Guid id = GameHolder.CreateGame();
+            Seed seedObj = seedDTO.HasSeed ? new Seed(seedDTO.SeedValue) : new Seed();
+            Guid id = GameHolder.CreateGame(seedObj);
             BoardDTO boardDTO = new BoardDTO
             {
                 GameID = id,

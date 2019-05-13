@@ -12,9 +12,19 @@ namespace SetApi.Models
         public Stopwatch GameTime { get; private set; }
         public bool GameStarted { get; set; }
         public bool InDatabase { get; set; }
+        public Seed SeedMode { get; private set; }
 
         public Game()
         {
+            SeedMode = new Seed();
+            deck = new Deck();
+            CreateGame();
+        }
+
+        public Game(int seedValue)
+        {
+            SeedMode = new Seed(seedValue);
+            deck = new Deck(seedValue);
             CreateGame();
         }
 
@@ -23,12 +33,15 @@ namespace SetApi.Models
             ValidSet = false;
             WinState = false;
             CardsRemaining = 81;
-            deck = new Deck();
             Board = deck.DrawCard(12);
             while (!BoardContainsSet(Board))
             {
                 deck.Cards.AddRange(Board);
-                Deck.Shuffle(deck.Cards);
+                if (deck.UseSeed)
+                {
+                    deck.SeedValue += 1;
+                }
+                Deck.Shuffle(deck.Cards, deck.UseSeed, deck.SeedValue);
                 Board = deck.DrawCard(12);
             }
             GameTime = new Stopwatch();

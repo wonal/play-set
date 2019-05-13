@@ -21,6 +21,8 @@ export class Game {
         this.validSet = false;
         this.selectedCards = new SelectedCards();
         this.board = [];
+        this.seedMode = false;
+        this.seedValue = 0;
         this.gameID = 0;
         this.gameText = CARDS_REMAINING;
         this.gameTime = DEFAULT_TIME;
@@ -29,7 +31,15 @@ export class Game {
     }
 
     async createBoard() {
-        const response = await fetch(`${URL}/newgame`);
+        const fetchData = {
+            method: 'POST',
+            body: JSON.stringify({HasSeed: true, SeedValue: 100}),
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                'Accept-Encoding': 'application/json'
+            })
+        };
+        const response = await fetch(`${URL}/newgame`, fetchData);
         const data = await response.json();
         this.gameID = data.gameID;
         this.topScores = data.topScores;
@@ -121,7 +131,15 @@ export class Game {
     }
 
     async resetGame () {
-        const response = await fetch(`${URL}/newgame`);
+        const fetchData = {
+            method: 'POST',
+            body: JSON.stringify({HasSeed: true, SeedValue: 100}),
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                'Accept-Encoding': 'application/json'
+            })
+        };
+        const response = await fetch(`${URL}/newgame`, fetchData);
         const data = await response.json();
         this.updateBoard(data.cards);
         this.gameID = data.gameID;

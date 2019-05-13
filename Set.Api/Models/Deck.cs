@@ -7,13 +7,24 @@ namespace SetApi.Models
     public class Deck
     {
         public List<Card> Cards { get; }
+        public bool UseSeed { get; private set; }
+        public int SeedValue { get; set; }
         
         public Deck()
         {
             Cards = InitializeDeck();
+            UseSeed = false;
+            SeedValue = 0;
         }
 
-        private static List<Card> InitializeDeck()
+        public Deck(int seedValue)
+        {
+            UseSeed = true;
+            SeedValue = seedValue;
+            Cards = InitializeDeck();
+        }
+
+        private List<Card> InitializeDeck()
         {
             List<Characteristic> options = new List<Characteristic> { Characteristic.Option1, Characteristic.Option2, Characteristic.Option3 };
             List<Card> deck = new List<Card>();
@@ -30,13 +41,13 @@ namespace SetApi.Models
                     }
                 }
             }
-            Shuffle(deck);
+            Deck.Shuffle(deck, UseSeed, SeedValue);
             return deck;
         }
 
-        public static void Shuffle(List<Card> cards)
+        public static void Shuffle(List<Card> cards, bool useSeed, int seedValue)
         {
-            Random r = new Random();
+            Random r = useSeed ? new Random(seedValue) : new Random();
             for (int i = cards.Count-1; i > -1; i -= 1)
             {
                 int j = r.Next(0, i+1);
