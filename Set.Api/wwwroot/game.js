@@ -33,7 +33,7 @@ export class Game {
     async createBoard() {
         const fetchData = {
             method: 'POST',
-            body: JSON.stringify({HasSeed: true, SeedValue: 100}),
+            body: JSON.stringify({HasSeed: true, SeedValue: 100}), 
             headers: new Headers({
                 'Content-Type': 'application/json',
                 'Accept-Encoding': 'application/json'
@@ -41,6 +41,7 @@ export class Game {
         };
         const response = await fetch(`${URL}/newgame`, fetchData);
         const data = await response.json();
+        this.seedMode = true;  
         this.gameID = data.gameID;
         this.topScores = data.topScores;
         this.board = [];
@@ -117,17 +118,20 @@ export class Game {
         time.innerText = this.gameTime;
         document.getElementById("deckCount").innerText = this.gameText;
         const scoreBoard = document.getElementById("topscore");
-        let scores = "Top Scores:\n";
-        const actualScores = this.topScores.length;
-        for (let i = 0; i < 5; i++) {
-            if (i < actualScores) {
-                scores += `${i+1}. ${this.topScores[i].name} -- ${formatTime(this.topScores[i].time)}\n`
+        scoreBoard.innerText = "";
+        if (this.seedMode === false) {
+            let scores = "Top Scores:\n";
+            const actualScores = this.topScores.length;
+            for (let i = 0; i < 5; i++) {
+                if (i < actualScores) {
+                    scores += `${i + 1}. ${this.topScores[i].name} -- ${formatTime(this.topScores[i].time)}\n`
+                }
+                else {
+                    scores += `${i + 1}.\n`
+                }
             }
-            else {
-                scores += `${i+1}.\n`
-            }
+            scoreBoard.innerText = scores;
         }
-        scoreBoard.innerText = scores;
     }
 
     async resetGame () {

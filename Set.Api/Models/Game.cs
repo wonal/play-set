@@ -11,7 +11,7 @@ namespace SetApi.Models
         public int CardsRemaining { get; set; }
         public Stopwatch GameTime { get; private set; }
         public bool GameStarted { get; set; }
-        public bool InDatabase { get; set; }
+        public bool WinRecorded { get; set; }
         public Seed SeedMode { get; private set; }
 
         public Game()
@@ -46,7 +46,7 @@ namespace SetApi.Models
             }
             GameTime = new Stopwatch();
             GameStarted = false;
-            InDatabase = false;
+            WinRecorded = false;
         }
 
         private bool EmptyDeck()

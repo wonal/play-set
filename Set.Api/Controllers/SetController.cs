@@ -94,7 +94,7 @@ namespace SetApi.Controllers
             }
 
             Game game = gameResult.GameObj;
-            if(!game.WinState || game.InDatabase)
+            if(!game.WinState || game.WinRecorded)
             {
                 return BadRequest();
             }
@@ -112,12 +112,15 @@ namespace SetApi.Controllers
             {
                 using (PlayerContext context = new PlayerContext())
                 {
-                    List<Player> players = context.Players.ToList();
-                    context.Add(new Player { Name = winner.PlayerName, Time = time });
-                    context.SaveChanges();
+                    if(!game.SeedMode.HasSeed)
+                    {
+                        List<Player> players = context.Players.ToList();
+                        context.Add(new Player { Name = winner.PlayerName, Time = time });
+                        context.SaveChanges();
+                    }
                     List<Player> player = context.Players.OrderBy(p => p.Time).Take(5).ToList();
                     winnerDTO.TopScores = player;
-                    game.InDatabase = true;
+                    game.WinRecorded = true;
                 }
             }
             return Ok(winnerDTO);
