@@ -33,7 +33,7 @@ export class Game {
     async createBoard() {
         const fetchData = {
             method: 'POST',
-            body: JSON.stringify({HasSeed: false, SeedValue: 100}),   //
+            body: JSON.stringify({HasSeed: this.seedMode, SeedValue: this.seedValue}),   
             headers: new Headers({
                 'Content-Type': 'application/json',
                 'Accept-Encoding': 'application/json'
@@ -41,7 +41,6 @@ export class Game {
         };
         const response = await fetch(`${URL}/newgame`, fetchData);
         const data = await response.json();
-        this.seedMode = false;   //
         this.gameID = data.gameID;
         this.topScores = data.topScores;
         this.board = [];
@@ -134,10 +133,23 @@ export class Game {
         }
     }
 
+    async timedGame() {
+        this.seedMode = false;
+        this.seedValue = 0;
+        await this.resetGame();
+    }
+
+    async seedGame() {
+        //get user input and set fields
+        this.seedMode = true;
+        this.seedValue = 100;
+        await this.resetGame();
+    }
+
     async resetGame () {
         const fetchData = {
             method: 'POST',
-            body: JSON.stringify({HasSeed: true, SeedValue: 100}),
+            body: JSON.stringify({HasSeed: this.seedMode, SeedValue: this.seedValue}),
             headers: new Headers({
                 'Content-Type': 'application/json',
                 'Accept-Encoding': 'application/json'

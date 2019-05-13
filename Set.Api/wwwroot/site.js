@@ -21,6 +21,8 @@ function windowOnClick(event) {
     trigger.addEventListener("click", toggleModal);
     closeButton.addEventListener("click", toggleModal);
     window.addEventListener("click", windowOnClick);
-    const button = document.getElementById("resetButton");
-    button.addEventListener("click", game.resetGame.bind(game));
+    const resetButton = document.getElementById("resetButton");
+    resetButton.addEventListener("click", game.timedGame.bind(game));
+    const seedButton = document.getElementById("seedButton");
+    seedButton.addEventListener("click", game.seedGame.bind(game));
 })()

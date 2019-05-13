@@ -32,8 +32,8 @@ h1{
 
 .firstColumn{
     display: flex;
-    flex-direction:column;
-    height:400px;
+    flex-direction: column;
+    height: 475px;
     justify-content: space-around;
 }
 
@@ -49,7 +49,6 @@ body{
     display: flex;
     align-items: baseline;
     justify-content: space-around;
-    flex-direction: row;
 }
 
 .gameColumn{
@@ -77,8 +76,10 @@ body{
 }
 
 .buttons{
+    height: 175px;
     display: flex;
     flex-direction: column;
+    justify-content: space-around;
 }
 
 /*
