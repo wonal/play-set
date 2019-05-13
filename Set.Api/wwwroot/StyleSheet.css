@@ -2,6 +2,7 @@
     width: 150px;
     height: 200px;
     margin: 5px;
+    border-radius:25px;
 }
 
 .default{
@@ -24,6 +25,18 @@
     border: 3px solid gold
 }
 
+h1{
+    font-size: 60px;
+    font-family: 'Righteous', cursive;
+}
+
+.firstColumn{
+    display: flex;
+    flex-direction:column;
+    height:400px;
+    justify-content: space-around;
+}
+
 .board{
     width: 700px;
     display: flex;
@@ -32,12 +45,14 @@
     align-content: center;
 }
 
-h1{
-    font-size: 60px;
-    font-family: 'Righteous', cursive;
+body{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-around;
+    flex-direction: row;
 }
 
-body{
+.gameColumn{
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -46,6 +61,24 @@ body{
 .gameInfo{
     font-size: 26px;
     font-family: 'Righteous', cursive;
+}
+
+.topscore{
+    width: 400px;
+    height: 180px;
+    text-align: left;
+    font-size: 24px;
+    font-family: 'Righteous', cursive;
+}
+
+.placeholder{
+    width: 400px;
+    visibility: hidden;
+}
+
+.buttons{
+    display: flex;
+    flex-direction: column;
 }
 
 /*
@@ -101,4 +134,15 @@ body{
 
 .column{
     padding: 5px;
+}
+
+button{
+    background-color: white;
+    border: 3px solid #cccccc;
+    width: 150px;
+    height: 50px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-family: 'Righteous', cursive;
+    text-align: center;
 }

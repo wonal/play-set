@@ -7,68 +7,72 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans|Righteous" rel="stylesheet">
 </head>
 <body>
-    <h1>Play Set</h1>
-    <div id="board" class="board"></div>
-    <br/>
-    <div id="deckCount" class="gameInfo">Cards Remaining: 81</div>
-    <div id="time" class="gameInfo"></div><br/>
-    <div class="buttons">
-        <button class="trigger">How to Play</button>
-        <div class="modal">
-            <div class="modal-content">
-                <span class="close-button">&times;</span>
-                <h2>How to play Set</h2>
-                <p>
-                    There are 81 unique cards in a deck, and the board will start out with 12 cards.
-                    Each card has four characteristics:<br />
-                    - Color (red, yellow, purple)<br />
-                    - Shape (circle, diamond, rectangle)<br />
-                    - Shading (solid, hollow, patterned)<br />
-                    - Number of shapes (one, three, six)<br />
-                    <br />
-                    The goal of the game is to make "sets" based on certain criteria.
-                    A set is three cards where, for each of the four characteristics (color, shape, shading, number), either:
-                    <br />- All cards match in the characteristic
-                    <br />- All cards differ in the characteristic<br /><br />
-                    This is an example of a set:<br />
-                    <div class="row">
-                        <div class="column">
-                            <img src="/images/one,hollow,red,diamond.png" alt="one,hollow,red,diamond" />
+    <div id="firstColumn" class="firstColumn">
+        <div id="topscore" class="topscore"></div>
+        <div id="time" class="gameInfo"></div>
+        <div class="buttons">
+            <button class="trigger">How to Play</button>
+            <div class="modal">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h2>How to play Set</h2>
+                    <p>
+                        There are 81 unique cards in a deck, and the board will start out with 12 cards.
+                        Each card has four characteristics:<br />
+                        - Color (red, yellow, purple)<br />
+                        - Shape (circle, diamond, rectangle)<br />
+                        - Shading (solid, hollow, patterned)<br />
+                        - Number of shapes (one, three, six)<br />
+                        <br />
+                        The goal of the game is to make "sets" based on certain criteria.
+                        A set is three cards where, for each of the four characteristics (color, shape, shading, number), either:
+                        <br />- All cards match in the characteristic
+                        <br />- All cards differ in the characteristic<br /><br />
+                        This is an example of a set:<br />
+                        <div class="row">
+                            <div class="column">
+                                <img src="/images/one,hollow,red,diamond.png" alt="one,hollow,red,diamond" />
+                            </div>
+                            <div class="column">
+                                <img src="/images/three,stacked,yellow,diamond.png" alt="three,stacked,yellow,diamond" />
+                            </div>
+                            <div class="column">
+                                <img src="/images/six,solid,purple,diamond.png" alt="six,solid,purple,diamond" />
+                            </div>
                         </div>
-                        <div class="column">
-                            <img src="/images/three,stacked,yellow,diamond.png" alt="three,stacked,yellow,diamond" />
+                        <br />
+                        All three cards differ in color; all have the same shape; all differ in their shading;
+                        and all have different numbers of shapes.<br />
+                        This would not be a set:<br />
+                        <div class="row">
+                            <div class="column">
+                                <img src="/images/six,solid,red,rectangle.png" alt="six,solid,red,rectangle" />
+                            </div>
+                            <div class="column">
+                                <img src="/images/six,hollow,yellow,circle.png" alt="six,hollow,yellow,circle" />
+                            </div>
+                            <div class="column">
+                                <img src="/images/six,stacked,purple,circle.png" alt="six,stacked,purple,circle" />
+                            </div>
                         </div>
-                        <div class="column">
-                            <img src="/images/six,solid,purple,diamond.png" alt="six,solid,purple,diamond" />
-                        </div>
-                    </div>
-                    <br />
-                    All three cards differ in color; all have the same shape; all differ in their shading;
-                    and all have different numbers of shapes.<br />
-                    This would not be a set:<br />
-                    <div class="row">
-                        <div class="column">
-                            <img src="/images/six,solid,red,rectangle.png" alt="six,solid,red,rectangle" />
-                        </div>
-                        <div class="column">
-                            <img src="/images/six,hollow,yellow,circle.png" alt="six,hollow,yellow,circle" />
-                        </div>
-                        <div class="column">
-                            <img src="/images/six,stacked,purple,circle.png" alt="six,stacked,purple,circle" />
-                        </div>
-                    </div>
-                    <br />
-                    While all cards have the same number of shapes and all cards differ in color and shading, two cards have
-                    the same shape but the other has a different shape.<br /><br />
-                    Once a set is made, the three cards are removed from the board and replaced with cards from the deck.
-                    The goal is to go through the deck and make as many sets as possible.  If a set is not present on the board, three more cards will be added.
-                </p>
-            </div>
+                        <br />
+                        While all cards have the same number of shapes and all cards differ in color and shading, two cards have
+                        the same shape but the other has a different shape.<br /><br />
+                        Once a set is made, the three cards are removed from the board and replaced with cards from the deck.
+                        The goal is to go through the deck and make as many sets as possible.  If a set is not present on the board, three more cards will be added.
+                    </p>
+                </div>
+            </div><br/>
+            <button type="button" id="resetButton">New Game</button>
         </div>
-
-        <button type="button" id="resetButton">New Game</button>
     </div>
-    <div id="topscore"></div>
+    <div id="column" class="gameColumn">
+        <h1>Play Set</h1>
+        <div id="board" class="board"></div>
+        <br />
+        <div id="deckCount" class="gameInfo">Cards Remaining: 81</div>
+    </div>
+    <div id="placeholderColumn" class="placeholder">Card history to go here</div>
 
     <script type="module" src="site.js"></script>
 </body>
