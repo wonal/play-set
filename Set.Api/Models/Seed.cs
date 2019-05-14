@@ -3,8 +3,8 @@ namespace SetApi.Models
 {
     public class Seed
     {
-        public bool HasSeed { get; private set; }
-        public int SeedValue { get; private set; }
+        public bool HasSeed { get; set; }
+        public int SeedValue { get; set; }
 
         public Seed()
         {
