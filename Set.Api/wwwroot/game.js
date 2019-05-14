@@ -118,6 +118,8 @@ export class Game {
         document.getElementById("deckCount").innerText = this.gameText;
         const scoreBoard = document.getElementById("topscore");
         scoreBoard.innerText = "";
+        const seedValue = document.getElementById("seedvalue");
+        seedValue.innerText = "";
         if (this.seedMode === false) {
             let scores = "Top Scores:\n";
             const actualScores = this.topScores.length;
@@ -130,6 +132,9 @@ export class Game {
                 }
             }
             scoreBoard.innerText = scores;
+        }
+        else {
+            seedValue.innerText = `Seed: ${this.seedValue}`;
         }
     }
 
