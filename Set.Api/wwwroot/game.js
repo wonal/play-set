@@ -10,9 +10,10 @@
     VALID_BORDER,
     WIN_STATE,
     CARDS_REMAINING,
-    DEFAULT_TIME
+    DEFAULT_TIME,
+    MAX_INT32
 } from './constants.js'
-import { attributeToOption, formatTime, sleep } from './utilities.js'
+import { attributeToOption, formatTime, sleep, getName } from './utilities.js'
 import { SelectedCards, Card } from './cards.js'
 
 export class Game {
@@ -145,9 +146,15 @@ export class Game {
     }
 
     async seedGame() {
-        //get user input and set fields
+        let number = window.prompt("Enter an integer seed value (no decimals or fractions): ")
+        while (number != null && (number === "" || Number.isInteger(Number(number)) === false)) {
+            number = window.prompt("That is not a valid number.  Please enter an integer value for a seed: ")
+        }
+        if (number == null) {
+            return;
+        }
         this.seedMode = true;
-        this.seedValue = 100;
+        this.seedValue = Math.abs(parseInt(number, 10)) % MAX_INT32;
         await this.resetGame();
     }
 
@@ -210,9 +217,15 @@ export class Game {
 
     async enterWinState() {
         this.winStatus = true;
+        this.gameText = "No more sets present!";
+        for (const card of this.board) {
+            this.changeBorder([`${card.count},${card.fill},${card.color},${card.shape}`], WIN_STATE);
+        }
+        this.renderBoard();
+        const name = this.seedMode ? "" : getName();
         const fetchData = {
             method: 'POST',
-            body: JSON.stringify({ GameID: this.gameID, PlayerName: "Placeholder", GameTime: 0, TopScores: []}),
+            body: JSON.stringify({ GameID: this.gameID, PlayerName: name, GameTime: 0, TopScores: []}),
             headers: new Headers({
                 'Content-Type': 'application/json',
                 'Accept-Encoding': 'application/json'
@@ -221,12 +234,8 @@ export class Game {
         const response = await fetch(`${URL}/markend`, fetchData);
         const body = await response.json();
         this.gameTime = formatTime(body.gameTime);
-        for (const card of this.board) {
-            this.changeBorder([`${card.count},${card.fill},${card.color},${card.shape}`], WIN_STATE);
-        }
         this.topScores = body.topScores;
         this.renderBoard();
-        this.gameText = "No more sets present!";
     }
 
     createCards() {

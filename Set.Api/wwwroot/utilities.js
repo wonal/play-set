@@ -29,3 +29,11 @@ export function sleep(time) {
     });
     return promise;
 }
+
+export function getName() {
+    let name = window.prompt("You found all sets! Enter in your name here: ");
+    if (name === null || name === "") {
+        name = "Anonymous";
+    }
+    return name.length > 20 ? name.substring(0, 20) : name;
+}
