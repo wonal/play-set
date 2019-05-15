@@ -28,6 +28,7 @@ export class Game {
         this.gameText = CARDS_REMAINING;
         this.gameTime = DEFAULT_TIME;
         this.topScores = [];
+        this.setHistory = [];
         this.createBoard();
     }
 
@@ -65,7 +66,6 @@ export class Game {
         cardImage.alt = cardValue;
         cardImage.id = cardValue;
         cardImage.className = border;
-        cardImage.addEventListener("click", this.markCard.bind(this));
         return cardImage;
     }
 
@@ -112,15 +112,20 @@ export class Game {
         }
         for (const cardObj of this.board) {
             const newCard = this.createCardImage(cardObj.count, cardObj.fill, cardObj.color, cardObj.shape, cardObj.cardBorder);
+            newCard.addEventListener("click", this.markCard.bind(this));
             board.appendChild(newCard);
         }
+
         const time = document.getElementById("time");
         time.innerText = this.gameTime;
+
         document.getElementById("deckCount").innerText = this.gameText;
+
         const scoreBoard = document.getElementById("topscore");
         scoreBoard.innerText = "";
         const seedValue = document.getElementById("seedvalue");
         seedValue.innerText = "";
+
         if (this.seedMode === false) {
             let scores = "Top Scores:\n";
             const actualScores = this.topScores.length;
@@ -136,6 +141,27 @@ export class Game {
         }
         else {
             seedValue.innerText = `Seed: ${this.seedValue}`;
+        }
+        
+        const prevSets = document.getElementById("thirdcolumn");
+        const length = prevSets.childNodes.length;
+        for (let i = 0; i < length; i++) {
+            prevSets.removeChild(prevSets.childNodes[0]);
+        }
+
+        for (let i = this.setHistory.length - 1; i > -1; i--) {
+            const div = document.createElement("div");
+            div.className = "row";
+            prevSets.appendChild(div);
+            for (const set of this.setHistory[i]) {
+                const column = document.createElement("div");
+                column.className = "previouscolumn";
+                const characteristics = set.split(",");
+                const card = this.createCardImage(characteristics[0], characteristics[1], characteristics[2], characteristics[3], VALID_BORDER);
+                card.className = "history previousset";
+                div.appendChild(column);
+                column.appendChild(card);
+            }
         }
     }
 
@@ -194,6 +220,7 @@ export class Game {
         const body = await response.json();
         if (body.validSet) {
             this.changeBorder(this.selectedCards.selectedCards, VALID_BORDER);
+            this.setHistory.push(this.selectedCards.selectedCards);
             this.renderBoard();
             await sleep(600);
             this.updateBoard(body.board);
