@@ -11,34 +11,19 @@ namespace Set.ApiTests
 {
     class GetBoardTests
     {
-        private readonly string url = "http://localhost:5000/api/set";
-        private List<Card> board;
-
-        [SetUp]
-        public async Task TestSetup()
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                Seed seed = new Seed { HasSeed = true, SeedValue = 42 };
-                string seedObj = JsonConvert.SerializeObject(seed);
-                StringContent postContent = new StringContent(seedObj, Encoding.UTF8, "application/json");
-
-                HttpResponseMessage response = await client.PostAsync(url + "/newgame", postContent);
-                string content = await response.Content.ReadAsStringAsync();
-                board = JsonConvert.DeserializeObject<BoardDTO>(content).Cards;
-            }
-        }
-
         [Test]
-        public void TestStartingBoardHas12Cards()
+        public async Task TestStartingBoard()
         {
-            Assert.AreEqual(12, board.Count);
-        }
+            HttpClient client = TestUtilities.GetHttpClient();
+            Seed seed = new Seed { HasSeed = true, SeedValue = 42 };
+            StringContent postContent = TestUtilities.ObjToStringContent(seed);
 
-        [Test]
-        public void TestStartingBoardContainsSet()
-        {
-            Assert.IsTrue(Game.BoardContainsSet(board));
+            HttpResponseMessage response = await client.PostAsync("newgame", postContent);
+            string content = await response.Content.ReadAsStringAsync();
+            List<Card> board = JsonConvert.DeserializeObject<BoardDTO>(content).Cards;
+
+            Assert.AreEqual(12, board.Count, "Actual board count does not equal expected count of 12 cards");
+            Assert.IsTrue(Game.BoardContainsSet(board), "Starting board does not contain a set");
         }
     }
 }

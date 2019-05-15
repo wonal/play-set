@@ -11,46 +11,40 @@ namespace Set.ApiTests
 {
     public class StartStopWatchTests
     {
-        private readonly string url = "http://localhost:5000/api/set";
         private StringContent postContent;
 
         [SetUp]
         public void TestSetup()
         {
             Seed seed = new Seed { HasSeed = true, SeedValue = 42 };
-            string seedObj = JsonConvert.SerializeObject(seed);
-            postContent = new StringContent(seedObj, Encoding.UTF8, "application/json");
+            postContent = TestUtilities.ObjToStringContent(seed);
         }
 
         [Test]
         public async Task TestOkResult()
         {
-            using (HttpClient client = new HttpClient())
-            {
-                HttpResponseMessage response = await client.PostAsync(url + "/newgame", postContent);
-                string content = await response.Content.ReadAsStringAsync();
-                Guid id = JsonConvert.DeserializeObject<BoardDTO>(content).GameID;
+            HttpClient client = TestUtilities.GetHttpClient();
+            HttpResponseMessage response = await client.PostAsync("newgame", postContent);
+            string content = await response.Content.ReadAsStringAsync();
+            Guid id = JsonConvert.DeserializeObject<BoardDTO>(content).GameID;
 
-                HttpResponseMessage startResponse = await client.GetAsync($"{url}/markstart/{id}");
+            HttpResponseMessage startResponse = await client.GetAsync($"markstart/{id}");
 
-                Assert.AreEqual(HttpStatusCode.OK, startResponse.StatusCode);
-            }
+            Assert.AreEqual(HttpStatusCode.OK, startResponse.StatusCode);
         }
 
         [Test]
         public async Task TestBadRequestWithOngoingGame()
         {
-            using (HttpClient client = new HttpClient())
-            {
-                HttpResponseMessage response = await client.PostAsync(url + "/newgame", postContent);
-                string content = await response.Content.ReadAsStringAsync();
-                Guid id = JsonConvert.DeserializeObject<BoardDTO>(content).GameID;
+            HttpClient client = TestUtilities.GetHttpClient();
+            HttpResponseMessage response = await client.PostAsync("newgame", postContent);
+            string content = await response.Content.ReadAsStringAsync();
+            Guid id = JsonConvert.DeserializeObject<BoardDTO>(content).GameID;
 
-                HttpResponseMessage startResponse1 = await client.GetAsync($"{url}/markstart/{id}");
-                HttpResponseMessage startResponse2 = await client.GetAsync($"{url}/markstart/{id}");
+            HttpResponseMessage startResponse1 = await client.GetAsync($"markstart/{id}");
+            HttpResponseMessage startResponse2 = await client.GetAsync($"markstart/{id}");
 
-                Assert.AreEqual(HttpStatusCode.BadRequest, startResponse2.StatusCode);
-            }
+            Assert.AreEqual(HttpStatusCode.BadRequest, startResponse2.StatusCode);
         }
     }
 }
