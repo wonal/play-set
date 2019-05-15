@@ -42,7 +42,7 @@ h1{
 }
 
 .buttons {
-    height: 175px;
+    height: 250px;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -52,10 +52,10 @@ h1{
 button{
     background-color: white;
     border: 3px solid #cccccc;
-    width: 150px;
-    height: 50px;
+    width: 200px;
+    height: 75px;
     border-radius: 12px;
-    font-size: 16px;
+    font-size: 20px;
     font-family: 'Righteous', cursive;
     text-align: center;
 }
@@ -169,7 +169,8 @@ button{
     .buttons {
         display: flex;
         flex-direction: row;
-        justify-content: center;
+        justify-content: space-around;
+        width: 475px;
         height: 50px;
         margin-bottom: 20px;
         order: 2;
@@ -197,5 +198,10 @@ button{
     }
     .deckCount{
         order: 2;
+    }
+    button {
+        width: 150px;
+        height: 50px;
+        font-size: 16px;
     }
 }
