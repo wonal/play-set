@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NUnit.Framework;
+using Set.Api.Models;
 using SetApi.Models;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace Set.ApiTests
         public async Task TestStartingBoard()
         {
             HttpClient client = TestUtilities.GetHttpClient();
-            Seed seed = new Seed { HasSeed = true, SeedValue = 42 };
+            SeedDTO seed = new SeedDTO { Seed = 42 };
             StringContent postContent = TestUtilities.ObjToStringContent(seed);
 
             HttpResponseMessage response = await client.PostAsync("newgame", postContent);

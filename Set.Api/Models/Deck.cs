@@ -7,19 +7,10 @@ namespace SetApi.Models
     public class Deck
     {
         public List<Card> Cards { get; }
-        public bool UseSeed { get; private set; }
-        public int SeedValue { get; set; }
+        public int? SeedValue { get; set; }
         
-        public Deck()
+        public Deck(int? seedValue)
         {
-            Cards = InitializeDeck();
-            UseSeed = false;
-            SeedValue = 0;
-        }
-
-        public Deck(int seedValue)
-        {
-            UseSeed = true;
             SeedValue = seedValue;
             Cards = InitializeDeck();
         }
@@ -41,13 +32,13 @@ namespace SetApi.Models
                     }
                 }
             }
-            Deck.Shuffle(deck, UseSeed, SeedValue);
+            Deck.Shuffle(deck, SeedValue);
             return deck;
         }
 
-        public static void Shuffle(List<Card> cards, bool useSeed, int seedValue)
+        public static void Shuffle(List<Card> cards, int? seedValue)
         {
-            Random r = useSeed ? new Random(seedValue) : new Random();
+            Random r = seedValue.HasValue ? new Random(seedValue.Value) : new Random();
             for (int i = cards.Count-1; i > -1; i -= 1)
             {
                 int j = r.Next(0, i+1);

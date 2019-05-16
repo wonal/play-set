@@ -18,8 +18,7 @@ namespace SetApi.Controllers
         [HttpPost("newgame")]
         public BoardDTO GetBoard(SeedDTO seedDTO)
         {
-            Seed seedObj = seedDTO.HasSeed ? new Seed(seedDTO.SeedValue) : new Seed();
-            Guid id = GameHolder.CreateGame(seedObj);
+            Guid id = GameHolder.CreateGame(seedDTO.Seed);
             BoardDTO boardDTO = new BoardDTO
             {
                 GameID = id,
@@ -113,7 +112,7 @@ namespace SetApi.Controllers
             {
                 using (PlayerContext context = new PlayerContext())
                 {
-                    if(!game.SeedMode.HasSeed)
+                    if(game.SeedValue.HasValue == false)
                     {
                         List<Player> players = context.Players.ToList();
                         context.Add(new Player { Name = winner.PlayerName, Time = time });

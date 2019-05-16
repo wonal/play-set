@@ -17,7 +17,7 @@ namespace Set.ApiTests
         [SetUp]
         public async Task TestSetup()
         {
-            Seed seed = new Seed { HasSeed = true, SeedValue = 42 };
+            SeedDTO seed = new SeedDTO { Seed = 42 };
             StringContent postContent = TestUtilities.ObjToStringContent(seed);
             HttpClient client = TestUtilities.GetHttpClient();
 

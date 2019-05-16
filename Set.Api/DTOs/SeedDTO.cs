@@ -7,7 +7,6 @@ namespace Set.Api.Models
 {
     public class SeedDTO
     {
-        public bool HasSeed { get; set; }
-        public int SeedValue { get; set; }
+        public int? Seed{ get; set; }
     }
 }

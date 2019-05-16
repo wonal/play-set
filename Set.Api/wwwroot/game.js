@@ -23,7 +23,7 @@ export class Game {
         this.selectedCards = new SelectedCards();
         this.board = [];
         this.seedMode = false;
-        this.seedValue = 0;
+        this.seed = null;
         this.gameID = 0;
         this.gameText = CARDS_REMAINING;
         this.gameTime = DEFAULT_TIME;
@@ -36,7 +36,7 @@ export class Game {
     async createBoard() {
         const fetchData = {
             method: 'POST',
-            body: JSON.stringify({HasSeed: this.seedMode, SeedValue: this.seedValue}),   
+            body: JSON.stringify({ seed: this.seed }),   
             headers: new Headers({
                 'Content-Type': 'application/json',
                 'Accept-Encoding': 'application/json'
@@ -122,7 +122,7 @@ export class Game {
         const seedValue = document.getElementById("seedvalue");
         seedValue.innerText = "";
 
-        if (this.seedMode === false) {
+        if (this.seed === null) {
             let scores = "Top Scores:\n";
             const actualScores = this.topScores.length;
             for (let i = 0; i < 5; i++) {
@@ -136,7 +136,7 @@ export class Game {
             scoreBoard.innerText = scores;
         }
         else {
-            seedValue.innerText = `Seed: ${this.seedValue}`;
+            seedValue.innerText = `Seed: ${this.seed}`;
         }
         
         const prevSets = document.getElementById("thirdcolumn");
@@ -197,12 +197,11 @@ export class Game {
     }
 
     async timedGame() {
-        this.seedMode = false;
-        this.seedValue = 0;
+        this.seed = null;
         await this.resetGame();
     }
 
-    async seedGame() {
+    seedGame() {
         let number = window.prompt("Enter an integer seed value (no decimals or fractions): ")
         while (number != null && (number === "" || Number.isInteger(Number(number)) === false)) {
             number = window.prompt("That is not a valid number.  Please enter an integer value for a seed: ")
@@ -210,15 +209,14 @@ export class Game {
         if (number === null) {
             return;
         }
-        this.seedMode = true;
-        this.seedValue = Math.abs(parseInt(number, 10)) % MAX_INT32;
-        await this.resetGame();
+        this.seed = Math.abs(parseInt(number, 10)) % MAX_INT32;
+        this.resetGame();
     }
 
     async resetGame () {
         const fetchData = {
             method: 'POST',
-            body: JSON.stringify({HasSeed: this.seedMode, SeedValue: this.seedValue}),
+            body: JSON.stringify({ Seed: this.seed}),
             headers: new Headers({
                 'Content-Type': 'application/json',
                 'Accept-Encoding': 'application/json'

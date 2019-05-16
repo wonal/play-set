@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NUnit.Framework;
+using Set.Api.Models;
 using SetApi.Models;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -14,7 +15,7 @@ namespace Set.ApiTests
         [Test]
         public async Task TestPostingValidSet()
         {
-            Seed seed = new Seed { HasSeed = true, SeedValue = 42 };
+            SeedDTO seed = new SeedDTO { Seed = 42 };
             StringContent postContent = TestUtilities.ObjToStringContent(seed);
             HttpClient client = TestUtilities.GetHttpClient();
 

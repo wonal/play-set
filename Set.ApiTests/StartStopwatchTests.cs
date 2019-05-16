@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using NUnit.Framework;
+using Set.Api.Models;
 using SetApi.Models;
 using System;
 using System.Net;
@@ -16,7 +17,7 @@ namespace Set.ApiTests
         [SetUp]
         public void TestSetup()
         {
-            Seed seed = new Seed { HasSeed = true, SeedValue = 42 };
+            SeedDTO seed = new SeedDTO { Seed = 42 };
             postContent = TestUtilities.ObjToStringContent(seed);
         }
 

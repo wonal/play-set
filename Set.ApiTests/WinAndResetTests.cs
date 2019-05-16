@@ -20,7 +20,7 @@ namespace Set.ApiTests
         [SetUp]
         public async Task TestSetup()
         {
-            Seed seed = new Seed { HasSeed = true, SeedValue = 42 };
+            SeedDTO seed = new SeedDTO { Seed = 42 };
             StringContent postContent = TestUtilities.ObjToStringContent(seed);
             HttpClient client = TestUtilities.GetHttpClient();
 
@@ -52,8 +52,8 @@ namespace Set.ApiTests
             string responseContent = await postResponse.Content.ReadAsStringAsync();
             winStateDTO = JsonConvert.DeserializeObject<WinStateDTO>(responseContent);
 
-            Assert.IsTrue(gameDTO.WinState);
-            Assert.NotZero(winStateDTO.GameTime);
+            Assert.IsTrue(gameDTO.WinState, "Win state is not true");
+            Assert.NotZero(winStateDTO.GameTime, "Expected a gametime above zero");
         }
 
         [Test]
@@ -71,7 +71,7 @@ namespace Set.ApiTests
         [Test]
         public async Task TestReset()
         {
-            Seed seed = new Seed { HasSeed = true, SeedValue = 42 };
+            SeedDTO seed = new SeedDTO { Seed = 42 };
             StringContent postContent = TestUtilities.ObjToStringContent(seed);
             HttpClient client = TestUtilities.GetHttpClient();
 

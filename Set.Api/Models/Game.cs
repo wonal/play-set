@@ -12,18 +12,10 @@ namespace SetApi.Models
         public Stopwatch GameTime { get; private set; }
         public bool GameStarted { get; set; }
         public bool WinRecorded { get; set; }
-        public Seed SeedMode { get; private set; }
+        public int? SeedValue { get; private set; }
 
-        public Game()
+        public Game(int? seedValue)
         {
-            SeedMode = new Seed();
-            deck = new Deck();
-            CreateGame();
-        }
-
-        public Game(int seedValue)
-        {
-            SeedMode = new Seed(seedValue);
             deck = new Deck(seedValue);
             CreateGame();
         }
@@ -36,11 +28,11 @@ namespace SetApi.Models
             while (!BoardContainsSet(Board))
             {
                 deck.Cards.AddRange(Board);
-                if (deck.UseSeed)
+                if (SeedValue.HasValue)
                 {
                     deck.SeedValue += 1;
                 }
-                Deck.Shuffle(deck.Cards, deck.UseSeed, deck.SeedValue);
+                Deck.Shuffle(deck.Cards, deck.SeedValue);
                 Board = deck.DrawCard(12);
             }
             GameTime = new Stopwatch();

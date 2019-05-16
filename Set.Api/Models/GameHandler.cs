@@ -19,11 +19,11 @@ namespace SetApi.Models
             gameNum = 0;
         }
 
-        public Guid CreateGame(Seed seedObj)
+        public Guid CreateGame(int? seed)
         {
             lock (lockObject)
             {
-                Game game = seedObj.HasSeed ? new Game(seedObj.SeedValue) : new Game();
+                Game game = seed.HasValue ? new Game(seed.Value) : new Game(null);
                 UpdateGameID();
                 if (gameCounter.ContainsKey(gameNum))
                 {
