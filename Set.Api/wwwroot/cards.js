@@ -2,7 +2,7 @@
 
     constructor (){
         this.count = 0;
-        this.selectedCards = [];
+        this.cards = [];
         this.firstSelect = false;
     }
 
@@ -12,7 +12,7 @@
 
     hasCard(cardID) {
         for (let i = 0; i < this.count; i++) {
-            if (this.selectedCards[i] === cardID) {
+            if (this.cards[i] === cardID) {
                 return true;
             }
         }
@@ -20,23 +20,23 @@
     }
 
     getSelectedCards() {
-        return this.selectedCards;
+        return this.cards;
     }
 
     reset() {
-        this.selectedCards = [];
+        this.cards = [];
         this.count = 0;
     }
 
     addCard(card) {
-        this.selectedCards.push(card);
+        this.cards.push(card);
         this.count += 1;
     }
 
     removeCard(cardID) {
         for (let i = 0; i < this.count; i++) {
-            if (this.selectedCards[i] === cardID) {
-                this.selectedCards.splice(i, 1);
+            if (this.cards[i] === cardID) {
+                this.cards.splice(i, 1);
             }
         }
         this.count -= 1;

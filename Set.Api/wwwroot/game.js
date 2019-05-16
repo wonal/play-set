@@ -29,6 +29,7 @@ export class Game {
         this.gameTime = DEFAULT_TIME;
         this.topScores = [];
         this.setHistory = [];
+
         this.createBoard();
     }
 
@@ -45,10 +46,9 @@ export class Game {
         const data = await response.json();
         this.gameID = data.gameID;
         this.topScores = data.topScores;
-        this.board = [];
         this.updateBoard(data.cards);
-        this.renderBoard();
-        const timeResponse = await fetch(`${URL}/markstart/${this.gameID}`);
+        this.renderGame();
+        await fetch(`${URL}/markstart/${this.gameID}`);
     }
 
     updateBoard(cards) {
@@ -59,10 +59,9 @@ export class Game {
     }
 
     createCardImage(count, fill, color, shape, border) {
-        const imgurl = "/images/";
         const cardValue = `${count},${fill},${color},${shape}`;
         const cardImage = document.createElement("img");
-        cardImage.src = `${imgurl}${cardValue}.png`;
+        cardImage.src = `/images/${cardValue}.png`;
         cardImage.alt = cardValue;
         cardImage.id = cardValue;
         cardImage.className = border;
@@ -81,11 +80,11 @@ export class Game {
             this.changeBorder([e.currentTarget.id], SELECTED_BORDER);
             this.selectedCards.addCard(e.currentTarget.id);
             if (this.selectedCards.getCount() == 3) {
-                this.renderBoard();
-                await this.checkCards();
+                this.renderGame();
+                await this.makeGuess();
             }
         }
-        this.renderBoard();
+        this.renderGame();
     }
 
     changeBorder(cardIDs, borderColor) {
@@ -104,12 +103,9 @@ export class Game {
         }
     }
 
-    renderBoard() {
+    renderGame() {
         const board = document.getElementById('board');
-        const numNodes = board.childNodes.length;
-        for (let i = 0; i < numNodes; i++) {
-            board.removeChild(board.childNodes[0]);
-        }
+        board.innerHTML = "";
         for (const cardObj of this.board) {
             const newCard = this.createCardImage(cardObj.count, cardObj.fill, cardObj.color, cardObj.shape, cardObj.cardBorder);
             newCard.addEventListener("click", this.markCard.bind(this));
@@ -144,10 +140,7 @@ export class Game {
         }
         
         const prevSets = document.getElementById("thirdcolumn");
-        const length = prevSets.childNodes.length;
-        for (let i = 0; i < length; i++) {
-            prevSets.removeChild(prevSets.childNodes[0]);
-        }
+        prevSets.innerHTML = "";
 
         for (let i = this.setHistory.length - 1; i > -1; i--) {
             const div = document.createElement("div");
@@ -165,6 +158,44 @@ export class Game {
         }
     }
 
+    async makeGuess() {
+        const selectedCards = this.createCardsFromSelected();
+        const id = this.gameID;
+
+        const fetchData = {
+            method: 'POST',
+            body: JSON.stringify({ GameID: id, Card1: selectedCards[0], Card2: selectedCards[1], Card3: selectedCards[2] }),
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                'Accept-Encoding': 'application/json'
+            })
+        };
+        const response = await fetch(`${URL}/validate`, fetchData);
+        const body = await response.json();
+        if (body.validSet) {
+            this.changeBorder(this.selectedCards.getSelectedCards(), VALID_BORDER);
+            this.setHistory.push(this.selectedCards.getSelectedCards());
+            this.renderGame();
+            await sleep(600);
+            this.updateBoard(body.board);
+            if (body.winState) {
+                await this.enterWinState();
+            }
+            else {
+                this.changeBorder(this.selectedCards.getSelectedCards(), DEFAULT_BORDER);
+                this.gameText = "Cards remaining:" + body.cardsRemaining;
+            }
+        }
+        else {
+            this.changeBorder(this.selectedCards.getSelectedCards(), INVALID_BORDER);
+            this.renderGame();
+            await sleep(600);
+            this.changeBorder(this.selectedCards.getSelectedCards(), DEFAULT_BORDER);
+            this.updateBoard(body.board);
+        }
+        this.selectedCards.reset();
+    }
+
     async timedGame() {
         this.seedMode = false;
         this.seedValue = 0;
@@ -176,7 +207,7 @@ export class Game {
         while (number != null && (number === "" || Number.isInteger(Number(number)) === false)) {
             number = window.prompt("That is not a valid number.  Please enter an integer value for a seed: ")
         }
-        if (number == null) {
+        if (number === null) {
             return;
         }
         this.seedMode = true;
@@ -201,46 +232,8 @@ export class Game {
         this.winStatus = false;
         this.validSet = false;
         this.gameTime = DEFAULT_TIME;
-        this.renderBoard();
+        this.renderGame();
     };
-
-    async checkCards() {
-        const selectedCards = this.createCards();
-        const id = this.gameID;
-
-        const fetchData = {
-            method: 'POST',
-            body: JSON.stringify({ GameID: id, Card1: selectedCards[0], Card2: selectedCards[1], Card3: selectedCards[2] }),
-            headers: new Headers({
-                'Content-Type': 'application/json',
-                'Accept-Encoding': 'application/json'
-            })
-        };
-        const response = await fetch(`${URL}/validate`, fetchData);
-        const body = await response.json();
-        if (body.validSet) {
-            this.changeBorder(this.selectedCards.selectedCards, VALID_BORDER);
-            this.setHistory.push(this.selectedCards.selectedCards);
-            this.renderBoard();
-            await sleep(600);
-            this.updateBoard(body.board);
-            if (body.winState) {
-                await this.enterWinState();
-            }
-            else {
-                this.changeBorder(this.selectedCards.selectedCards, DEFAULT_BORDER);
-                this.gameText = "Cards remaining:" + body.cardsRemaining;
-            }
-        }
-        else {
-            this.changeBorder(this.selectedCards.selectedCards, INVALID_BORDER);
-            this.renderBoard();
-            await sleep(600);
-            this.changeBorder(this.selectedCards.selectedCards, DEFAULT_BORDER);
-            this.updateBoard(body.board);
-        }
-        this.selectedCards.reset();
-    }
 
     async enterWinState() {
         this.winStatus = true;
@@ -248,7 +241,7 @@ export class Game {
         for (const card of this.board) {
             this.changeBorder([`${card.count},${card.fill},${card.color},${card.shape}`], WIN_STATE);
         }
-        this.renderBoard();
+        this.renderGame();
         const name = this.seedMode ? "" : getName();
         const fetchData = {
             method: 'POST',
@@ -262,13 +255,13 @@ export class Game {
         const body = await response.json();
         this.gameTime = formatTime(body.gameTime);
         this.topScores = body.topScores;
-        this.renderBoard();
+        this.renderGame();
     }
 
-    createCards() {
+    createCardsFromSelected() {
         const cards = [];
         for (let j = 0; j < 3; j++) {
-            const card = this.selectedCards.selectedCards[j].split(",");
+            const card = this.selectedCards.getSelectedCards()[j].split(",");
             const selectedCard = {
                 Count: attributeToOption(card[0], "one", "three"),
                 Fill: attributeToOption(card[1], "solid", "hollow"),
