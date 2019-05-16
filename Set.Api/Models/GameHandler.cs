@@ -4,7 +4,7 @@ using Set.Api.Models;
 
 namespace SetApi.Models
 {
-    public class Games
+    public class GameHandler
     {
         private readonly Dictionary<int, Guid> gameCounter;
         private readonly Dictionary<Guid, Game> idToGame;
@@ -12,7 +12,7 @@ namespace SetApi.Models
         private readonly object lockObject = new object();
         public int PlayerID { get; private set; }
 
-        public Games()
+        public GameHandler()
         {
             gameCounter = new Dictionary<int, Guid>();
             idToGame = new Dictionary<Guid, Game>();

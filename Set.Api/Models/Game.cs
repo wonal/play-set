@@ -4,11 +4,11 @@ namespace SetApi.Models
 {
     public class Game
     {
-        private Deck deck;
+        private readonly Deck deck;
         public List<Card> Board { get; private set;}
         public bool ValidSet { get; set; }
         public bool WinState { get; set; }
-        public int CardsRemaining { get; set; }
+        public int CardsRemaining => Board.Count + deck.Cards.Count; 
         public Stopwatch GameTime { get; private set; }
         public bool GameStarted { get; set; }
         public bool WinRecorded { get; set; }
@@ -32,7 +32,6 @@ namespace SetApi.Models
         {
             ValidSet = false;
             WinState = false;
-            CardsRemaining = 81;
             Board = deck.DrawCard(12);
             while (!BoardContainsSet(Board))
             {
@@ -83,26 +82,14 @@ namespace SetApi.Models
 
         public bool ValidCards(Card card1, Card card2, Card card3)
         {
-            if(Board.Count == 0)
-            {
-                return false;
-            }
-
-            int matches = 0;
-            foreach (Card card in Board)
-            {
-                matches += (card.Equals(card1) || card.Equals(card2) || card.Equals(card3)) ?  1 :  0;
-            }
-
-            return matches == 3;
+            return Board.Contains(card1) && Board.Contains(card2) && Board.Contains(card3);
         }
 
-        public void MakeGuess(Card card1, Card card2, Card card3)
+        public bool MakeGuess(Card card1, Card card2, Card card3)
         {
             if (!IsSet(card1, card2, card3))
             {
-                ValidSet = false;
-                return;
+                return false;
             }
 
             List<Card> cards = new List<Card> { card1, card2, card3 };
@@ -120,9 +107,7 @@ namespace SetApi.Models
                 UpdateBoard(cards);
             }
 
-            CardsRemaining -= 3;
-            ValidSet = true;
-            return;
+            return true;
         }
 
         private void RemoveFromBoard(List<Card>cards)

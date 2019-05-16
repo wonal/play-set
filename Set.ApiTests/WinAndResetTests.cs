@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NUnit.Framework;
+using Set.Api.DTOs;
 using Set.Api.Models;
 using SetApi.Models;
 using System;
@@ -14,7 +15,7 @@ namespace Set.ApiTests
     class WinAndResetTests
     {
         private GameDTO gameDTO;
-        private WinnerDTO winnerDTO;
+        private WinStateDTO winStateDTO;
 
         [SetUp]
         public async Task TestSetup()
@@ -34,7 +35,7 @@ namespace Set.ApiTests
                 GuessDTO guess = new GuessDTO { GameID = gameDTO.GameID, Card1 = cards[0], Card2 = cards[1], Card3 = cards[2] };
                 StringContent guessContent = TestUtilities.ObjToStringContent(guess);
 
-                HttpResponseMessage postResponse = await client.PostAsync("validate", guessContent);
+                HttpResponseMessage postResponse = await client.PostAsync("submitguess", guessContent);
                 string responseContent = await postResponse.Content.ReadAsStringAsync();
                 gameDTO = JsonConvert.DeserializeObject<GameDTO>(responseContent);
             }
@@ -44,26 +45,26 @@ namespace Set.ApiTests
         public async Task TestWinState()
         {
             HttpClient client = TestUtilities.GetHttpClient();
-            WinnerDTO win = new WinnerDTO { GameID = gameDTO.GameID, PlayerName = "test", GameTime = 0, TopScores = new List<Player>() };
+            WinnerDTO win = new WinnerDTO { GameID = gameDTO.GameID, PlayerName = "test" };
             StringContent winContent = TestUtilities.ObjToStringContent(win);
 
-            HttpResponseMessage postResponse = await client.PostAsync("markend", winContent);
+            HttpResponseMessage postResponse = await client.PostAsync("postwin", winContent);
             string responseContent = await postResponse.Content.ReadAsStringAsync();
-            winnerDTO = JsonConvert.DeserializeObject<WinnerDTO>(responseContent);
+            winStateDTO = JsonConvert.DeserializeObject<WinStateDTO>(responseContent);
 
             Assert.IsTrue(gameDTO.WinState);
-            Assert.NotZero(winnerDTO.GameTime);
+            Assert.NotZero(winStateDTO.GameTime);
         }
 
         [Test]
         public async Task TestRepeatRequestToEndResultsIn400()
         {
             HttpClient client = TestUtilities.GetHttpClient();
-            WinnerDTO win = new WinnerDTO { GameID = gameDTO.GameID, PlayerName = "test", GameTime = 0, TopScores = new List<Player>() };
+            WinnerDTO win = new WinnerDTO { GameID = gameDTO.GameID, PlayerName = "test"};
             StringContent winContent = TestUtilities.ObjToStringContent(win);
 
-            HttpResponseMessage postResponse1 = await client.PostAsync("markend", winContent);
-            HttpResponseMessage postResponse2 = await client.PostAsync("markend", winContent);
+            HttpResponseMessage postResponse1 = await client.PostAsync("postwin", winContent);
+            HttpResponseMessage postResponse2 = await client.PostAsync("postwin", winContent);
             Assert.AreEqual(HttpStatusCode.BadRequest, postResponse2.StatusCode);
         }
 
@@ -82,7 +83,7 @@ namespace Set.ApiTests
             GuessDTO guess = new GuessDTO { GameID = gameObj.GameID, Card1 = cards[0], Card2 = cards[1], Card3 = cards[2] };
             StringContent guessContent = TestUtilities.ObjToStringContent(guess);
 
-            HttpResponseMessage postResponse = await client.PostAsync("validate", guessContent);
+            HttpResponseMessage postResponse = await client.PostAsync("submitguess", guessContent);
             string responseContent = await postResponse.Content.ReadAsStringAsync();
             gameDTO = JsonConvert.DeserializeObject<GameDTO>(responseContent);
 

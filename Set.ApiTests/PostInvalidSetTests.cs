@@ -34,7 +34,7 @@ namespace Set.ApiTests
             GuessDTO notASet = new GuessDTO { GameID = gameDTO.GameID, Card1 = gameDTO.Board[0], Card2 = gameDTO.Board[1], Card3 = gameDTO.Board[2] };
             StringContent guessContent = TestUtilities.ObjToStringContent(notASet);
 
-            HttpResponseMessage postResponse = await client.PostAsync("validate", guessContent);
+            HttpResponseMessage postResponse = await client.PostAsync("submitguess", guessContent);
             string responseContent = await postResponse.Content.ReadAsStringAsync();
             gameDTO = JsonConvert.DeserializeObject<GameDTO>(responseContent);
 
@@ -51,7 +51,7 @@ namespace Set.ApiTests
             Card card3 = new Card(Characteristic.Option1, Characteristic.Option1, Characteristic.Option3, Characteristic.Option1);
             GuessDTO notOnBoard = new GuessDTO { GameID = gameDTO.GameID, Card1 = card1, Card2 = card2, Card3 = card3 };
             StringContent guessContent = TestUtilities.ObjToStringContent(notOnBoard);
-            HttpResponseMessage postResponse = await client.PostAsync("validate", guessContent);
+            HttpResponseMessage postResponse = await client.PostAsync("submitguess", guessContent);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, postResponse.StatusCode);
         }
@@ -59,11 +59,11 @@ namespace Set.ApiTests
         [Test]
         public async Task Test400CodeForEarlyEndAttempt()
         {
-            WinnerDTO fakedWin = new WinnerDTO { GameID = gameDTO.GameID, PlayerName = "anonymous", GameTime = 0, TopScores = new List<Player>() };
+            WinnerDTO fakedWin = new WinnerDTO { GameID = gameDTO.GameID, PlayerName = "anonymous"};
             StringContent winContent = TestUtilities.ObjToStringContent(fakedWin);
 
             HttpClient client = TestUtilities.GetHttpClient();
-            HttpResponseMessage response = await client.PostAsync("markend", winContent);
+            HttpResponseMessage response = await client.PostAsync("postwin", winContent);
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
         }
     }

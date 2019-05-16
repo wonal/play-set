@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Set.Api.DTOs;
 using Set.Api.Models;
 using SetApi.Models;
 using System;
@@ -11,7 +12,7 @@ namespace SetApi.Controllers
     [ApiController]
     public class SetController : Controller
     {
-        private static readonly Games GameHolder = new Games();
+        private static readonly GameHandler GameHolder = new GameHandler();
         private static readonly object dbLockObject = new object();
 
         [HttpPost("newgame")]
@@ -55,7 +56,7 @@ namespace SetApi.Controllers
             return Ok();
         }
 
-        [HttpPost("validate")]
+        [HttpPost("submitguess")]
         public IActionResult PostSelectedCards(GuessDTO guess)
         {
             GameResult gameResult = GameHolder.RetrieveGame(guess.GameID);
@@ -70,12 +71,12 @@ namespace SetApi.Controllers
                 return BadRequest();
             }
 
-            game.MakeGuess(guess.Card1, guess.Card2, guess.Card3);
+            var validSet = game.MakeGuess(guess.Card1, guess.Card2, guess.Card3);
             GameDTO gameDTO = new GameDTO
             {
                 GameID = guess.GameID,
                 Board = game.Board,
-                ValidSet = game.ValidSet,
+                ValidSet = validSet,
                 WinState = game.WinState,
                 CardsRemaining = game.CardsRemaining,
                 TopScores = new List<Player>()
@@ -84,7 +85,7 @@ namespace SetApi.Controllers
             return Ok(gameDTO);
         }
 
-        [HttpPost("markend")]
+        [HttpPost("postwin")]
         public IActionResult PostWinningPlayer(WinnerDTO winner)
         {
             GameResult gameResult = GameHolder.RetrieveGame(winner.GameID);
@@ -100,7 +101,7 @@ namespace SetApi.Controllers
             }
 
             int time = game.GameTime.GetTotalTime();
-            WinnerDTO winnerDTO = new WinnerDTO
+            WinStateDTO winStateDTO = new WinStateDTO
             {
                 GameID = winner.GameID,
                 PlayerName = winner.PlayerName,
@@ -119,11 +120,11 @@ namespace SetApi.Controllers
                         context.SaveChanges();
                     }
                     List<Player> player = context.Players.OrderBy(p => p.Time).Take(5).ToList();
-                    winnerDTO.TopScores = player;
+                    winStateDTO.TopScores = player;
                     game.WinRecorded = true;
                 }
             }
-            return Ok(winnerDTO);
+            return Ok(winStateDTO);
         }
     }
 }

@@ -170,7 +170,7 @@ export class Game {
                 'Accept-Encoding': 'application/json'
             })
         };
-        const response = await fetch(`${URL}/validate`, fetchData);
+        const response = await fetch(`${URL}/submitguess`, fetchData);
         const body = await response.json();
         if (body.validSet) {
             this.changeBorder(this.selectedCards.getSelectedCards(), VALID_BORDER);
@@ -245,13 +245,13 @@ export class Game {
         const name = this.seedMode ? "" : getName();
         const fetchData = {
             method: 'POST',
-            body: JSON.stringify({ GameID: this.gameID, PlayerName: name, GameTime: 0, TopScores: []}),
+            body: JSON.stringify({ GameID: this.gameID, PlayerName: name}),
             headers: new Headers({
                 'Content-Type': 'application/json',
                 'Accept-Encoding': 'application/json'
             })
         };
-        const response = await fetch(`${URL}/markend`, fetchData);
+        const response = await fetch(`${URL}/postwin`, fetchData);
         const body = await response.json();
         this.gameTime = formatTime(body.gameTime);
         this.topScores = body.topScores;

@@ -26,7 +26,7 @@ namespace Set.ApiTests
             GuessDTO guess = new GuessDTO { GameID = gameObj.GameID, Card1 = cards[0], Card2 = cards[1], Card3 = cards[2] };
             StringContent guessContent = TestUtilities.ObjToStringContent(guess);
 
-            HttpResponseMessage postResponse = await client.PostAsync("validate", guessContent);
+            HttpResponseMessage postResponse = await client.PostAsync("submitguess", guessContent);
             string responseContent = await postResponse.Content.ReadAsStringAsync();
             GameDTO gameDTO = JsonConvert.DeserializeObject<GameDTO>(responseContent);
 
