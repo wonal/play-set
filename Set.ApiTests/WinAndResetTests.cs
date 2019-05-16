@@ -53,7 +53,8 @@ namespace Set.ApiTests
             winStateDTO = JsonConvert.DeserializeObject<WinStateDTO>(responseContent);
 
             Assert.IsTrue(gameDTO.WinState, "Win state is not true");
-            Assert.NotZero(winStateDTO.GameTime, "Expected a gametime above zero");
+            Assert.NotZero(winStateDTO.GameTime, "Expected a game time above zero");
+            Assert.AreEqual(gameDTO.CardsRemaining, 9, "Expected 9 cards remaining");
         }
 
         [Test]
