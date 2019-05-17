@@ -1,5 +1,13 @@
 ﻿import {
     URL,
+    COUNT1,
+    COUNT2,
+    FILL1,
+    FILL2,
+    COLOR1,
+    COLOR2,
+    SHAPE1,
+    SHAPE2,
     COUNTS,
     FILLS,
     COLORS,
@@ -11,8 +19,7 @@
     WIN_STATE,
     CARDS_REMAINING,
     DEFAULT_TIME,
-    MAX_INT32
-} from './constants.js'
+    MAX_INT32} from './constants.js'
 import { attributeToOption, formatTime, sleep, getName } from './utilities.js'
 import { SelectedCards, Card } from './cards.js'
 
@@ -138,13 +145,16 @@ export class Game {
         else {
             seedValue.innerText = `Seed: ${this.seed}`;
         }
-        
+
         const prevSets = document.getElementById("thirdcolumn");
+        if (this.setHistory.length > 0) {
+            prevSets.style.visibility = "visible";
+        }
         prevSets.innerHTML = "";
 
         for (let i = this.setHistory.length - 1; i > -1; i--) {
             const div = document.createElement("div");
-            div.className = "row";
+            div.className = "previousrow";
             prevSets.appendChild(div);
             for (const set of this.setHistory[i]) {
                 const column = document.createElement("div");
@@ -230,6 +240,7 @@ export class Game {
         this.winStatus = false;
         this.validSet = false;
         this.gameTime = DEFAULT_TIME;
+        this.setHistory = [];
         this.renderGame();
     };
 
@@ -261,10 +272,10 @@ export class Game {
         for (let j = 0; j < 3; j++) {
             const card = this.selectedCards.getSelectedCards()[j].split(",");
             const selectedCard = {
-                Count: attributeToOption(card[0], "one", "three"),
-                Fill: attributeToOption(card[1], "solid", "hollow"),
-                Color: attributeToOption(card[2], "red", "purple"),
-                Shape: attributeToOption(card[3], "circle", "diamond")
+                Count: attributeToOption(card[0], COUNT1, COUNT2),
+                Fill: attributeToOption(card[1], FILL1, FILL2),
+                Color: attributeToOption(card[2], COLOR1, COLOR2),
+                Shape: attributeToOption(card[3], SHAPE1, SHAPE2)
             };
             cards.push(selectedCard);
         }
