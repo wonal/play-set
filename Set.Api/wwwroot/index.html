@@ -5,6 +5,7 @@
     <title>Play Set!</title>
     <link rel="stylesheet" href="StyleSheet.css" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans|Righteous" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div>
@@ -21,7 +22,7 @@
                         <p>
                             There are 81 unique cards in a deck, and the board will start out with 12 cards.
                             Each card has four characteristics:<br />
-                            - Color (red, yellow, purple)<br />
+                            - Color (orange, green, blue)<br />
                             - Shape (circle, diamond, rectangle)<br />
                             - Shading (solid, hollow, patterned)<br />
                             - Number of shapes (one, three, six)<br />
@@ -33,28 +34,28 @@
                             This is an example of a set:<br />
                             <div class="row">
                                 <div class="column">
-                                    <img src="/images/one,hollow,red,diamond.png" alt="one,hollow,red,diamond" />
+                                    <img src="/images/one,solid,blue,rectangle.png" alt="one,solid,blue,rectangle" />
                                 </div>
                                 <div class="column">
-                                    <img src="/images/three,stacked,yellow,diamond.png" alt="three,stacked,yellow,diamond" />
+                                    <img src="/images/six,striped,blue,circle.png" alt="six,striped,blue,circle" />
                                 </div>
                                 <div class="column">
-                                    <img src="/images/six,solid,purple,diamond.png" alt="six,solid,purple,diamond" />
+                                    <img src="/images/three,hollow,blue,diamond.png" alt="three,hollow,blue,diamond" />
                                 </div>
                             </div>
                             <br />
-                            All three cards differ in color; all have the same shape; all differ in their shading;
+                            All three cards have the same color; all differ in shape; all differ in their shading;
                             and all have different numbers of shapes.<br />
                             This would not be a set:<br />
                             <div class="row">
                                 <div class="column">
-                                    <img src="/images/six,solid,red,rectangle.png" alt="six,solid,red,rectangle" />
+                                    <img src="/images/six,solid,orange,rectangle.png" alt="six,solid,orange,rectangle" />
                                 </div>
                                 <div class="column">
-                                    <img src="/images/six,hollow,yellow,circle.png" alt="six,hollow,yellow,circle" />
+                                    <img src="/images/six,hollow,green,circle.png" alt="six,hollow,green,circle" />
                                 </div>
                                 <div class="column">
-                                    <img src="/images/six,stacked,purple,circle.png" alt="six,stacked,purple,circle" />
+                                    <img src="/images/six,striped,blue,circle.png" alt="six,striped,blue,circle" />
                                 </div>
                             </div>
                             <br />
@@ -77,7 +78,10 @@
             <div id="deckCount" class="gameInfo">Cards Remaining: 81</div>
             <div id="time" class="gameInfo time"></div>
         </div>
-        <div id="thirdcolumn" class="thirdcolumn"></div>
+        <div id="thirdcolumn" class="thirdcolumn">
+            <div id="sethistory" class="sethistory"></div>
+        </div>
+            
     </div>
 
     <script type="module" src="site.js"></script>
