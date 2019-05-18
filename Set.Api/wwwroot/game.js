@@ -19,7 +19,8 @@
     WIN_STATE,
     CARDS_REMAINING,
     DEFAULT_TIME,
-    MAX_INT32} from './constants.js'
+    MAX_INT32
+} from './constants.js'
 import { attributeToOption, formatTime, sleep, getName } from './utilities.js'
 import { SelectedCards, Card } from './cards.js'
 
