@@ -6,32 +6,37 @@
 }
 
 .default{
-    border: 3px solid #cccccc
+    border: 2px solid white
 }
 
 .selected{
-    border: 3px solid #333333
+    border: 2px solid #333333
 }
 
 .valid{
-    border: 3px solid #76d500
+    border: 2px solid #76d500
 }
 
 .invalid{
-    border: 3px solid red
+    border: 2px solid red
 }
 
 .win{
-    border: 3px solid gold
+    border: 2px solid orange
 }
 
 .history{
-    border: 2px solid #76d500
+    border: 0px solid white
+}
+
+body{
+    background-color: #e5ded7;
 }
 
 h1{
     font-size: 60px;
-    font-family: 'Righteous', cursive;
+    font-family: 'Josefin sans', sans-serif;
+    font-weight: 700;
     text-align: center;
 }
 
@@ -43,6 +48,7 @@ h1{
 .firstcolumn{
     display:flex;
     flex-direction: column;
+    margin-left: 20px;
 }
 
 .buttons {
@@ -50,32 +56,33 @@ h1{
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    margin-left: 20px;
 }
 
 button{
     background-color: white;
-    border: 3px solid #cccccc;
+    border: 3px solid white;
     width: 200px;
     height: 75px;
     border-radius: 12px;
     font-size: 20px;
-    font-family: 'Righteous', cursive;
+    font-family: 'Josefin sans', sans-serif;
+    font-weight: 400;
     text-align: center;
 }
 
 .gameInfo{
     font-size: 26px;
-    font-family: 'Righteous', cursive;
+    font-family: 'Josefin sans', sans-serif;
+    font-weight: 400;
 }
 
 .topscore {
     width: 400px;
     height: 180px;
     text-align: left;
-    margin-left: 20px;
     font-size: 24px;
-    font-family: 'Righteous', cursive;
+    font-family: 'Josefin sans', sans-serif;
+    font-weight: 300;
 }
 
 .secondcolumn{
@@ -93,10 +100,20 @@ button{
 }
 
 .thirdcolumn{
-    overflow: auto;
+    visibility: hidden;
     width: 400px;
-    height: 600px;
-    padding-left: 50px;
+
+}
+
+.sethistory{
+    padding-top: 25px;
+    padding-left: 25px;
+    padding-right: 25px;
+    border-radius: 25px;
+    width: 200px;
+    height: 620px;
+    background-color: #efeae6;
+    overflow: auto;
 }
 
 .previousset{
@@ -108,6 +125,11 @@ button{
 
 .previouscolumn{
     padding: 0px;
+}
+
+.previousrow{
+    display:flex;
+    justify-content:center;
 }
 
 /*
@@ -201,12 +223,13 @@ button{
     .topscore{
         order: 3;
     }
+
     .thirdcolumn {
-        width: 0px;
-        height: 0px;
+        display: none;
     }
+
     .board{
-        width:515px;
+        width: 515px;
     }
     .secondcolumn{
         display: flex;

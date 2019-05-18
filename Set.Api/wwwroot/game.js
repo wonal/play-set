@@ -146,9 +146,12 @@ export class Game {
             seedValue.innerText = `Seed: ${this.seed}`;
         }
 
-        const prevSets = document.getElementById("thirdcolumn");
+        const prevSets = document.getElementById("sethistory");
         if (this.setHistory.length > 0) {
             prevSets.style.visibility = "visible";
+        }
+        else {
+            prevSets.style.visibility = "hidden";
         }
         prevSets.innerHTML = "";
 
@@ -251,7 +254,7 @@ export class Game {
             this.changeBorder([`${card.count},${card.fill},${card.color},${card.shape}`], WIN_STATE);
         }
         this.renderGame();
-        const name = this.seedMode ? "" : getName();
+        const name = this.seed ? "" : getName();
         const fetchData = {
             method: 'POST',
             body: JSON.stringify({ GameID: this.gameID, PlayerName: name}),
