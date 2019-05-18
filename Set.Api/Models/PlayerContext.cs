@@ -1,15 +1,22 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace SetApi.Models
 {
     public class PlayerContext : DbContext
     {
+        private readonly IConfiguration config;
+
         public DbSet<Player> Players { get; set; }
+        public PlayerContext(IConfiguration config)
+        {
+            this.config = config;
+        }
 
         protected override void OnConfiguring (DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Filename=./playercontext.db");
+            optionsBuilder.UseSqlite($"Filename={config["DBPath"]}playercontext.db");
         }
     }
 

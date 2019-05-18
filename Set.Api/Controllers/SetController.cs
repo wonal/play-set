@@ -14,6 +14,12 @@ namespace SetApi.Controllers
     {
         private static readonly GameHandler GameHolder = new GameHandler();
         private static readonly object dbLockObject = new object();
+        private readonly PlayerContext context;
+
+        public SetController(PlayerContext playerContext)
+        {
+            this.context = playerContext;
+        }
 
         [HttpPost("newgame")]
         public BoardDTO GetBoard(SeedDTO seedDTO)
@@ -26,11 +32,8 @@ namespace SetApi.Controllers
                 TopScores = new List<Player>()
             };
 
-            using (PlayerContext context = new PlayerContext())
-            {
-                List<Player> player = context.Players.OrderBy(p => p.Time).Take(5).ToList();
-                boardDTO.TopScores = player;
-            }
+            List<Player> player = context.Players.OrderBy(p => p.Time).Take(5).ToList();
+            boardDTO.TopScores = player;
 
             return boardDTO;
         }
@@ -110,18 +113,15 @@ namespace SetApi.Controllers
 
             lock (dbLockObject)
             {
-                using (PlayerContext context = new PlayerContext())
+                if (game.SeedValue.HasValue == false)
                 {
-                    if(game.SeedValue.HasValue == false)
-                    {
-                        List<Player> players = context.Players.ToList();
-                        context.Add(new Player { Name = winner.PlayerName, Time = time });
-                        context.SaveChanges();
-                    }
-                    List<Player> player = context.Players.OrderBy(p => p.Time).Take(5).ToList();
-                    winStateDTO.TopScores = player;
-                    game.WinRecorded = true;
+                    List<Player> players = context.Players.ToList();
+                    context.Add(new Player { Name = winner.PlayerName, Time = time });
+                    context.SaveChanges();
                 }
+                List<Player> player = context.Players.OrderBy(p => p.Time).Take(5).ToList();
+                winStateDTO.TopScores = player;
+                game.WinRecorded = true;
             }
             return Ok(winStateDTO);
         }
