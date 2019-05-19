@@ -18,11 +18,11 @@
     VALID_BORDER,
     WIN_STATE,
     CARDS_REMAINING,
-    DEFAULT_TIME,
     MAX_INT32
 } from './constants.js'
 import { attributeToOption, formatTime, sleep, getName } from './utilities.js'
 import { SelectedCards, Card } from './cards.js'
+import { Stopwatch } from './stopwatch.js'
 
 export class Game {
     constructor() {
@@ -30,18 +30,17 @@ export class Game {
         this.validSet = false;
         this.selectedCards = new SelectedCards();
         this.board = [];
-        this.seedMode = false;
         this.seed = null;
         this.gameID = 0;
         this.gameText = CARDS_REMAINING;
-        this.gameTime = DEFAULT_TIME;
+        this.stopWatch = null;
         this.topScores = [];
         this.setHistory = [];
 
-        this.createBoard();
+        this.createGame();
     }
 
-    async createBoard() {
+    async createGame() {
         const fetchData = {
             method: 'POST',
             body: JSON.stringify({ seed: this.seed }),   
@@ -55,8 +54,10 @@ export class Game {
         this.gameID = data.gameID;
         this.topScores = data.topScores;
         this.updateBoard(data.cards);
+        const startResponse = await fetch(`${URL}/markstart/${this.gameID}`);
+        const startData = await startResponse.json();
+        this.stopWatch = new Stopwatch(startData.startTime);
         this.renderGame();
-        await fetch(`${URL}/markstart/${this.gameID}`);
     }
 
     updateBoard(cards) {
@@ -120,8 +121,10 @@ export class Game {
             board.appendChild(newCard);
         }
 
-        const time = document.getElementById("time");
-        time.innerText = this.gameTime;
+        if (this.winStatus) {
+            const time = document.getElementById("time");
+            time.innerText = this.gameTime;
+        }
 
         document.getElementById("deckCount").innerText = this.gameText;
 
@@ -210,12 +213,13 @@ export class Game {
         this.selectedCards.reset();
     }
 
-    async timedGame() {
+    async createNewGame() {
         this.seed = null;
+        this.stopWatch.stop();
         await this.resetGame();
     }
 
-    seedGame() {
+    async createSeedGame() {
         let number = window.prompt("Enter an integer seed value (no decimals or fractions): ")
         while (number != null && (number === "" || Number.isInteger(Number(number)) === false)) {
             number = window.prompt("That is not a valid number.  Please enter an integer value for a seed: ")
@@ -224,31 +228,21 @@ export class Game {
             return;
         }
         this.seed = Math.abs(parseInt(number, 10)) % MAX_INT32;
-        this.resetGame();
+        this.stopWatch.stop();
+        await this.resetGame();
     }
 
     async resetGame () {
-        const fetchData = {
-            method: 'POST',
-            body: JSON.stringify({ Seed: this.seed}),
-            headers: new Headers({
-                'Content-Type': 'application/json',
-                'Accept-Encoding': 'application/json'
-            })
-        };
-        const response = await fetch(`${URL}/newgame`, fetchData);
-        const data = await response.json();
-        this.updateBoard(data.cards);
-        this.gameID = data.gameID;
+        await this.createGame();
         this.gameText = CARDS_REMAINING;
         this.winStatus = false;
         this.validSet = false;
-        this.gameTime = DEFAULT_TIME;
         this.setHistory = [];
         this.renderGame();
     };
 
     async enterWinState() {
+        this.stopWatch.stop();
         this.winStatus = true;
         this.gameText = "No more sets present!";
         for (const card of this.board) {

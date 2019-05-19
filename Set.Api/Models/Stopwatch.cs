@@ -4,21 +4,21 @@ namespace SetApi.Models
 {
     public class Stopwatch
     {
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public DateTimeOffset StartTime { get; set; }
+        public DateTimeOffset EndTime { get; set; }
         
         public Stopwatch()
         {
-            StartTime = DateTime.Now;
+            StartTime = DateTimeOffset.UtcNow;
             EndTime = StartTime;
         }
         public void MarkStart()
         {
-            StartTime = DateTime.Now;
+            StartTime = DateTimeOffset.UtcNow;
         }
         public void MarkEnd()
         {
-            EndTime = DateTime.Now;
+            EndTime = DateTimeOffset.UtcNow;
         }
 
         public int GetTotalTime()

@@ -23,7 +23,7 @@ function windowOnClick(event) {
     window.addEventListener("click", windowOnClick);
 
     const timeGameButton = document.getElementById("resetButton");
-    timeGameButton.addEventListener("click", game.timedGame.bind(game));
+    timeGameButton.addEventListener("click", game.createNewGame.bind(game));
     const seedGameButton = document.getElementById("seedButton");
-    seedGameButton.addEventListener("click", game.seedGame.bind(game));
+    seedGameButton.addEventListener("click", game.createSeedGame.bind(game));
 })()

@@ -16,6 +16,7 @@ namespace SetApi.Models
 
         public Game(int? seedValue)
         {
+            SeedValue = seedValue;
             deck = new Deck(seedValue);
             CreateGame();
         }

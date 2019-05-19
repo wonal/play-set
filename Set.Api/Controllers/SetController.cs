@@ -18,7 +18,7 @@ namespace SetApi.Controllers
 
         public SetController(PlayerContext playerContext)
         {
-            this.context = playerContext;
+            context = playerContext;
         }
 
         [HttpPost("newgame")]
@@ -55,7 +55,7 @@ namespace SetApi.Controllers
 
             game.GameTime.MarkStart();
             game.GameStarted = true;
-            return Ok();
+            return Ok( new TimeDTO { StartTime = game.GameTime.StartTime.ToUnixTimeMilliseconds() });
         }
 
         [HttpPost("submitguess")]
