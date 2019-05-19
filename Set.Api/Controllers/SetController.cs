@@ -25,10 +25,12 @@ namespace SetApi.Controllers
         public BoardDTO GetBoard(SeedDTO seedDTO)
         {
             Guid id = GameHolder.CreateGame(seedDTO.Seed);
+            Game game = GameHolder.RetrieveGame(id).GameObj;
             BoardDTO boardDTO = new BoardDTO
             {
                 GameID = id,
-                Cards = GameHolder.RetrieveGame(id).GameObj.Board,
+                SeedValue = game.SeedValue, 
+                Cards = game.Board,
                 TopScores = new List<Player>()
             };
 
@@ -113,7 +115,7 @@ namespace SetApi.Controllers
 
             lock (dbLockObject)
             {
-                if (game.SeedValue.HasValue == false)
+                if (game.SeedMode == false)
                 {
                     List<Player> players = context.Players.ToList();
                     context.Add(new Player { Name = winner.PlayerName, Time = time });

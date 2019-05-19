@@ -31,6 +31,7 @@ export class Game {
         this.selectedCards = new SelectedCards();
         this.board = [];
         this.seed = null;
+        this.seedMode = false;
         this.gameID = 0;
         this.gameText = CARDS_REMAINING;
         this.stopWatch = null;
@@ -53,6 +54,7 @@ export class Game {
         const data = await response.json();
         this.gameID = data.gameID;
         this.topScores = data.topScores;
+        this.seed = data.seedValue;
         this.updateBoard(data.cards);
         const startResponse = await fetch(`${URL}/markstart/${this.gameID}`);
         const startData = await startResponse.json();
@@ -131,9 +133,9 @@ export class Game {
         const scoreBoard = document.getElementById("topscore");
         scoreBoard.innerText = "";
         const seedValue = document.getElementById("seedvalue");
-        seedValue.innerText = "";
+        seedValue.innerText = `Seed: ${this.seed}`;
 
-        if (this.seed === null) {
+        if (this.seedMode === false) {
             let scores = "Top Scores:\n";
             const actualScores = this.topScores.length;
             for (let i = 0; i < 5; i++) {
@@ -145,9 +147,6 @@ export class Game {
                 }
             }
             scoreBoard.innerText = scores;
-        }
-        else {
-            seedValue.innerText = `Seed: ${this.seed}`;
         }
 
         const prevSets = document.getElementById("sethistory");
@@ -216,6 +215,7 @@ export class Game {
 
     async createNewGame() {
         this.seed = null;
+        this.seedMode = false;
         this.stopWatch.stop();
         await this.resetGame();
     }
@@ -228,7 +228,8 @@ export class Game {
         if (number === null) {
             return;
         }
-        this.seed = Math.abs(parseInt(number, 10)) % MAX_INT32;
+        this.seed = (parseInt(number, 10)) % MAX_INT32;
+        this.seedMode = true;
         this.stopWatch.stop();
         await this.resetGame();
     }
@@ -250,7 +251,7 @@ export class Game {
             this.changeBorder([`${card.count},${card.fill},${card.color},${card.shape}`], WIN_STATE);
         }
         this.renderGame();
-        const name = this.seed ? "" : getName();
+        const name = this.seedMode ? "" : getName();
         const fetchData = {
             method: 'POST',
             body: JSON.stringify({ GameID: this.gameID, PlayerName: name}),

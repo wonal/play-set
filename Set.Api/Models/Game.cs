@@ -1,23 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SetApi.Models
 {
     public class Game
     {
-        private readonly Deck deck;
+        private Deck Deck { get; set; }
         public List<Card> Board { get; private set;}
         public bool ValidSet { get; set; }
         public bool WinState { get; set; }
-        public int CardsRemaining => Board.Count + deck.Cards.Count; 
+        public int CardsRemaining => Board.Count + Deck.Cards.Count; 
         public Stopwatch GameTime { get; private set; }
         public bool GameStarted { get; set; }
         public bool WinRecorded { get; set; }
-        public int? SeedValue { get; private set; }
+        public int SeedValue { get; private set; }
+        public bool SeedMode { get; private set; }
 
         public Game(int? seedValue)
         {
-            SeedValue = seedValue;
-            deck = new Deck(seedValue);
+            Random random = new Random();
+            SeedMode = seedValue.HasValue ? true : false;
+            SeedValue = seedValue.HasValue ? seedValue.Value : random.Next(int.MinValue, int.MaxValue);
+            Deck = new Deck(SeedValue);
             CreateGame();
         }
 
@@ -25,16 +29,20 @@ namespace SetApi.Models
         {
             ValidSet = false;
             WinState = false;
-            Board = deck.DrawCard(12);
+            Board = Deck.DrawCard(12);
             while (!BoardContainsSet(Board))
             {
-                deck.Cards.AddRange(Board);
-                if (SeedValue.HasValue)
+                if (SeedMode)
                 {
-                    deck.SeedValue += 1;
+                    SeedValue += 1;
                 }
-                Deck.Shuffle(deck.Cards, deck.SeedValue);
-                Board = deck.DrawCard(12);
+                else
+                {
+                    Random random = new Random();
+                    SeedValue = random.Next(int.MinValue, int.MaxValue);
+                }
+                Deck = new Deck(SeedValue);
+                Board = Deck.DrawCard(12);
             }
             GameTime = new Stopwatch();
             GameStarted = false;
@@ -43,7 +51,7 @@ namespace SetApi.Models
 
         private bool EmptyDeck()
         {
-            return deck.Cards.Count == 0;
+            return Deck.Cards.Count == 0;
         }
 
         public static bool BoardContainsSet(List<Card> board)
@@ -129,14 +137,14 @@ namespace SetApi.Models
             {
                 foreach (int index in indices)
                 {
-                    Board.Insert(index, deck.DrawCard(1)[0]);
+                    Board.Insert(index, Deck.DrawCard(1)[0]);
                 }
             }
 
             boardContainsSet = BoardContainsSet(Board);
             while (!boardContainsSet)
             {
-                Board.AddRange(deck.DrawCard(3));
+                Board.AddRange(Deck.DrawCard(3));
                 boardContainsSet = BoardContainsSet(Board);
                 if (!boardContainsSet)
                 {
