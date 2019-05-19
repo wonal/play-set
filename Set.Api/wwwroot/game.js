@@ -176,12 +176,13 @@ export class Game {
     }
 
     async makeGuess() {
-        const selectedCards = this.createCardsFromSelected();
-        const id = this.gameID;
+        const guessedCards = [...this.selectedCards.getSelectedCards()];
+        const cardDTOs = this.createCardDTOsFromSelected(guessedCards);
+        const guess = { GameID: this.gameID, Card1: cardDTOs[0], Card2: cardDTOs[1], Card3: cardDTOs[2] };
 
         const fetchData = {
             method: 'POST',
-            body: JSON.stringify({ GameID: id, Card1: selectedCards[0], Card2: selectedCards[1], Card3: selectedCards[2] }),
+            body: JSON.stringify(guess),
             headers: new Headers({
                 'Content-Type': 'application/json',
                 'Accept-Encoding': 'application/json'
@@ -191,7 +192,7 @@ export class Game {
         const body = await response.json();
         if (body.validSet) {
             this.changeBorder(this.selectedCards.getSelectedCards(), VALID_BORDER);
-            this.setHistory.push(this.selectedCards.getSelectedCards());
+            this.setHistory.push([guessedCards[0], guessedCards[1], guessedCards[2]]);
             this.renderGame();
             await sleep(600);
             this.updateBoard(body.board);
@@ -265,10 +266,10 @@ export class Game {
         this.renderGame();
     }
 
-    createCardsFromSelected() {
+    createCardDTOsFromSelected(selected) {
         const cards = [];
         for (let j = 0; j < 3; j++) {
-            const card = this.selectedCards.getSelectedCards()[j].split(",");
+            const card = selected[j].split(",");
             const selectedCard = {
                 Count: attributeToOption(card[0], COUNT1, COUNT2),
                 Fill: attributeToOption(card[1], FILL1, FILL2),
