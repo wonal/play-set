@@ -191,28 +191,31 @@ button{
 }
 
 @media only screen and (min-width:1201px) and (max-width:1400px) {
+    h1{
+        margin-top: 5px;
+    }
     .thirdcolumn {
         visibility: visible;
         width: 25%;
     }
 
     .sethistory {
-        width: 100%;
+        height: 400px;
     }
 
     .modal-content{
         width: 75%;
     }
     img{
-        width: 125px;
-        height: 165px;
+        width: 90px;
+        height: 125px;
     }
     .gamestate {
         flex-direction: row;
     }
 
     .firstcolumn {
-        height: 430px;
+        height: 400px;
         width: 25%;
     }
 
@@ -237,11 +240,12 @@ button{
 
     .board{
         width: 100%;
+        margin-bottom: 10px;
     }
     .secondcolumn{
         display: flex;
         align-items: center;
-        width: 50%;
+        width: 37%;
     }
     .deckCount{
         order: 2;
