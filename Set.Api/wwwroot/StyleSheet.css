@@ -190,6 +190,68 @@ button{
     padding: 5px;
 }
 
+@media only screen and (min-width:1201px) and (max-width:1400px) {
+    .thirdcolumn {
+        visibility: visible;
+        width: 25%;
+    }
+
+    .sethistory {
+        width: 100%;
+    }
+
+    .modal-content{
+        width: 75%;
+    }
+    img{
+        width: 125px;
+        height: 165px;
+    }
+    .gamestate {
+        flex-direction: row;
+    }
+
+    .firstcolumn {
+        height: 430px;
+        width: 25%;
+    }
+
+    .buttons {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        width: 100%;
+        margin-bottom: 20px;
+        margin-top: 20px;
+    }
+
+    .time {
+        order: 1;
+        text-align: center;
+    }
+
+    .topscore{
+        order: 3;
+        width: 100%;
+    }
+
+    .board{
+        width: 100%;
+    }
+    .secondcolumn{
+        display: flex;
+        align-items: center;
+        width: 50%;
+    }
+    .deckCount{
+        order: 2;
+    }
+    button {
+        width: 150px;
+        height: 50px;
+        font-size: 16px;
+    }
+}
 
 @media only screen and (max-width:1200px) {
     .modal-content{
