@@ -1,4 +1,62 @@
-﻿
+﻿import {
+    COUNT1,
+    COUNT2,
+    FILL1,
+    FILL2,
+    COLOR1,
+    COLOR2,
+    SHAPE1,
+    SHAPE2,
+    DEFAULT_BORDER,
+} from './constants.js'
+
+export function changeBorder(board, cardIDs, borderColor) {
+    const length = cardIDs.length;
+    let numChanged = 0;
+    for (const card of board) {
+        for (const cardID of cardIDs) {
+            if (numChanged >= length) {
+                return;
+            }
+            if (`${card.count},${card.fill},${card.color},${card.shape}` === cardID) {
+                card.cardBorder = borderColor;
+                numChanged += 1;
+            }
+        }
+    }
+}
+
+export function resetBorder(board) {
+    for (const card of board) {
+        card.cardBorder = DEFAULT_BORDER;
+    }
+}
+
+export function createCardImage(count, fill, color, shape, border) {
+    const cardValue = `${count},${fill},${color},${shape}`;
+    const cardImage = document.createElement("img");
+    cardImage.src = `/images/${cardValue}.png`;
+    cardImage.alt = cardValue;
+    cardImage.id = cardValue;
+    cardImage.className = border;
+    return cardImage;
+}
+
+export function createCardDTOsFromSelected(selected) {
+    const cards = [];
+    for (let j = 0; j < 3; j++) {
+        const card = selected[j].split(",");
+        const selectedCard = {
+            Count: attributeToOption(card[0], COUNT1, COUNT2),
+            Fill: attributeToOption(card[1], FILL1, FILL2),
+            Color: attributeToOption(card[2], COLOR1, COLOR2),
+            Shape: attributeToOption(card[3], SHAPE1, SHAPE2)
+        };
+        cards.push(selectedCard);
+    }
+    return cards;
+}
+
 export function attributeToOption(attribute, option1Equivalent, option2Equivalent) {
     if (attribute.toLowerCase() === option1Equivalent) {
         return "Option1";

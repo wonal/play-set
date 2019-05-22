@@ -1,13 +1,5 @@
 ﻿import {
     URL,
-    COUNT1,
-    COUNT2,
-    FILL1,
-    FILL2,
-    COLOR1,
-    COLOR2,
-    SHAPE1,
-    SHAPE2,
     COUNTS,
     FILLS,
     COLORS,
@@ -20,7 +12,15 @@
     CARDS_REMAINING,
     MAX_INT32
 } from './constants.js'
-import { attributeToOption, formatTime, sleep, getName } from './utilities.js'
+import {
+    changeBorder,
+    resetBorder,
+    createCardDTOsFromSelected,
+    createCardImage,
+    formatTime,
+    sleep,
+    getName
+} from './utilities.js'
 import { SelectedCards, Card } from './cards.js'
 import { Stopwatch } from './stopwatch.js'
 
@@ -69,28 +69,19 @@ export class Game {
         }
     }
 
-    createCardImage(count, fill, color, shape, border) {
-        const cardValue = `${count},${fill},${color},${shape}`;
-        const cardImage = document.createElement("img");
-        cardImage.src = `/images/${cardValue}.png`;
-        cardImage.alt = cardValue;
-        cardImage.id = cardValue;
-        cardImage.className = border;
-        return cardImage;
-    }
 
     async markCard (e) {
-        if (this.winStatus) {
+        if (this.winStatus || this.selectedCards.getCount() >= 3) {
             return;
         }
 
         if (this.selectedCards.hasCard(e.currentTarget.id)) {
-            this.changeBorder([e.currentTarget.id], DEFAULT_BORDER);
+            changeBorder(this.board, [e.currentTarget.id], DEFAULT_BORDER);
             this.selectedCards.removeCard(e.currentTarget.id);
         } else {
-            this.changeBorder([e.currentTarget.id], SELECTED_BORDER);
+            changeBorder(this.board, [e.currentTarget.id], SELECTED_BORDER);
             this.selectedCards.addCard(e.currentTarget.id);
-            if (this.selectedCards.getCount() == 3) {
+            if (this.selectedCards.getCount() >= 3) {
                 this.renderGame();
                 await this.makeGuess();
             }
@@ -98,27 +89,12 @@ export class Game {
         this.renderGame();
     }
 
-    changeBorder(cardIDs, borderColor) {
-        const length = cardIDs.length;
-        let numChanged = 0;
-        for (const card of this.board) {
-            for (const cardID of cardIDs) {
-                if (numChanged >= length) {
-                    return;
-                }
-                if (`${card.count},${card.fill},${card.color},${card.shape}` === cardID) {
-                    card.cardBorder = borderColor;
-                    numChanged += 1;
-                }
-            }
-        }
-    }
 
     renderGame() {
         const board = document.getElementById('board');
         board.innerHTML = "";
         for (const cardObj of this.board) {
-            const newCard = this.createCardImage(cardObj.count, cardObj.fill, cardObj.color, cardObj.shape, cardObj.cardBorder);
+            const newCard = createCardImage(cardObj.count, cardObj.fill, cardObj.color, cardObj.shape, cardObj.cardBorder);
             newCard.addEventListener("click", this.markCard.bind(this));
             board.appendChild(newCard);
         }
@@ -166,7 +142,7 @@ export class Game {
                 const column = document.createElement("div");
                 column.className = "previouscolumn";
                 const characteristics = set.split(",");
-                const card = this.createCardImage(characteristics[0], characteristics[1], characteristics[2], characteristics[3], VALID_BORDER);
+                const card = createCardImage(characteristics[0], characteristics[1], characteristics[2], characteristics[3], VALID_BORDER);
                 card.className = "history previousset";
                 div.appendChild(column);
                 column.appendChild(card);
@@ -176,7 +152,7 @@ export class Game {
 
     async makeGuess() {
         const guessedCards = [...this.selectedCards.getSelectedCards()];
-        const cardDTOs = this.createCardDTOsFromSelected(guessedCards);
+        const cardDTOs = createCardDTOsFromSelected(guessedCards);
         const guess = { GameID: this.gameID, Card1: cardDTOs[0], Card2: cardDTOs[1], Card3: cardDTOs[2] };
 
         const fetchData = {
@@ -190,7 +166,7 @@ export class Game {
         const response = await fetch(`${URL}/submitguess`, fetchData);
         const body = await response.json();
         if (body.validSet) {
-            this.changeBorder(this.selectedCards.getSelectedCards(), VALID_BORDER);
+            changeBorder(this.board, guessedCards, VALID_BORDER);
             this.setHistory.push([guessedCards[0], guessedCards[1], guessedCards[2]]);
             this.renderGame();
             await sleep(600);
@@ -199,15 +175,15 @@ export class Game {
                 await this.enterWinState();
             }
             else {
-                this.changeBorder(this.selectedCards.getSelectedCards(), DEFAULT_BORDER);
+                resetBorder(this.board);
                 this.gameText = "Cards remaining:" + body.cardsRemaining;
             }
         }
         else {
-            this.changeBorder(this.selectedCards.getSelectedCards(), INVALID_BORDER);
+            changeBorder(this.board, guessedCards, INVALID_BORDER);
             this.renderGame();
             await sleep(600);
-            this.changeBorder(this.selectedCards.getSelectedCards(), DEFAULT_BORDER);
+            resetBorder(this.board);
             this.updateBoard(body.board);
         }
         this.selectedCards.reset();
@@ -248,7 +224,7 @@ export class Game {
         this.winStatus = true;
         this.gameText = "No more sets present!";
         for (const card of this.board) {
-            this.changeBorder([`${card.count},${card.fill},${card.color},${card.shape}`], WIN_STATE);
+            changeBorder(this.board, [`${card.count},${card.fill},${card.color},${card.shape}`], WIN_STATE);
         }
         this.renderGame();
         const name = this.seedMode ? "" : getName();
@@ -267,18 +243,4 @@ export class Game {
         this.renderGame();
     }
 
-    createCardDTOsFromSelected(selected) {
-        const cards = [];
-        for (let j = 0; j < 3; j++) {
-            const card = selected[j].split(",");
-            const selectedCard = {
-                Count: attributeToOption(card[0], COUNT1, COUNT2),
-                Fill: attributeToOption(card[1], FILL1, FILL2),
-                Color: attributeToOption(card[2], COLOR1, COLOR2),
-                Shape: attributeToOption(card[3], SHAPE1, SHAPE2)
-            };
-            cards.push(selectedCard);
-        }
-        return cards;
-    }
 }
