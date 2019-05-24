@@ -39,7 +39,7 @@ namespace SetApi.Models
 
         private void UpdateGameID()
         {
-            if (gameNum > 1000)
+            if (gameNum > 10000)
             {
                 gameNum = 0;
             }
