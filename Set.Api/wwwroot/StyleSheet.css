@@ -262,8 +262,13 @@ button{
         width: 75%;
     }
     img{
+        /*
         width: 110px;
         height: 150px;
+            */
+        width: 20%;
+        height: 40%;
+        border-radius: 15px;
     }
     .gamestate {
         flex-direction: column-reverse;
@@ -272,9 +277,11 @@ button{
     .firstcolumn {
         align-items: center;
         height: 300px;
+        margin-left:0px;
     }
 
     .buttons {
+        /*
         display: flex;
         flex-direction: row;
         justify-content: space-around;
@@ -283,11 +290,24 @@ button{
         margin-bottom: 20px;
         margin-top: 20px;
         order: 2;
+            */
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        width: 100%;
+        height: 30%;
+        margin-bottom: 20px;
+        margin-top: 20px;
+        order: 2;
     }
 
     .time {
         order: 1;
         text-align: center;
+    }
+
+    .gameInfo {
+        font-size: 20px;
     }
 
     .topscore{
@@ -299,7 +319,8 @@ button{
     }
 
     .board{
-        width: 515px;
+        /*width: 515px;*/
+        width: 100%;
     }
     .secondcolumn{
         display: flex;
@@ -310,8 +331,15 @@ button{
         order: 2;
     }
     button {
+        /*
         width: 150px;
         height: 50px;
         font-size: 16px;
+            */
+        width: 33%;
+        height: 80%;
+        font-size: 16px;
+        margin-left: 5px;
+        margin-right: 5px;
     }
 }

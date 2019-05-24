@@ -21,7 +21,7 @@ export const SELECTED_BORDER = "selected";
 export const INVALID_BORDER = "invalid";
 export const VALID_BORDER = "valid";
 export const WIN_STATE = "win";
-export const CARDS_REMAINING = "Cards remaining: 81";
+export const CARDS_REMAINING = "Cards Remaining: 81";
 export const DEFAULT_TIME = "Time: --h:--m:--s";
 export const MAX_INT32 = 2147483647;
 

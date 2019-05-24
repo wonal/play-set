@@ -176,7 +176,7 @@ export class Game {
             }
             else {
                 resetBorder(this.board);
-                this.gameText = "Cards remaining:" + body.cardsRemaining;
+                this.gameText = "Cards Remaining:" + body.cardsRemaining;
             }
         }
         else {
