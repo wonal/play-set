@@ -271,10 +271,6 @@ button{
     }
 
     img{
-        /*
-        width: 110px;
-        height: 150px;
-            */
         width: 20%;
         height: 40%;
         border-radius: 35px;
@@ -290,16 +286,6 @@ button{
     }
 
     .buttons {
-        /*
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        width: 475px;
-        height: 50px;
-        margin-bottom: 20px;
-        margin-top: 20px;
-        order: 2;
-            */
         display: flex;
         flex-direction: row;
         justify-content: center;
@@ -328,7 +314,6 @@ button{
     }
 
     .board{
-        /*width: 515px;*/
         width: 100%;
         margin-bottom: 60px;
     }
@@ -342,11 +327,6 @@ button{
         order: 2;
     }
     button {
-        /*
-        width: 150px;
-        height: 50px;
-        font-size: 16px;
-            */
         width: 33%;
         height: 100px;
         font-size: 24px;
@@ -356,6 +336,7 @@ button{
 
     .topscore{
         font-size: 30px;
+        margin-bottom: 30px;
     }
 
     .guidecard{
