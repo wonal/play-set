@@ -144,14 +144,14 @@ namespace SetApi.Models
             boardContainsSet = BoardContainsSet(Board);
             while (!boardContainsSet)
             {
-                Board.AddRange(Deck.DrawCard(3));
-                boardContainsSet = BoardContainsSet(Board);
-                if (!boardContainsSet)
+                if (EmptyDeck())
                 {
                     WinState = true;
                     GameTime.MarkEnd();
                     break;
                 }
+                Board.AddRange(Deck.DrawCard(3));
+                boardContainsSet = BoardContainsSet(Board);
             }
         }
 
