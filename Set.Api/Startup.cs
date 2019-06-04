@@ -33,17 +33,8 @@ namespace SetApi
             {
                 //app.UseHsts();
             }
-            /*
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
-            });
-
-            app.UseAuthentication();
-            */
             app.UseDefaultFiles();
             app.UseStaticFiles();
-            //app.UseHttpsRedirection();
             app.UseMvc();
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
