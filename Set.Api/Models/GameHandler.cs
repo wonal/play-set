@@ -52,7 +52,7 @@ namespace SetApi.Models
             {
                 return new GameResult
                 {
-                    Success = true,
+                    ValidGameID = true,
                     Error = "",
                     GameObj = idToGame[id]
                 };
@@ -61,7 +61,7 @@ namespace SetApi.Models
             {
                 return new GameResult
                 {
-                    Success = false,
+                    ValidGameID = false,
                     Error = "Game ID not valid",
                 };
             }

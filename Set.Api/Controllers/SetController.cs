@@ -41,7 +41,7 @@ namespace SetApi.Controllers
         public ActionResult StartStopwatch(Guid id)
         {
             GameResult gameResult = GameHolder.RetrieveGame(id);
-            if (!gameResult.Success)
+            if (!gameResult.ValidGameID)
             {
                 return BadRequest();
             }
@@ -61,7 +61,7 @@ namespace SetApi.Controllers
         public IActionResult PostSelectedCards(GuessDTO guess)
         {
             GameResult gameResult = GameHolder.RetrieveGame(guess.GameID);
-            if (!gameResult.Success)
+            if (!gameResult.ValidGameID)
             {
                 return BadRequest();
             }
@@ -89,7 +89,7 @@ namespace SetApi.Controllers
         public IActionResult PostWinningPlayer(WinnerDTO winner)
         {
             GameResult gameResult = GameHolder.RetrieveGame(winner.GameID);
-            if (!gameResult.Success)
+            if (!gameResult.ValidGameID)
             {
                 return BadRequest();
             }
