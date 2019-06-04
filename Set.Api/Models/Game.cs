@@ -18,9 +18,9 @@ namespace SetApi.Models
 
         public Game(int? seedValue)
         {
-            Random random = new Random();
+            var random = new Random();
             SeedMode = seedValue.HasValue ? true : false;
-            SeedValue = seedValue.HasValue ? seedValue.Value : random.Next(int.MinValue, int.MaxValue);
+            SeedValue = seedValue ?? random.Next(int.MinValue, int.MaxValue);
             Deck = new Deck(SeedValue);
             CreateGame();
         }
@@ -38,7 +38,7 @@ namespace SetApi.Models
                 }
                 else
                 {
-                    Random random = new Random();
+                    var random = new Random();
                     SeedValue = random.Next(int.MinValue, int.MaxValue);
                 }
                 Deck = new Deck(SeedValue);
@@ -93,7 +93,7 @@ namespace SetApi.Models
                 return false;
             }
 
-            List<Card> cards = new List<Card> { card1, card2, card3 };
+            var cards = new List<Card> { card1, card2, card3 };
             if (EmptyDeck())
             {
                 RemoveFromBoard(cards);
@@ -121,7 +121,7 @@ namespace SetApi.Models
 
         private void UpdateBoard(List<Card> cards)
         {
-            List<int> indices = new List<int>();
+            var indices = new List<int>();
             foreach (Card card in cards)
             {
                 indices.Add(Board.IndexOf(card));

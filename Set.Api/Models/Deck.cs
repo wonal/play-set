@@ -15,8 +15,8 @@ namespace SetApi.Models
 
         private List<Card> InitializeDeck(int seedValue)
         {
-            List<Characteristic> options = new List<Characteristic> { Characteristic.Option1, Characteristic.Option2, Characteristic.Option3 };
-            List<Card> deck = new List<Card>();
+            var options = new List<Characteristic> { Characteristic.Option1, Characteristic.Option2, Characteristic.Option3 };
+            var deck = new List<Card>();
             foreach (Characteristic c1 in options)
             {
                 foreach (Characteristic c2 in options)
@@ -36,7 +36,7 @@ namespace SetApi.Models
 
         public static void Shuffle(List<Card> cards, int seedValue)
         {
-            Random r = new Random(seedValue);
+            var r = new Random(seedValue);
             for (int i = cards.Count-1; i > -1; i -= 1)
             {
                 int j = r.Next(0, i+1);

@@ -26,18 +26,15 @@ namespace SetApi.Controllers
         {
             Guid id = GameHolder.CreateGame(seedDTO.Seed);
             Game game = GameHolder.RetrieveGame(id).GameObj;
-            BoardDTO boardDTO = new BoardDTO
+            List<Player> player = context.Players.OrderBy(p => p.Time).Take(5).ToList();
+
+            return new BoardDTO
             {
                 GameID = id,
-                SeedValue = game.SeedValue, 
+                SeedValue = game.SeedValue,
                 Cards = game.Board,
-                TopScores = new List<Player>()
+                TopScores = player
             };
-
-            List<Player> player = context.Players.OrderBy(p => p.Time).Take(5).ToList();
-            boardDTO.TopScores = player;
-
-            return boardDTO;
         }
 
         [HttpGet("markstart/{id}")]
@@ -75,8 +72,9 @@ namespace SetApi.Controllers
                 return BadRequest();
             }
 
-            var validSet = game.MakeGuess(guess.Card1, guess.Card2, guess.Card3);
-            GameDTO gameDTO = new GameDTO
+            bool validSet = game.MakeGuess(guess.Card1, guess.Card2, guess.Card3);
+
+            return Ok(new GameDTO
             {
                 GameID = guess.GameID,
                 Board = game.Board,
@@ -84,9 +82,7 @@ namespace SetApi.Controllers
                 WinState = game.WinState,
                 CardsRemaining = game.CardsRemaining,
                 TopScores = new List<Player>()
-            };
-
-            return Ok(gameDTO);
+            });
         }
 
         [HttpPost("postwin")]
@@ -105,7 +101,7 @@ namespace SetApi.Controllers
             }
 
             int time = game.GameTime.GetTotalTime();
-            WinStateDTO winStateDTO = new WinStateDTO
+            var winStateDTO = new WinStateDTO
             {
                 GameID = winner.GameID,
                 PlayerName = winner.PlayerName,
@@ -118,7 +114,7 @@ namespace SetApi.Controllers
                 if (game.SeedMode == false)
                 {
                     List<Player> players = context.Players.ToList();
-                    context.Add(new Player { Name = winner.PlayerName, Time = time });
+                    context.Add(new Player { Name = winner.PlayerName, Time = time, Seed = game.SeedValue });
                     context.SaveChanges();
                 }
                 List<Player> player = context.Players.OrderBy(p => p.Time).Take(5).ToList();

@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace SetApi.Models
@@ -25,5 +24,6 @@ namespace SetApi.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public int Time { get; set; }
+        public int Seed { get; set; }
     }
 }

@@ -10,7 +10,6 @@ namespace SetApi.Models
         private readonly Dictionary<Guid, Game> idToGame;
         private int gameNum;
         private readonly object lockObject = new object();
-        public int PlayerID { get; private set; }
 
         public GameHandler()
         {
