@@ -12,30 +12,17 @@ namespace Set.Api.Controllers
     [ApiController]
     public class HealthController : ControllerBase
     {
-        /*
-        private readonly PlayerContext context;
+        private readonly Repository repository;
 
-        public HealthController(PlayerContext context)
+        public HealthController(Repository repository)
         {
-            this.context = context;
-        }
-
-        private bool CheckDBHealth()
-        {
-            try
-            {
-                context.Players.Take(1).ToList();
-                return true;
-            }
-            catch
-            { return false; }
+            this.repository = repository;
         }
 
         [HttpGet]
         public ActionResult Get()
         {
-            return Ok(new { Version = 1, DBHealth = CheckDBHealth() });
+            return Ok(new { Version = 1, DBHealth = repository.CheckDBHealth() });
         }
-        */
     }
 }

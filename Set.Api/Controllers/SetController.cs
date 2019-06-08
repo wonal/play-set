@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
 using Dapper;
 using Microsoft.Data.Sqlite;
+using Set.Api;
 
 namespace SetApi.Controllers
 {
@@ -18,23 +19,12 @@ namespace SetApi.Controllers
     public class SetController : Controller
     {
         private static readonly GameHandler GameHolder = new GameHandler();
-        private static readonly object dbLockObject = new object();
-        private IConfiguration config;
-        private string connectionString;
-        /*
-        private readonly PlayerContext context;
+        private readonly Repository repository;
 
-        public SetController(PlayerContext playerContext)
+        public SetController(Repository repository)
         {
-            context = playerContext;
+            this.repository = repository;
         }
-        */
-        public SetController(IConfiguration configuration)
-        {
-            config = configuration;
-            connectionString = $"Data Source={config["DBPath"]}playercontext.db";
-        }
-
 
         [HttpPost("newgame")]
         public BoardDTO GetBoard(SeedDTO seedDTO)
@@ -45,14 +35,9 @@ namespace SetApi.Controllers
             {
                 GameID = id,
                 SeedValue = game.SeedValue,
-                Cards = game.Board
+                Cards = game.Board,
+                TopScores = repository.GetScores().ToList()
             };
-
-            using (var connection = new SqliteConnection(connectionString))
-            {
-                connection.Open();
-                boardDTO.TopScores = connection.Query<Player>("Select * From Players Order By Time Limit 5").ToList();
-            }
 
             return boardDTO;
         }
@@ -121,29 +106,19 @@ namespace SetApi.Controllers
             }
 
             int time = game.GameTime.GetTotalTime();
-            var winStateDTO = new WinStateDTO
+            if (game.SeedMode == false)
+            {
+                repository.UpdateScores(winner.PlayerName, time, game.SeedValue);
+            }
+            game.WinRecorded = true;
+
+            return Ok(new WinStateDTO
             {
                 GameID = winner.GameID,
                 PlayerName = winner.PlayerName,
                 GameTime = time,
-            };
-
-            lock (dbLockObject)
-            {
-                using (var connection = new SqliteConnection(connectionString))
-                {
-                    connection.Open();
-
-                    if (game.SeedMode == false)
-                    {
-                        connection.Execute(@"Insert Into Players (Name, Time, Seed) Values (@Name, @Time, @Seed)",
-                            new Player { Name = winner.PlayerName, Time = time, Seed = game.SeedValue });
-                    }
-                    winStateDTO.TopScores = connection.Query<Player>("Select * From Players Order By Time Limit 5").ToList();
-                }
-                game.WinRecorded = true;
-            }
-            return Ok(winStateDTO);
+                TopScores = repository.GetScores().ToList()
+            });
         }
     }
 }
