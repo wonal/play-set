@@ -12,6 +12,7 @@ namespace Set.Api.Controllers
     [ApiController]
     public class HealthController : ControllerBase
     {
+        /*
         private readonly PlayerContext context;
 
         public HealthController(PlayerContext context)
@@ -35,5 +36,6 @@ namespace Set.Api.Controllers
         {
             return Ok(new { Version = 1, DBHealth = CheckDBHealth() });
         }
+        */
     }
 }

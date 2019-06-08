@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace SetApi.Models
 {
+    /*
     public class PlayerContext : DbContext
     {
         private readonly IConfiguration config;
@@ -18,6 +19,7 @@ namespace SetApi.Models
             optionsBuilder.UseSqlite($"Filename={config["DBPath"]}playercontext.db");
         }
     }
+    */
 
     public class Player
     {

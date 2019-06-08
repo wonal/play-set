@@ -20,7 +20,8 @@ namespace SetApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddDbContext<PlayerContext>();
+            //services.AddDbContext<PlayerContext>();
+            services.AddSingleton(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -36,11 +37,13 @@ namespace SetApi
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseMvc();
+            /*
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<PlayerContext>();
                 context.Database.Migrate();
             }
+           */ 
         }
     }
 }
