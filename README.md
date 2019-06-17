@@ -21,11 +21,7 @@ This is a work in progress and at this point, only a single-player version is im
 
 ## Build Instructions
 
-- Clone the repository: `git clone https://github.com/wonal/play-set.git`
-- Navigate to the Set.Api directory: `cd Set.Api`
-- Create the database schema: `dotnet ef database update`
-- Run the project: `dotnet run`
-- Open a browser window and navigate to `http://localhost:5000`
+Updated build instructions coming soon
 
 
 
