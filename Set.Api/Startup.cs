@@ -39,13 +39,11 @@ namespace SetApi
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseMvc();
-            /*
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
-                var context = serviceScope.ServiceProvider.GetRequiredService<PlayerContext>();
-                context.Database.Migrate();
+                var context = serviceScope.ServiceProvider.GetRequiredService<Repository>();
+                context.AddDateColumn();
             }
-           */ 
         }
     }
 }

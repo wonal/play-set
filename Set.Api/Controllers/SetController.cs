@@ -4,12 +4,7 @@ using Set.Api.Models;
 using SetApi.Models;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using Microsoft.Extensions.Configuration;
-using System.Data.SqlClient;
-using Dapper;
-using Microsoft.Data.Sqlite;
 using Set.Api;
 
 namespace SetApi.Controllers
@@ -36,7 +31,7 @@ namespace SetApi.Controllers
                 GameID = id,
                 SeedValue = game.SeedValue,
                 Cards = game.Board,
-                TopScores = repository.GetScores().ToList()
+                TopScores = repository.GetTopScores().ToList()
             };
 
             return boardDTO;
@@ -108,7 +103,8 @@ namespace SetApi.Controllers
             int time = game.GameTime.GetTotalTime();
             if (game.SeedMode == false)
             {
-                repository.UpdateScores(winner.PlayerName, time, game.SeedValue);
+                long completionTime = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds();
+                repository.UpdateScores(winner.PlayerName, time, game.SeedValue, completionTime);
             }
             game.WinRecorded = true;
 
@@ -117,7 +113,7 @@ namespace SetApi.Controllers
                 GameID = winner.GameID,
                 PlayerName = winner.PlayerName,
                 GameTime = time,
-                TopScores = repository.GetScores().ToList()
+                TopScores = repository.GetTopScores().ToList()
             });
         }
     }
