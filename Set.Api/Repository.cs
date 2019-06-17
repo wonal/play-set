@@ -25,6 +25,15 @@ namespace Set.Api
             }
         }
 
+        public IEnumerable<Player> GetWeeklyScores(long currentTime)
+        {
+            long previousMonday = Utilities.GetPreviousMonday(currentTime);
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                return connection.Query<Player>("select * from Players where Date >= (@monday) order by Time limit 5", new { monday = previousMonday });
+            }
+        }
+
         public void UpdateScores(string name, int time, int seedValue, long completionDate)
         {
             lock (dbLockObject)
@@ -56,7 +65,7 @@ namespace Set.Api
             using (var connection = new SqliteConnection(connectionString))
             {
                 var rows = connection.Query(@"pragma table_info(Players)");
-                var result = rows.Select(x => x.name).Where(x => x == "Date").ToList();
+                var result = rows.Where(x => x.name == "Date").ToList();
                 if (result.Count == 0)
                 {
                     connection.Execute(@"alter table Players add column Date integer default 0");

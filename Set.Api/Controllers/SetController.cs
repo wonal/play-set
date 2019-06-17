@@ -31,7 +31,8 @@ namespace SetApi.Controllers
                 GameID = id,
                 SeedValue = game.SeedValue,
                 Cards = game.Board,
-                TopScores = repository.GetTopScores().ToList()
+                TopScores = repository.GetTopScores().ToList(),
+                WeeklyScores = repository.GetWeeklyScores(new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds()).ToList()
             };
 
             return boardDTO;

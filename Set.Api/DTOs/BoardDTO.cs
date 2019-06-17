@@ -9,5 +9,6 @@ namespace SetApi.Models
         public int SeedValue { get; set; }
         public List<Card> Cards { get; set; }
         public List<Player> TopScores { get; set; }
+        public List<Player> WeeklyScores { get; set; }
     }
 }
