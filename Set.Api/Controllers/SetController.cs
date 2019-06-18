@@ -114,7 +114,8 @@ namespace SetApi.Controllers
                 GameID = winner.GameID,
                 PlayerName = winner.PlayerName,
                 GameTime = time,
-                TopScores = repository.GetTopScores().ToList()
+                TopScores = repository.GetTopScores().ToList(),
+                WeeklyScores = repository.GetWeeklyScores(new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds()).ToList()
             });
         }
     }

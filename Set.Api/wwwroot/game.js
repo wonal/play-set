@@ -36,6 +36,7 @@ export class Game {
         this.gameText = CARDS_REMAINING;
         this.stopWatch = null;
         this.topScores = [];
+        this.weeklyScores = [];
         this.setHistory = [];
 
         this.createGame();
@@ -54,6 +55,7 @@ export class Game {
         const data = await response.json();
         this.gameID = data.gameID;
         this.topScores = data.topScores;
+        this.weeklyScores = data.weeklyScores;
         this.seed = data.seedValue;
         this.updateBoard(data.cards);
         const startResponse = await fetch(`${URL}/markstart/${this.gameID}`);
@@ -240,6 +242,7 @@ export class Game {
         const body = await response.json();
         this.gameTime = formatTime(body.gameTime);
         this.topScores = body.topScores;
+        this.weeklyScores = body.weeklyScores;
         this.renderGame();
     }
 
