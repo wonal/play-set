@@ -17,6 +17,7 @@ import {
     resetBorder,
     createCardDTOsFromSelected,
     createCardImage,
+    displayScores,
     formatTime,
     sleep,
     getName
@@ -107,12 +108,15 @@ export class Game {
         }
 
         document.getElementById("deckCount").innerText = this.gameText;
-
+        /*
+        const scoreBoardWeekly = document.getElementById("weeklyscore");
+        scoreBoardWeekly.innerText = "testing:\n1\n2\n3";
         const scoreBoard = document.getElementById("topscore");
         scoreBoard.innerText = "";
+        */
         const seedValue = document.getElementById("seedvalue");
         seedValue.innerText = `Seed: ${this.seed}`;
-
+        /*
         if (this.seedMode === false) {
             let scores = "Top Scores:\n";
             const actualScores = this.topScores.length;
@@ -126,6 +130,9 @@ export class Game {
             }
             scoreBoard.innerText = scores;
         }
+        */
+        displayScores(this.seedMode, "topscore", this.topScores);
+        displayScores(this.seedMode, "weeklyscore", this.weeklyScores);
 
         const prevSets = document.getElementById("sethistory");
         if (this.setHistory.length > 0) {

@@ -57,6 +57,25 @@ export function createCardDTOsFromSelected(selected) {
     return cards;
 }
 
+export function displayScores(seedMode, scoreType, scores) {
+    const scoreBoard = document.getElementById(scoreType);
+    scoreBoard.innerText = "";
+
+    if (seedMode === false) {
+        let formattedScores = "\n";
+        const actualScores = scores.length;
+        for (let i = 0; i < 5; i++) {
+            if (i < actualScores) {
+                formattedScores += `${i + 1}. ${scores[i].name} -- ${formatTime(scores[i].time)}\n`
+            }
+            else {
+                formattedScores += `${i + 1}.\n`
+            }
+        }
+        scoreBoard.innerText = formattedScores;
+    }
+}
+
 export function attributeToOption(attribute, option1Equivalent, option2Equivalent) {
     if (attribute.toLowerCase() === option1Equivalent) {
         return "Option1";

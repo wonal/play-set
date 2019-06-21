@@ -17,6 +17,31 @@ function windowOnClick(event) {
     }
 }
 
+function passWeeklyScore(event) {
+    displayScoreTab(event, 'weeklyscore');
+}
+
+function passTopScore(event) {
+    displayScoreTab(event, 'topscore');
+}
+
+//logic for tabs taken from: https://www.w3schools.com/howto/howto_js_tabs.asp
+function displayScoreTab(event, tab) {
+    const tabcontent = document.getElementsByClassName("tabcontent");
+    for (let i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    const tablinks = document.getElementsByClassName("tablinks");
+    for (let i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tab).style.display = "block";
+    if (event) {
+        event.currentTarget.className += " active";
+    }
+}
+
 (function () {
     trigger.addEventListener("click", toggleModal);
     closeButton.addEventListener("click", toggleModal);
@@ -26,4 +51,9 @@ function windowOnClick(event) {
     timeGameButton.addEventListener("click", game.createNewGame.bind(game));
     const seedGameButton = document.getElementById("seedButton");
     seedGameButton.addEventListener("click", game.createSeedGame.bind(game));
+
+    const topScores = document.getElementById("topbutton");
+    topScores.addEventListener("click", passTopScore.bind(this));
+    const weeklyScores = document.getElementById("weeklybutton");
+    weeklyScores.addEventListener("click", passWeeklyScore.bind(this));
 })()
