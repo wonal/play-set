@@ -260,7 +260,7 @@ button{
     }
 
     .firstcolumn {
-        height: 400px;
+        height: 480px;
         width: 25%;
     }
 
@@ -281,6 +281,17 @@ button{
     .topscore{
         order: 3;
         width: 100%;
+        font-size: 20px;
+    }
+
+    .tab{
+        order: 3;
+        overflow: visible;
+    }
+
+    .tabbutton {
+        width: 100px;
+        height: 50px;
     }
 
     .board{
