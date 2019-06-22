@@ -18,15 +18,15 @@ function windowOnClick(event) {
 }
 
 function passWeeklyScore(event) {
-    displayScoreTab(event, 'weeklyscore');
+    displayScoreTab(event.currentTarget, 'weeklyscore');
 }
 
 function passTopScore(event) {
-    displayScoreTab(event, 'topscore');
+    displayScoreTab(event.currentTarget, 'topscore');
 }
 
 //logic for tabs taken from: https://www.w3schools.com/howto/howto_js_tabs.asp
-function displayScoreTab(event, tab) {
+function displayScoreTab(element, tab) {
     const tabcontent = document.getElementsByClassName("tabcontent");
     for (let i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = "none";
@@ -37,8 +37,8 @@ function displayScoreTab(event, tab) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
     document.getElementById(tab).style.display = "block";
-    if (event) {
-        event.currentTarget.className += " active";
+    if (element) {
+        element.className += " active";
     }
 }
 
@@ -53,7 +53,8 @@ function displayScoreTab(event, tab) {
     seedGameButton.addEventListener("click", game.createSeedGame.bind(game));
 
     const topScores = document.getElementById("topbutton");
-    topScores.addEventListener("click", passTopScore.bind(this));
+    topScores.addEventListener("click", passTopScore);
     const weeklyScores = document.getElementById("weeklybutton");
-    weeklyScores.addEventListener("click", passWeeklyScore.bind(this));
+    displayScoreTab(weeklyScores, 'weeklyscore');
+    weeklyScores.addEventListener("click", passWeeklyScore);
 })()
