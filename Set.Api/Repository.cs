@@ -34,14 +34,14 @@ namespace Set.Api
             }
         }
 
-        public void UpdateScores(string name, int time, int seedValue, long completionDate)
+        public void UpdateScores(string name, int time, long completionDate, int seedValue)
         {
             lock (dbLockObject)
             {
                 using (var connection = new SqliteConnection(connectionString))
                 {
-                    connection.Execute(@"insert into Players (Name, Time, Seed, Date) values (@Name, @Time, @Seed, @Date)",
-                        new Player { Name = name, Time = time, Seed = seedValue, Date = completionDate });
+                    connection.Execute(@"insert into Players (Name, Time, Date, Seed) values (@Name, @Time, @Date, @Seed)",
+                        new Player { Name = name, Time = time, Date = completionDate, Seed = seedValue });
                 }
             }
         }
@@ -60,7 +60,15 @@ namespace Set.Api
             { return false; }
         }
 
-        public void AddDateColumn()
+        public void CreateTableIfNotExists()
+        {
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                connection.Execute(@"create table if not exists Players (Id integer primary key, Name varchar(20), Time integer default null, Date integer default 0, Seed integer default null)");
+            }
+        }
+
+        public void AddDateColumnIfNotExists()
         {
             using (var connection = new SqliteConnection(connectionString))
             {
@@ -69,6 +77,18 @@ namespace Set.Api
                 if (result.Count == 0)
                 {
                     connection.Execute(@"alter table Players add column Date integer default 0");
+                }
+            }
+        }
+        public void AddSeedColumnIfNotExists()
+        {
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                var rows = connection.Query(@"pragma table_info(Players)");
+                var result = rows.Where(x => x.name == "Seed").ToList();
+                if (result.Count == 0)
+                {
+                    connection.Execute(@"alter table Players add column Seed integer default null");
                 }
             }
         }

@@ -105,7 +105,7 @@ namespace SetApi.Controllers
             if (game.SeedMode == false)
             {
                 long completionTime = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds();
-                repository.UpdateScores(winner.PlayerName, time, game.SeedValue, completionTime);
+                repository.UpdateScores(winner.PlayerName, time, completionTime, game.SeedValue);
             }
             game.WinRecorded = true;
 

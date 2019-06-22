@@ -39,7 +39,9 @@ namespace SetApi
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<Repository>();
-                context.AddDateColumn();
+                context.CreateTableIfNotExists();
+                context.AddDateColumnIfNotExists();
+                context.AddSeedColumnIfNotExists();
             }
         }
     }
