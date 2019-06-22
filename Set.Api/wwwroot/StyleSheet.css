@@ -354,6 +354,15 @@ button{
         order: 3;
     }
 
+    .tab{
+        order: 3;
+        overflow: visible;
+    }
+
+    .tabbutton {
+        height: 70px;
+    }
+
     .thirdcolumn {
         display: none;
     }
