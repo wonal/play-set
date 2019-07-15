@@ -1,8 +1,12 @@
-﻿import { DEFAULT_TIME } from "./constants.js";
-import { formatTime } from "./utilities.js";
+﻿import { DEFAULT_TIME } from "./constants";
+import { formatTime } from "./utilities";
 
 export class Stopwatch {
-    constructor(startTime) {
+    startTime: number;
+    gameTime: string;
+    interval: number;
+
+    constructor(startTime: number) {
         this.startTime = startTime;
         this.gameTime = DEFAULT_TIME;
         this.interval = setInterval(this.updateTime.bind(this), 1000);
@@ -12,7 +16,7 @@ export class Stopwatch {
         const time = Date.now();
         const gameDuration = time - this.startTime;
         this.gameTime = formatTime(gameDuration);
-        const stopwatch = document.getElementById("time");
+        const stopwatch = document.getElementById("time")!;
         stopwatch.innerText = this.gameTime;
     }
 

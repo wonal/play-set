@@ -1,4 +1,7 @@
 ﻿export class SelectedCards {
+    count: number;
+    cards: string [];
+    firstSelect: boolean;
 
     constructor (){
         this.count = 0;
@@ -10,7 +13,7 @@
         return this.count;
     }
 
-    hasCard(cardID) {
+    hasCard(cardID: string) {
         for (let i = 0; i < this.count; i++) {
             if (this.cards[i] === cardID) {
                 return true;
@@ -28,12 +31,12 @@
         this.count = 0;
     }
 
-    addCard(card) {
-        this.cards.push(card);
+    addCard(cardID: string) {
+        this.cards.push(cardID);
         this.count += 1;
     }
 
-    removeCard(cardID) {
+    removeCard(cardID: string) {
         for (let i = 0; i < this.count; i++) {
             if (this.cards[i] === cardID) {
                 this.cards.splice(i, 1);
@@ -44,7 +47,13 @@
 };
 
 export class Card {
-    constructor(count, fill, color, shape) {
+    count: string;
+    fill: string;
+    color: string;
+    shape: string;
+    cardBorder: string;
+
+    constructor(count: string, fill: string, color: string, shape: string) {
         this.count = count;
         this.fill = fill;
         this.color = color; 

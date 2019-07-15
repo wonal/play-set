@@ -8,9 +8,29 @@
     SHAPE1,
     SHAPE2,
     DEFAULT_BORDER,
-} from './constants.js'
+} from './constants'
 
-export function changeBorder(board, cardIDs, borderColor) {
+export interface Card {
+    count: string,
+    fill: string,
+    color: string,
+    shape: string,
+    cardBorder: string
+}
+
+export interface CardResponse {
+    count: number,
+    fill: number,
+    color: number,
+    shape: number
+}
+
+export interface Scores {
+    name: string,
+    time: number
+}
+
+export function changeBorder(board: Card [], cardIDs: string [], borderColor: string) {
     const length = cardIDs.length;
     let numChanged = 0;
     for (const card of board) {
@@ -26,13 +46,13 @@ export function changeBorder(board, cardIDs, borderColor) {
     }
 }
 
-export function resetBorder(board) {
+export function resetBorder(board: Card []) {
     for (const card of board) {
         card.cardBorder = DEFAULT_BORDER;
     }
 }
 
-export function createCardImage(count, fill, color, shape, border) {
+export function createCardImage(count: string, fill: string, color: string, shape: string, border: string) {
     const cardValue = `${count},${fill},${color},${shape}`;
     const cardImage = document.createElement("img");
     cardImage.src = `/images/${cardValue}.png`;
@@ -42,7 +62,7 @@ export function createCardImage(count, fill, color, shape, border) {
     return cardImage;
 }
 
-export function createCardDTOsFromSelected(selected) {
+export function createCardDTOsFromSelected(selected: string []) {
     const cards = [];
     for (let j = 0; j < 3; j++) {
         const card = selected[j].split(",");
@@ -57,8 +77,8 @@ export function createCardDTOsFromSelected(selected) {
     return cards;
 }
 
-export function displayScores(seedMode, scoreType, scores) {
-    const scoreBoard = document.getElementById(scoreType);
+export function displayScores(seedMode: boolean, scoreType: string, scores: Scores []) {
+    const scoreBoard = document.getElementById(scoreType)!;
     scoreBoard.innerText = "";
 
     if (seedMode === false) {
@@ -76,7 +96,7 @@ export function displayScores(seedMode, scoreType, scores) {
     }
 }
 
-export function attributeToOption(attribute, option1Equivalent, option2Equivalent) {
+export function attributeToOption(attribute: string, option1Equivalent: string, option2Equivalent: string) {
     if (attribute.toLowerCase() === option1Equivalent) {
         return "Option1";
     }
@@ -88,7 +108,7 @@ export function attributeToOption(attribute, option1Equivalent, option2Equivalen
     }
 }
 
-export function formatTime(ms) {
+export function formatTime(ms: number) {
     const seconds = Math.floor(ms / 1000) % 60;
     const minutes = Math.floor(ms / (1000 * 60)) % 60;
     const hours = Math.floor(ms / (1000 * 60 * 60)) % 60;
@@ -98,7 +118,7 @@ export function formatTime(ms) {
         "m:" + (seconds < 10 ? "0" + seconds : seconds) + "s";
 }
 
-export function sleep(time) {
+export function sleep(time: number) {
     const promise = new Promise(function (resolve, reject) {
         setTimeout(function () {
             resolve();
