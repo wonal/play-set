@@ -1,5 +1,5 @@
-﻿import { DEFAULT_TIME } from "./constants";
-import { formatTime } from "./utilities";
+﻿import { DEFAULT_TIME } from "./constants.js";
+import { formatTime } from "./utilities.js";
 
 export class Stopwatch {
     startTime: number;

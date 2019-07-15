@@ -11,7 +11,7 @@
     WIN_STATE,
     CARDS_REMAINING,
     MAX_INT32
-} from './constants'
+} from './constants.js'
 import {
     changeBorder,
     resetBorder,
@@ -23,9 +23,9 @@ import {
     getName,
     Scores,
     CardResponse
-} from './utilities'
-import { SelectedCards, Card } from './cards'
-import { Stopwatch } from './stopwatch'
+} from './utilities.js'
+import { SelectedCards, Card } from './cards.js'
+import { Stopwatch } from './stopwatch.js'
 
 export class Game {
     winStatus: boolean;

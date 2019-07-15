@@ -8,7 +8,7 @@
     SHAPE1,
     SHAPE2,
     DEFAULT_BORDER,
-} from './constants'
+} from './constants.js'
 
 export interface Card {
     count: string,
