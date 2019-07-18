@@ -20,9 +20,11 @@ This is a work in progress and at this point, only a single-player version is im
 
 ## Build Instructions
 
+- If not already installed, install the TypeScript compiler: `npm install -g typescript`
 - Clone the repository: `git clone https://github.com/wonal/play-set.git`	
-- Within the project, navigate to the Set.Api directory: `cd Set.Api`		
-- Run the project: `dotnet run`	
+- Within the project, navigate to the Scripts directory: `cd Set.Api/Scripts`		
+- Call the TypeScript compiler: `tsc`
+- Within the `Set.Api` direcotyr, run the project: `dotnet run`	
 - Open a browser window and navigate to `http://localhost:5000`
 
 
