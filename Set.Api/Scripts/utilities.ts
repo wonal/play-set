@@ -10,12 +10,19 @@
     DEFAULT_BORDER,
 } from './constants.js'
 
-export interface Card {
+export interface CardImage {
     count: string,
     fill: string,
     color: string,
     shape: string,
     cardBorder: string
+}
+
+export interface CardType {
+    Count: string,
+    Fill: string,
+    Color: string,
+    Shape: string,
 }
 
 export interface CardResponse {
@@ -30,7 +37,7 @@ export interface Scores {
     time: number
 }
 
-export function changeBorder(board: Card [], cardIDs: string [], borderColor: string) {
+export function changeBorder(board: CardImage [], cardIDs: string [], borderColor: string) {
     const length = cardIDs.length;
     let numChanged = 0;
     for (const card of board) {
@@ -46,7 +53,7 @@ export function changeBorder(board: Card [], cardIDs: string [], borderColor: st
     }
 }
 
-export function resetBorder(board: Card []) {
+export function resetBorder(board: CardImage []) {
     for (const card of board) {
         card.cardBorder = DEFAULT_BORDER;
     }

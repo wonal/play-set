@@ -26,7 +26,7 @@ import {
 } from './utilities.js'
 import { SelectedCards, Card } from './cards.js'
 import { Stopwatch } from './stopwatch.js'
-import { getNewGame, getStartTime } from './api.js'
+import { getNewGame, getStartTime, postGuess, postWin } from './api.js'
 
 export class Game {
     winStatus: boolean;
@@ -149,17 +149,7 @@ export class Game {
         const guessedCards = [...this.selectedCards.getSelectedCards()];
         const cardDTOs = createCardDTOsFromSelected(guessedCards);
         const guess = { GameID: this.gameID, Card1: cardDTOs[0], Card2: cardDTOs[1], Card3: cardDTOs[2] };
-
-        const fetchData = {
-            method: 'POST',
-            body: JSON.stringify(guess),
-            headers: new Headers({
-                'Content-Type': 'application/json',
-                'Accept-Encoding': 'application/json'
-            })
-        };
-        const response = await fetch(`${URL}/submitguess`, fetchData);
-        const body = await response.json();
+        const body = await postGuess(guess);
         if (body.validSet) {
             changeBorder(this.board, guessedCards, VALID_BORDER);
             this.setHistory.push([guessedCards[0], guessedCards[1], guessedCards[2]]);
@@ -223,16 +213,7 @@ export class Game {
         }
         this.renderGame();
         const name = this.seedMode ? "" : getName();
-        const fetchData = {
-            method: 'POST',
-            body: JSON.stringify({ GameID: this.gameID, PlayerName: name}),
-            headers: new Headers({
-                'Content-Type': 'application/json',
-                'Accept-Encoding': 'application/json'
-            })
-        };
-        const response = await fetch(`${URL}/postwin`, fetchData);
-        const body = await response.json();
+        const body = await postWin({ gameID: this.gameID, playerName: name});
         this.gameTime = formatTime(body.gameTime);
         this.topScores = body.topScores;
         this.weeklyScores = body.weeklyScores;
