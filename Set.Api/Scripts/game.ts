@@ -26,6 +26,7 @@ import {
 } from './utilities.js'
 import { SelectedCards, Card } from './cards.js'
 import { Stopwatch } from './stopwatch.js'
+import { getNewGame, getStartTime } from './api.js'
 
 export class Game {
     winStatus: boolean;
@@ -34,7 +35,7 @@ export class Game {
     board: Card [];
     seed: number | null;
     seedMode: boolean;
-    gameID: number;
+    gameID: string;
     gameText: string;
     stopWatch?: Stopwatch;
     topScores: Scores [];
@@ -49,7 +50,7 @@ export class Game {
         this.board = [];
         this.seedMode = false;
         this.seed = null;
-        this.gameID = 0;
+        this.gameID = "";
         this.gameText = CARDS_REMAINING;
         this.topScores = [];
         this.weeklyScores = [];
@@ -59,23 +60,13 @@ export class Game {
     }
 
     async createGame() {
-        const fetchData = {
-            method: 'POST',
-            body: JSON.stringify({ seed: this.seed }),   
-            headers: new Headers({
-                'Content-Type': 'application/json',
-                'Accept-Encoding': 'application/json'
-            })
-        };
-        const response = await fetch(`${URL}/newgame`, fetchData);
-        const data = await response.json();
+        const data = await getNewGame(this.seed);
         this.gameID = data.gameID;
         this.topScores = data.topScores;
         this.weeklyScores = data.weeklyScores;
         this.seed = data.seedValue;
         this.updateBoard(data.cards);
-        const startResponse = await fetch(`${URL}/markstart/${this.gameID}`);
-        const startData = await startResponse.json();
+        const startData = await getStartTime(this.gameID);
         this.stopWatch = new Stopwatch(startData.startTime);
         this.renderGame();
     }
