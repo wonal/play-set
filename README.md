@@ -24,7 +24,7 @@ This is a work in progress and at this point, only a single-player version is im
 - Clone the repository: `git clone https://github.com/wonal/play-set.git`	
 - Within the project, navigate to the Scripts directory: `cd Set.Api/Scripts`		
 - Call the TypeScript compiler: `tsc`
-- Within the `Set.Api` direcotyr, run the project: `dotnet run`	
+- Within the `Set.Api` directory, run the project: `dotnet run`	
 - Open a browser window and navigate to `http://localhost:5000`
 
 
