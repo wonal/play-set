@@ -16,7 +16,7 @@ namespace Set.Api.Controllers
         [HttpGet]
         public ActionResult Get()
         {
-            return Ok(new { Version = 2, DBHealth = repository.CheckDBHealth() });
+            return Ok(new { Version = 3, DBHealth = repository.CheckDBHealth() });
         }
     }
 }
