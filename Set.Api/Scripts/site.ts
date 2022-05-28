@@ -17,8 +17,8 @@ function windowOnClick(event: MouseEvent) {
     }
 }
 
-function passWeeklyScore(event: MouseEvent) {
-    displayScoreTab(<HTMLElement>event.currentTarget, 'weeklyscore');
+function passDailyScore(event: MouseEvent) {
+    displayScoreTab(<HTMLElement>event.currentTarget, 'dailyscore');
 }
 
 function passTopScore(event: MouseEvent) {
@@ -49,12 +49,10 @@ function displayScoreTab(element: HTMLElement, tab: string) {
 
     const timeGameButton = document.getElementById("resetButton")!;
     timeGameButton.addEventListener("click", game.createNewGame.bind(game));
-    const seedGameButton = document.getElementById("seedButton")!;
-    seedGameButton.addEventListener("click", game.createSeedGame.bind(game));
 
     const topScores = document.getElementById("topbutton")!;
     topScores.addEventListener("click", passTopScore);
-    const weeklyScores = document.getElementById("weeklybutton")!;
-    displayScoreTab(weeklyScores, 'weeklyscore');
-    weeklyScores.addEventListener("click", passWeeklyScore);
+    const dailyScores = document.getElementById("dailybutton")!;
+    displayScoreTab(dailyScores, 'dailyscore');
+    dailyScores.addEventListener("click", passDailyScore);
 })()

@@ -14,12 +14,10 @@ namespace SetApi.Models
         public bool GameStarted { get; set; }
         public bool WinRecorded { get; set; }
         public int SeedValue { get; private set; }
-        public bool SeedMode { get; private set; }
 
         public Game(int? seedValue)
         {
             var random = new Random();
-            SeedMode = seedValue.HasValue ? true : false;
             SeedValue = seedValue ?? random.Next(int.MinValue, int.MaxValue);
             Deck = new Deck(SeedValue);
             CreateGame();
@@ -32,15 +30,8 @@ namespace SetApi.Models
             Board = Deck.DrawCard(12);
             while (!BoardContainsSet(Board))
             {
-                if (SeedMode)
-                {
-                    SeedValue += 1;
-                }
-                else
-                {
-                    var random = new Random();
-                    SeedValue = random.Next(int.MinValue, int.MaxValue);
-                }
+                var random = new Random();
+                SeedValue = random.Next(int.MinValue, int.MaxValue);
                 Deck = new Deck(SeedValue);
                 Board = Deck.DrawCard(12);
             }

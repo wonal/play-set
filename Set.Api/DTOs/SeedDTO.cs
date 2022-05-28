@@ -1,8 +1,12 @@
 ﻿
+using System;
+
 namespace Set.Api.Models
 {
-    public class SeedDTO
+    public class NewGameDTO
     {
-        public int? Seed{ get; set; }
+        public bool IsDaily { get; set; }
+        public DateTime? UserLocalTime { get; set; }
+        public Guid? GameId { get; set; }
     }
 }

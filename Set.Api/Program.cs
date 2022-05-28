@@ -17,8 +17,6 @@ using (var serviceScope = app.Services.GetService<IServiceScopeFactory>().Create
 {
     var context = serviceScope.ServiceProvider.GetRequiredService<Repository>();
     context.CreateTableIfNotExists();
-    context.AddDateColumnIfNotExists();
-    context.AddSeedColumnIfNotExists();
 }
 
 await app.RunAsync();

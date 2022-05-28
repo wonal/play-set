@@ -3,10 +3,8 @@ import { Scores, CardResponse, CardType} from './utilities.js'
 
 export interface NewGame{
     gameID: string,
-    seedValue: number | null,
     cards: CardResponse [],
     topScores: Scores [],
-    weeklyScores: Scores []
 }
 
 export interface StartTime{
@@ -39,13 +37,19 @@ export interface WinState{
     playerName: string,
     gameTime: number,
     topScores: Scores [],
-    weeklyScores: Scores []
+    dailyScores: Scores []
 }
 
-export async function getNewGame(seedVal: number | null){
+export interface NewGameRequest {
+    isDaily?: boolean,
+    userLocalTime?: string | null,
+    gameId?: string | null
+}
+
+export async function getNewGame(req: NewGameRequest){
     const fetchData = {
         method: 'POST',
-        body: JSON.stringify({ seed: seedVal}),
+        body: JSON.stringify(req),
         headers: new Headers({
             'Content-Type': 'application/json',
             'Accept-Encoding': 'application/json'

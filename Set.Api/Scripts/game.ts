@@ -28,6 +28,11 @@ import { SelectedCards, Card } from './cards.js'
 import { Stopwatch } from './stopwatch.js'
 import { getNewGame, getStartTime, postGuess, postWin } from './api.js'
 
+type LocalGame = { 
+    gameId: string
+    date: string
+}
+
 export class Game {
     winStatus: boolean;
     validSet: boolean;
@@ -39,7 +44,7 @@ export class Game {
     gameText: string;
     stopWatch?: Stopwatch;
     topScores: Scores [];
-    weeklyScores: Scores [];
+    dailyScores: Scores [];
     setHistory: string [] [];
     gameTime?: string;
     
@@ -53,22 +58,35 @@ export class Game {
         this.gameID = "";
         this.gameText = CARDS_REMAINING;
         this.topScores = [];
-        this.weeklyScores = [];
+        this.dailyScores = [];
         this.setHistory = [];
 
         this.createGame();
     }
 
     async createGame() {
-        const data = await getNewGame(this.seed);
+        const data = await this.getGame();
         this.gameID = data.gameID;
         this.topScores = data.topScores;
-        this.weeklyScores = data.weeklyScores;
-        this.seed = data.seedValue;
         this.updateBoard(data.cards);
         const startData = await getStartTime(this.gameID);
         this.stopWatch = new Stopwatch(startData.startTime);
         this.renderGame();
+    }
+
+    async getGame() {
+        const storageKey = 'gameId';
+        const savedGame = localStorage.getItem(storageKey);
+        const today = new Date().toDateString();
+        if(savedGame && today === new Date().toDateString()) {
+            const game = <LocalGame>JSON.parse(savedGame);
+            return await getNewGame( { gameId: game.gameId })
+        }
+        else {
+            const game = await getNewGame({ userLocalTime: new Date().toDateString(), isDaily: true });
+            localStorage.setItem(storageKey, JSON.stringify(<LocalGame>{gameId: game.gameID, date: today}))
+            return game;
+        }
     }
 
     updateBoard(cards: CardResponse []) {
@@ -118,7 +136,7 @@ export class Game {
         const seedValue = document.getElementById("seedvalue")!;
         seedValue.innerText = `Seed: ${this.seed}`;
         displayScores(this.seedMode, "topscore", this.topScores);
-        displayScores(this.seedMode, "weeklyscore", this.weeklyScores);
+        displayScores(this.seedMode, "dailyscore", this.dailyScores);
 
         const prevSets = document.getElementById("sethistory")!;
         if (this.setHistory.length > 0) {
@@ -181,20 +199,6 @@ export class Game {
         await this.resetGame();
     }
 
-    async createSeedGame() {
-        let number = window.prompt("Enter an integer seed value (no decimals or fractions): ")
-        while (number != null && (number === "" || Number.isInteger(Number(number)) === false)) {
-            number = window.prompt("That is not a valid number.  Please enter an integer value for a seed: ")
-        }
-        if (number === null) {
-            return;
-        }
-        this.seed = (parseInt(number, 10)) % MAX_INT32;
-        this.seedMode = true;
-        this.stopWatch!.stop();
-        await this.resetGame();
-    }
-
     async resetGame () {
         await this.createGame();
         this.gameText = CARDS_REMAINING;
@@ -216,7 +220,7 @@ export class Game {
         const body = await postWin({ gameID: this.gameID, playerName: name});
         this.gameTime = formatTime(body.gameTime);
         this.topScores = body.topScores;
-        this.weeklyScores = body.weeklyScores;
+        this.dailyScores = body.dailyScores;
         this.renderGame();
     }
 
