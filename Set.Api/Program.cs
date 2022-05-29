@@ -1,19 +1,24 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Set.Api;
+using System;
+using System.Text.Json;
 
-namespace SetApi
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<Repository>();
+builder.Services.AddControllers();
+
+var app = builder.Build();
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+app.MapControllers();
+
+using (var serviceScope = app.Services.GetService<IServiceScopeFactory>().CreateScope())
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateWebHostBuilder(args).Build().Run();
-        }
-
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .UseUrls(urls: "http://localhost:5000");
-                
-    }
+    var context = serviceScope.ServiceProvider.GetRequiredService<Repository>();
+    context.CreateTableIfNotExists();
 }
+
+await app.RunAsync();

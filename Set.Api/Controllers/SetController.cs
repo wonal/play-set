@@ -22,20 +22,20 @@ namespace SetApi.Controllers
         }
 
         [HttpPost("newgame")]
-        public BoardDTO GetBoard(SeedDTO seedDTO)
+        public BoardDTO GetBoard(NewGameDTO newGameDTO)
         {
-            Guid id = GameHolder.CreateGame(seedDTO.Seed);
-            Game game = GameHolder.RetrieveGame(id).GameObj;
+            var (game, gameId) = GameHolder.GetGame(newGameDTO);
             var boardDTO = new BoardDTO
             {
-                GameID = id,
+                GameID = gameId,
                 SeedValue = game.SeedValue,
                 Cards = game.Board,
                 TopScores = repository.GetTopScores().ToList(),
-                WeeklyScores = repository.GetWeeklyScores(new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds()).ToList()
+                DailyScores = repository.GetScoresBySeed(DailyGames.GetSeed(newGameDTO.UserLocalDateTime)).ToList()
             };
 
             return boardDTO;
+
         }
 
         [HttpGet("markstart/{id}")]
@@ -48,14 +48,13 @@ namespace SetApi.Controllers
             }
 
             Game game = gameResult.GameObj;
-            if(game.GameStarted)
-            {
-                return BadRequest();
-            }
 
-            game.GameTime.MarkStart();
-            game.GameStarted = true;
-            return Ok( new TimeDTO { StartTime = game.GameTime.StartTime.ToUnixTimeMilliseconds() });
+            if(!game.GameStarted)
+            {
+                game.GameTime.MarkStart();
+                game.GameStarted = true;
+            }
+            return Ok(new TimeDTO { StartTime = game.GameTime.StartTime.ToUnixTimeMilliseconds() });
         }
 
         [HttpPost("submitguess")]
@@ -102,11 +101,8 @@ namespace SetApi.Controllers
             }
 
             int time = game.GameTime.GetTotalTime();
-            if (game.SeedMode == false)
-            {
-                long completionTime = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds();
-                repository.UpdateScores(winner.PlayerName, time, completionTime, game.SeedValue);
-            }
+            long completionTime = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds();
+            repository.UpdateScores(winner.PlayerName, time, completionTime, game.SeedValue);
             game.WinRecorded = true;
 
             return Ok(new WinStateDTO
@@ -115,7 +111,7 @@ namespace SetApi.Controllers
                 PlayerName = winner.PlayerName,
                 GameTime = time,
                 TopScores = repository.GetTopScores().ToList(),
-                WeeklyScores = repository.GetWeeklyScores(new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds()).ToList()
+                DailyScores = repository.GetScoresBySeed(DailyGames.GetSeed(game.GameDay)).ToList()
             });
         }
     }

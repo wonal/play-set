@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace SetApi.Models
 {
@@ -13,8 +14,11 @@ namespace SetApi.Models
         }
 
         public Characteristic Count { get; }
+
         public Characteristic Fill { get; }
+
         public Characteristic Color { get; }
+
         public Characteristic Shape { get; }
 
         public override bool Equals(object obj)
