@@ -18,11 +18,29 @@ namespace SetApi.Models
             gameNum = 0;
         }
 
-        public Guid CreateGame(int? seed)
+        public (Game, Guid) GetGame(NewGameDTO newGameDTO)
+        {
+            if (newGameDTO.GameId.HasValue)
+            {
+                var gameResult = RetrieveGame(newGameDTO.GameId.Value);
+                if (
+                    gameResult.ValidGameID &&
+                    gameResult.GameObj.GameDay.ToShortDateString() == newGameDTO.UserLocalDateTime.ToShortDateString() &&
+                    !gameResult.GameObj.WinState)
+                {
+                    return (gameResult.GameObj, newGameDTO.GameId.Value);
+                }
+            }
+
+            var gameId = CreateGame(newGameDTO.IsDaily ? DailyGames.GetSeed(newGameDTO.UserLocalDateTime) : null, newGameDTO.UserLocalDateTime);
+            return (RetrieveGame(gameId).GameObj, gameId);
+        }
+
+        public Guid CreateGame(int? seed, DateTime gameDay)
         {
             lock (lockObject)
             {
-                Game game = seed.HasValue ? new Game(seed.Value) : new Game(null);
+                Game game = seed.HasValue ? new Game(seed.Value, gameDay) : new Game(null, gameDay);
                 UpdateGameID();
                 if (gameCounter.ContainsKey(gameNum))
                 {

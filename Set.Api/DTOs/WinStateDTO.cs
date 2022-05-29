@@ -10,6 +10,6 @@ namespace Set.Api.DTOs
         public string PlayerName { get; set; }
         public int GameTime { get; set; }
         public List<Player> TopScores { get; set; }
-        public List<Player> SeedScores { get; set; }
+        public List<Player> DailyScores { get; set; }
     }
 }

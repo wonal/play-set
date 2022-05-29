@@ -14,12 +14,14 @@ namespace SetApi.Models
         public bool GameStarted { get; set; }
         public bool WinRecorded { get; set; }
         public int SeedValue { get; private set; }
+        public DateTime GameDay { get; set; }
 
-        public Game(int? seedValue)
+        public Game(int? seedValue, DateTime gameDay)
         {
             var random = new Random();
             SeedValue = seedValue ?? random.Next(int.MinValue, int.MaxValue);
             Deck = new Deck(SeedValue);
+            GameDay = gameDay;
             CreateGame();
         }
 

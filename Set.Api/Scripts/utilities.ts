@@ -84,23 +84,21 @@ export function createCardDTOsFromSelected(selected: string []) {
     return cards;
 }
 
-export function displayScores(seedMode: boolean, scoreType: string, scores: Scores []) {
+export function displayScores(scoreType: string, scores: Scores []) {
     const scoreBoard = document.getElementById(scoreType)!;
     scoreBoard.innerText = "";
 
-    if (seedMode === false) {
-        let formattedScores = "\n";
-        const actualScores = scores.length;
-        for (let i = 0; i < 5; i++) {
-            if (i < actualScores) {
-                formattedScores += `${i + 1}. ${scores[i].name} -- ${formatTime(scores[i].time)}\n`
-            }
-            else {
-                formattedScores += `${i + 1}.\n`
-            }
+    let formattedScores = "\n";
+    const actualScores = scores.length;
+    for (let i = 0; i < 5; i++) {
+        if (i < actualScores) {
+            formattedScores += `${i + 1}. ${scores[i].name} -- ${formatTime(scores[i].time)}\n`
         }
-        scoreBoard.innerText = formattedScores;
+        else {
+            formattedScores += `${i + 1}.\n`
+        }
     }
+    scoreBoard.innerText = formattedScores;
 }
 
 export function attributeToOption(attribute: string, option1Equivalent: string, option2Equivalent: string) {

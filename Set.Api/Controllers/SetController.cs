@@ -24,25 +24,18 @@ namespace SetApi.Controllers
         [HttpPost("newgame")]
         public BoardDTO GetBoard(NewGameDTO newGameDTO)
         {
-            Guid gameId = GetGameId(newGameDTO);
-            Game game = GameHolder.RetrieveGame(gameId).GameObj;
+            var (game, gameId) = GameHolder.GetGame(newGameDTO);
             var boardDTO = new BoardDTO
             {
                 GameID = gameId,
                 SeedValue = game.SeedValue,
                 Cards = game.Board,
                 TopScores = repository.GetTopScores().ToList(),
-                WeeklyScores = new List<Player>()
+                DailyScores = repository.GetScoresBySeed(DailyGames.GetSeed(newGameDTO.UserLocalDateTime)).ToList()
             };
 
             return boardDTO;
 
-            static Guid GetGameId(NewGameDTO newGameDTO)
-            {
-                if (newGameDTO.GameId.HasValue) return newGameDTO.GameId.Value;
-                int? seed = newGameDTO.IsDaily ? DailyGames.GetSeed(newGameDTO.UserLocalTime.Value) : null;
-                return GameHolder.CreateGame(seed);
-            }
         }
 
         [HttpGet("markstart/{id}")]
@@ -55,14 +48,13 @@ namespace SetApi.Controllers
             }
 
             Game game = gameResult.GameObj;
-            if(game.GameStarted)
-            {
-                return BadRequest();
-            }
 
-            game.GameTime.MarkStart();
-            game.GameStarted = true;
-            return Ok( new TimeDTO { StartTime = game.GameTime.StartTime.ToUnixTimeMilliseconds() });
+            if(!game.GameStarted)
+            {
+                game.GameTime.MarkStart();
+                game.GameStarted = true;
+            }
+            return Ok(new TimeDTO { StartTime = game.GameTime.StartTime.ToUnixTimeMilliseconds() });
         }
 
         [HttpPost("submitguess")]
@@ -119,7 +111,7 @@ namespace SetApi.Controllers
                 PlayerName = winner.PlayerName,
                 GameTime = time,
                 TopScores = repository.GetTopScores().ToList(),
-                SeedScores = repository.GetScoresBySeed(game.SeedValue).ToList()
+                DailyScores = repository.GetScoresBySeed(DailyGames.GetSeed(game.GameDay)).ToList()
             });
         }
     }
