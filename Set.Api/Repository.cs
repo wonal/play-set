@@ -25,12 +25,11 @@ namespace Set.Api
             }
         }
 
-        public IEnumerable<Player> GetWeeklyScores(long currentTime)
+        public IEnumerable<Player> GetScoresBySeed(int seed)
         {
-            long previousMonday = Utilities.GetPreviousMonday(currentTime);
             using (var connection = new SqliteConnection(connectionString))
             {
-                return connection.Query<Player>("select * from Players where Date >= (@monday) order by Time limit 5", new { monday = previousMonday });
+                return connection.Query<Player>("select * from Players where Seed = (@seed) order by Time limit 5", new { seed });
             }
         }
 
@@ -65,31 +64,6 @@ namespace Set.Api
             using (var connection = new SqliteConnection(connectionString))
             {
                 connection.Execute(@"create table if not exists Players (Id integer primary key, Name varchar(20), Time integer default null, Date integer default 0, Seed integer default null)");
-            }
-        }
-
-        public void AddDateColumnIfNotExists()
-        {
-            using (var connection = new SqliteConnection(connectionString))
-            {
-                var rows = connection.Query(@"pragma table_info(Players)");
-                var result = rows.Where(x => x.name == "Date").ToList();
-                if (result.Count == 0)
-                {
-                    connection.Execute(@"alter table Players add column Date integer default 0");
-                }
-            }
-        }
-        public void AddSeedColumnIfNotExists()
-        {
-            using (var connection = new SqliteConnection(connectionString))
-            {
-                var rows = connection.Query(@"pragma table_info(Players)");
-                var result = rows.Where(x => x.name == "Seed").ToList();
-                if (result.Count == 0)
-                {
-                    connection.Execute(@"alter table Players add column Seed integer default null");
-                }
             }
         }
     }

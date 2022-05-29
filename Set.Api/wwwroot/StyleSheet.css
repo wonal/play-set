@@ -6,23 +6,23 @@
 }
 
 .default{
-    border: 2px solid white
+    border: 5px solid white
 }
 
 .selected{
-    border: 2px solid #333333
+    border: 5px solid #333333
 }
 
 .valid{
-    border: 2px solid #76d500
+    border: 5px solid #76d500
 }
 
 .invalid{
-    border: 2px solid red
+    border: 5px solid red
 }
 
 .win{
-    border: 2px solid orange
+    border: 5px solid orange
 }
 
 .history{
@@ -37,6 +37,12 @@ h1{
     font-size: 60px;
     font-family: 'Josefin sans', sans-serif;
     font-weight: 700;
+    text-align: center;
+}
+
+h2{
+    font-size: 35px;
+    font-family: 'Josefin sans', sans-serif;
     text-align: center;
 }
 

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Set.Api;
+using System;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,8 +19,6 @@ using (var serviceScope = app.Services.GetService<IServiceScopeFactory>().Create
 {
     var context = serviceScope.ServiceProvider.GetRequiredService<Repository>();
     context.CreateTableIfNotExists();
-    context.AddDateColumnIfNotExists();
-    context.AddSeedColumnIfNotExists();
 }
 
 await app.RunAsync();
