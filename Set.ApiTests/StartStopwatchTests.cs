@@ -17,7 +17,7 @@ namespace Set.ApiTests
         [SetUp]
         public void TestSetup()
         {
-            SeedDTO seed = new SeedDTO { Seed = 42 };
+            var seed = new NewGameDTO { IsDaily = true, UserLocalTime = new DateTime(2022, 5, 29).ToShortTimeString() };
             postContent = TestUtilities.ObjToStringContent(seed);
         }
 
@@ -30,22 +30,10 @@ namespace Set.ApiTests
             Guid id = JsonConvert.DeserializeObject<BoardDTO>(content).GameID;
 
             HttpResponseMessage startResponse = await client.GetAsync($"markstart/{id}");
-
-            Assert.AreEqual(HttpStatusCode.OK, startResponse.StatusCode);
-        }
-
-        [Test]
-        public async Task TestBadRequestWithOngoingGame()
-        {
-            HttpClient client = TestUtilities.GetHttpClient();
-            HttpResponseMessage response = await client.PostAsync("newgame", postContent);
-            string content = await response.Content.ReadAsStringAsync();
-            Guid id = JsonConvert.DeserializeObject<BoardDTO>(content).GameID;
-
-            HttpResponseMessage startResponse1 = await client.GetAsync($"markstart/{id}");
             HttpResponseMessage startResponse2 = await client.GetAsync($"markstart/{id}");
 
-            Assert.AreEqual(HttpStatusCode.BadRequest, startResponse2.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, startResponse.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, startResponse2.StatusCode);
         }
     }
 }

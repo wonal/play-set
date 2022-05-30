@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Set.Api.Models;
 using SetApi.Models;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -17,8 +18,8 @@ namespace Set.ApiTests
         [SetUp]
         public async Task TestSetup()
         {
-            SeedDTO seed = new SeedDTO { Seed = 42 };
-            StringContent postContent = TestUtilities.ObjToStringContent(seed);
+            var newGame = new NewGameDTO { IsDaily = true, UserLocalTime = DateTime.Now.ToShortDateString() };
+            StringContent postContent = TestUtilities.ObjToStringContent(newGame);
             HttpClient client = TestUtilities.GetHttpClient();
 
             HttpResponseMessage response = await client.PostAsync("newgame", postContent);
