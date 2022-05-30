@@ -26,11 +26,72 @@ import {
 } from './utilities.js'
 import { SelectedCards, Card } from './cards.js'
 import { Stopwatch } from './stopwatch.js'
-import { getNewGame, getStartTime, NewGame, postGuess, postWin } from './api.js'
+import { getNewGame, getStartTime, postGuess, postWin } from './api.js'
 
 type LocalGame = {
-    dailyCompleted: boolean,
-    gameId: string | null
+    dailyCompletedDate: string | null,
+    gameId: string | null,
+}
+
+class DailyState {
+    gameId: string | null = null;
+    gameIsDaily: boolean = true;
+    currentDay = new Date().toLocaleDateString();
+    dailyCompletedDate: string | null = null;
+    storageKey = 'game';
+
+    get dailyCompleted() {
+        return this.dailyCompletedDate !== null && this.dailyCompletedDate === this.currentDay;
+    }
+
+    constructor(){
+        this.loadFromStorage();
+        if(this.dailyCompletedDate !== null && this.dailyCompletedDate !== this.currentDay) {
+            this.gameId = null;
+            this.dailyCompletedDate = null;
+            this.persistToStorage();
+        }
+    }
+
+    newGame(gameId: string) {
+        this.gameId = gameId;
+        this.persistToStorage();
+    }
+
+    reset() {
+        this.gameId = null;
+        this.persistToStorage();
+    }
+
+    gameCompleted() {
+        this.dailyCompletedDate = this.currentDay;
+        this.persistToStorage();
+    }
+
+    requestNewGame() {
+        return {
+            isDaily: !this.dailyCompleted,
+            userLocalTime: this.currentDay,
+            gameId: this.gameId
+        }
+    }
+
+    private loadFromStorage() {
+        const gameJson = localStorage.getItem(this.storageKey);
+        if (!gameJson) return;
+        const game = <LocalGame>JSON.parse(gameJson);
+        this.dailyCompletedDate = game.dailyCompletedDate;
+        this.gameId = game.gameId;
+    }
+
+    private persistToStorage() {
+        localStorage.setItem(
+            this.storageKey,
+            JSON.stringify(<LocalGame>{
+                dailyCompletedDate: this.dailyCompletedDate,
+                gameId: this.gameId,
+            }));
+    }
 }
 
 export class Game {
@@ -45,6 +106,7 @@ export class Game {
     dailyScores: Scores [];
     setHistory: string [] [];
     gameTime?: string;
+    dailyState = new DailyState();
     
     constructor() {
         this.winStatus = false;
@@ -61,36 +123,15 @@ export class Game {
     }
 
     async createGame() {
-        const data = await this.getGame();
-        this.gameID = data.gameID;
-        this.topScores = data.topScores;
-        this.dailyScores = data.dailyScores;
-        this.updateBoard(data.cards);
+        let newGame = await getNewGame(this.dailyState.requestNewGame());
+        this.dailyState.newGame(newGame.gameID);
+        this.gameID = newGame.gameID;
+        this.topScores = newGame.topScores;
+        this.dailyScores = newGame.dailyScores;
+        this.updateBoard(newGame.cards);
         const startData = await getStartTime(this.gameID);
         this.stopWatch = new Stopwatch(startData.startTime);
         this.renderGame();
-    }
-
-    storageKey = 'game';
-
-    async getGame() {
-        let data: NewGame;
-        const game = this.getLocalGame();
-        if(game === null || !game.dailyCompleted) {
-            data = await getNewGame({ gameId: game?.gameId, userLocalTime: new Date().toLocaleDateString(), isDaily: true });
-            localStorage.setItem(this.storageKey, JSON.stringify(<LocalGame>{ dailyCompleted: false, gameId: data.gameID}));
-        }
-        else {
-            data = await getNewGame({ gameId: game.gameId, userLocalTime: new Date().toLocaleDateString(), isDaily: false });
-        }
-
-        return data;
-    }
-
-    getLocalGame() {
-        const gameJson = localStorage.getItem(this.storageKey);
-        if(!gameJson) return null;
-        return <LocalGame>JSON.parse(gameJson);
     }
 
     updateBoard(cards: CardResponse []) {
@@ -123,14 +164,14 @@ export class Game {
 
 
     renderGame() {
-        const game = this.getLocalGame();
+        const dailyCompleted = this.dailyState.dailyCompleted;
         let d = new Date();
         let year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
         let month = new Intl.DateTimeFormat('en', { month: 'long' }).format(d);
         let day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(d);
         document.getElementById('subheader')!.textContent = `The daily game for ${month} ${day}, ${year}`;
-        document.getElementById('resetButton')!.style.display = game?.dailyCompleted ? 'block' : 'none';
-        document.getElementById('subheader')!.style.display = game?.dailyCompleted ? 'none' : 'block';
+        document.getElementById('resetButton')!.style.display = dailyCompleted ? 'block' : 'none';
+        document.getElementById('subheader')!.style.display = dailyCompleted ? 'none' : 'block';
         const board = document.getElementById('board')!;
         board.innerHTML = "";
         for (const cardObj of this.board) {
@@ -208,8 +249,7 @@ export class Game {
     }
 
     async resetGame () {
-        const localGame = this.getLocalGame()!;
-        localStorage.setItem(this.storageKey, JSON.stringify(<LocalGame>{...localGame, gameId: null}))
+        this.dailyState.reset();
         await this.createGame();
         this.gameText = CARDS_REMAINING;
         this.winStatus = false;
@@ -225,10 +265,7 @@ export class Game {
         for (const card of this.board) {
             changeBorder(this.board, [`${card.count},${card.fill},${card.color},${card.shape}`], WIN_STATE);
         }
-        const localGame = this.getLocalGame();
-        if(!localGame!.dailyCompleted){
-            localStorage.setItem(this.storageKey, JSON.stringify(<LocalGame>{ ...localGame, dailyCompleted: true }))
-        }
+        this.dailyState.gameCompleted();
         this.renderGame();
         const name = getName();
         const body = await postWin({ gameID: this.gameID, playerName: name});
