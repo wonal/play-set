@@ -68,14 +68,6 @@ export class Game {
         this.updateBoard(data.cards);
         const startData = await getStartTime(this.gameID);
         this.stopWatch = new Stopwatch(startData.startTime);
-        const game = this.getLocalGame();
-        let d = new Date();
-        let year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
-        let month = new Intl.DateTimeFormat('en', { month: 'long' }).format(d);
-        let day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(d);
-        document.getElementById('subheader')!.textContent = `The daily game for ${month} ${day}, ${year}`;
-        document.getElementById('resetButton')!.style.display = game?.dailyCompleted ? 'block' : 'none';
-        document.getElementById('subheader')!.style.display = game?.dailyCompleted ? 'none' : 'block';
         this.renderGame();
     }
 
@@ -131,6 +123,14 @@ export class Game {
 
 
     renderGame() {
+        const game = this.getLocalGame();
+        let d = new Date();
+        let year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
+        let month = new Intl.DateTimeFormat('en', { month: 'long' }).format(d);
+        let day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(d);
+        document.getElementById('subheader')!.textContent = `The daily game for ${month} ${day}, ${year}`;
+        document.getElementById('resetButton')!.style.display = game?.dailyCompleted ? 'block' : 'none';
+        document.getElementById('subheader')!.style.display = game?.dailyCompleted ? 'none' : 'block';
         const board = document.getElementById('board')!;
         board.innerHTML = "";
         for (const cardObj of this.board) {
@@ -224,6 +224,10 @@ export class Game {
         this.gameText = "No more sets present!";
         for (const card of this.board) {
             changeBorder(this.board, [`${card.count},${card.fill},${card.color},${card.shape}`], WIN_STATE);
+        }
+        const localGame = this.getLocalGame();
+        if(!localGame!.dailyCompleted){
+            localStorage.setItem(this.storageKey, JSON.stringify(<LocalGame>{ ...localGame, dailyCompleted: true }))
         }
         this.renderGame();
         const name = getName();
