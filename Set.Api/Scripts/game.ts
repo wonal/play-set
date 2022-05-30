@@ -114,10 +114,10 @@ export class Game {
         this.selectedCards = new SelectedCards();
         this.board = [];
         this.gameID = "";
-        this.gameText = CARDS_REMAINING;
         this.topScores = [];
         this.dailyScores = [];
         this.setHistory = [];
+        this.gameText = "";
 
         this.createGame();
     }
@@ -129,6 +129,7 @@ export class Game {
         this.topScores = newGame.topScores;
         this.dailyScores = newGame.dailyScores;
         this.updateBoard(newGame.cards);
+        this.gameText = "Cards Remaining: " + newGame.cardsRemaining;
         const startData = await getStartTime(this.gameID);
         this.stopWatch = new Stopwatch(startData.startTime);
         this.renderGame();

@@ -10,5 +10,6 @@ namespace SetApi.Models
         public List<Card> Cards { get; set; }
         public List<Player> TopScores { get; set; }
         public List<Player> DailyScores { get; set; }
+        public int CardsRemaining { get; set; }
     }
 }

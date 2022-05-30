@@ -31,7 +31,8 @@ namespace SetApi.Controllers
                 SeedValue = game.SeedValue,
                 Cards = game.Board,
                 TopScores = repository.GetTopScores().ToList(),
-                DailyScores = repository.GetScoresBySeed(DailyGames.GetSeed(newGameDTO.UserLocalDateTime)).ToList()
+                DailyScores = repository.GetScoresBySeed(DailyGames.GetSeed(newGameDTO.UserLocalDateTime)).ToList(),
+                CardsRemaining = game.CardsRemaining
             };
 
             return boardDTO;

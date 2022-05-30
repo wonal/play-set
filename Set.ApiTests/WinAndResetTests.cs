@@ -29,7 +29,7 @@ namespace Set.ApiTests
             BoardDTO gameObj = JsonConvert.DeserializeObject<BoardDTO>(content);
             gameDTO = new GameDTO { Board = gameObj.Cards, GameID = gameObj.GameID };
 
-            for (int i = 0; i < 25; i++)
+            for (int i = 0; i < 24; i++)
             {
                 List<Card> cards = TestUtilities.FindSet(gameDTO.Board);
                 GuessDTO guess = new GuessDTO { GameID = gameDTO.GameID, Card1 = cards[0], Card2 = cards[1], Card3 = cards[2] };
@@ -54,7 +54,7 @@ namespace Set.ApiTests
 
             Assert.IsTrue(gameDTO.WinState, "Win state is not true");
             Assert.NotZero(winStateDTO.GameTime, "Expected a game time above zero");
-            Assert.AreEqual(gameDTO.CardsRemaining, 6, "Expected 6 cards remaining");
+            Assert.AreEqual(gameDTO.CardsRemaining, 9, "Expected 9 cards remaining");
         }
 
         [Test]

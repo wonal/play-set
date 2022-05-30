@@ -6,6 +6,7 @@ export interface NewGame{
     cards: CardResponse [],
     topScores: Scores [],
     dailyScores: Scores [],
+    cardsRemaining: number
 }
 
 export interface StartTime{
