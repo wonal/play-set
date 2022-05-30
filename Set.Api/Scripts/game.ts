@@ -233,5 +233,4 @@ export class Game {
         this.dailyScores = body.dailyScores;
         this.renderGame();
     }
-
 }
