@@ -32,8 +32,7 @@ namespace SetApi.Models
             Board = Deck.DrawCard(12);
             while (!BoardContainsSet(Board))
             {
-                var random = new Random();
-                SeedValue = random.Next(int.MinValue, int.MaxValue);
+                SeedValue++;
                 Deck = new Deck(SeedValue);
                 Board = Deck.DrawCard(12);
             }
