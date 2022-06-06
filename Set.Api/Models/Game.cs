@@ -22,10 +22,10 @@ namespace SetApi.Models
             SeedValue = seedValue ?? random.Next(int.MinValue, int.MaxValue);
             Deck = new Deck(SeedValue);
             GameDay = gameDay;
-            CreateGame();
+            InitializeGame();
         }
 
-        public void CreateGame()
+        private void InitializeGame()
         {
             ValidSet = false;
             WinState = false;
@@ -73,14 +73,14 @@ namespace SetApi.Models
         private static bool AllSame(Characteristic c1, Characteristic c2, Characteristic c3) => c1 == c2 && c2 == c3;
         private static bool AllDifferent(Characteristic c1, Characteristic c2, Characteristic c3) => c1 != c2 && c2 != c3 && c1 != c3;
 
-        public bool ValidCards(Card card1, Card card2, Card card3)
+        private bool ValidCards(Card card1, Card card2, Card card3)
         {
             return Board.Contains(card1) && Board.Contains(card2) && Board.Contains(card3);
         }
 
         public bool MakeGuess(Card card1, Card card2, Card card3)
         {
-            if (!IsSet(card1, card2, card3))
+            if (!ValidCards(card1, card2, card3) || WinState || !IsSet(card1, card2, card3))
             {
                 return false;
             }

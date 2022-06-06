@@ -68,10 +68,6 @@ namespace SetApi.Controllers
             }
 
             Game game = gameResult.GameObj;
-            if (!game.ValidCards(guess.Card1, guess.Card2, guess.Card3) || game.WinState)
-            {
-                return BadRequest();
-            }
 
             bool validSet = game.MakeGuess(guess.Card1, guess.Card2, guess.Card3);
 

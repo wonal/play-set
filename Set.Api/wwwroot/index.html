@@ -37,13 +37,13 @@
                             This is an example of a set:<br />
                             <div class="row">
                                 <div class="column">
-                                    <img src="/images/one,solid,blue,rectangle.png" alt="one,solid,blue,rectangle" class="guidecard"/>
+                                    <img src="/images/one,solid,blue,rectangle.png" alt="one,solid,blue,rectangle" class="guidecard" />
                                 </div>
                                 <div class="column">
-                                    <img src="/images/six,striped,blue,circle.png" alt="six,striped,blue,circle" class="guidecard"/>
+                                    <img src="/images/six,striped,blue,circle.png" alt="six,striped,blue,circle" class="guidecard" />
                                 </div>
                                 <div class="column">
-                                    <img src="/images/three,hollow,blue,diamond.png" alt="three,hollow,blue,diamond" class="guidecard"/>
+                                    <img src="/images/three,hollow,blue,diamond.png" alt="three,hollow,blue,diamond" class="guidecard" />
                                 </div>
                             </div>
                             <br />
@@ -52,13 +52,13 @@
                             This would not be a set:<br />
                             <div class="row">
                                 <div class="column">
-                                    <img src="/images/six,solid,orange,rectangle.png" alt="six,solid,orange,rectangle" class="guidecard"/>
+                                    <img src="/images/six,solid,orange,rectangle.png" alt="six,solid,orange,rectangle" class="guidecard" />
                                 </div>
                                 <div class="column">
-                                    <img src="/images/six,hollow,green,circle.png" alt="six,hollow,green,circle" class="guidecard"/>
+                                    <img src="/images/six,hollow,green,circle.png" alt="six,hollow,green,circle" class="guidecard" />
                                 </div>
                                 <div class="column">
-                                    <img src="/images/six,striped,blue,circle.png" alt="six,striped,blue,circle" class="guidecard"/>
+                                    <img src="/images/six,striped,blue,circle.png" alt="six,striped,blue,circle" class="guidecard" />
                                 </div>
                             </div>
                             <br />
@@ -70,6 +70,8 @@
                     </div>
                 </div>
                 <button type="button" id="resetButton">New Game</button>
+                <button type="button" id="multiplayerbutton">Start Multiplayer</button>
+                <button type="button" id="joinmultiplayerbutton">Join Multiplayer</button>
             </div>
             <div class="tab">
                 <button id="dailybutton" class="tablinks tabbutton">Daily Scores</button>
@@ -82,14 +84,16 @@
         <div id="secondcolumn" class="secondcolumn">
             <div id="board" class="board"></div>
             <div id="deckCount" class="gameInfo">Cards Remaining: 81</div>
+            <button type="button" id="startMultiplayerGameButton">Start</button>
             <div id="time" class="gameInfo time"></div>
         </div>
         <div id="thirdcolumn" class="thirdcolumn">
             <div id="sethistory" class="sethistory"></div>
         </div>
-            
+
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.5/signalr.min.js" integrity="sha512-Wj6cUe+56vJ4FtfeF4QqPHy4VGO9gZ2iU8GFlLRjawhx1f4sW3BezJLU1ewaZl3bZV8iya0EJOmRY5SD9XTwvw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script type="module" src="site.js"></script>
 </body>
 </html>

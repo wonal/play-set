@@ -268,7 +268,7 @@ export class Game {
         }
         this.dailyState.gameCompleted();
         this.renderGame();
-        const name = getName();
+        const name = getName("You found all sets! Enter in your name here: ");
         const body = await postWin({ gameID: this.gameID, playerName: name});
         this.gameTime = formatTime(body.gameTime);
         this.topScores = body.topScores;

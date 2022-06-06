@@ -1,6 +1,7 @@
 ﻿import { Game } from './game.js'
-
+import { MultiplayerGame } from './multiplayerGame.js';
 const game = new Game();
+const multiplayerGame = new MultiplayerGame();
 
 //logic for modal box taken from: https://sabe.io/tutorials/how-to-create-modal-popup-box
 const modal = document.querySelector(".modal")!;
@@ -23,6 +24,14 @@ function passDailyScore(event: MouseEvent) {
 
 function passTopScore(event: MouseEvent) {
     displayScoreTab(<HTMLElement>event.currentTarget, 'topscore');
+}
+
+async function multiplayerButton(event: MouseEvent) {
+    await multiplayerGame.createGame();
+}
+
+async function joinMultiplayerButton(event: MouseEvent) {
+    await multiplayerGame.joinGame();
 }
 
 //logic for tabs taken from: https://www.w3schools.com/howto/howto_js_tabs.asp
@@ -55,4 +64,7 @@ function displayScoreTab(element: HTMLElement, tab: string) {
     const dailyScores = document.getElementById("dailybutton")!;
     displayScoreTab(dailyScores, 'dailyscore');
     dailyScores.addEventListener("click", passDailyScore);
+
+    document.getElementById("multiplayerbutton")!.addEventListener('click', multiplayerButton);
+    document.getElementById("joinmultiplayerbutton")!.addEventListener('click', joinMultiplayerButton);
 })()

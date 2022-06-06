@@ -9,7 +9,7 @@ export class Stopwatch {
     constructor(startTime: number) {
         this.startTime = startTime;
         this.gameTime = DEFAULT_TIME;
-        this.interval = setInterval(this.updateTime.bind(this), 1000);
+        this.interval = window.setInterval(this.updateTime.bind(this), 1000);
     }
 
     updateTime() {

@@ -1,5 +1,7 @@
-import { URL } from './constants.js'
-import { Scores, CardResponse, CardType} from './utilities.js'
+import { URL } from './constants.js';
+import { Scores, CardResponse, CardType} from './utilities.js';
+
+declare const signalR: any;
 
 export interface NewGame{
     gameID: string,
@@ -90,4 +92,56 @@ export async function postWin(winner: Winner){
         };
         const response = await fetch(`${URL}/postwin`, fetchData);
         return <WinState> (await response.json());
+}
+
+export interface SetGuessed {
+    board: CardResponse[],
+    playerName: string,
+    set: CardResponse[],
+    winState: boolean
+}
+
+export class MultiplayerClient {
+
+    connection: any;
+
+    constructor() {
+        this.connection = new signalR.HubConnectionBuilder().withUrl('http://localhost:5000/multiplayer').build();
+    }
+
+    async initialize(){
+        await this.connection.start();
+    }
+
+    async createGame(playerName: string): Promise<string> {
+        return await this.connection.invoke('CreateGame', { playerName })
+    }
+
+    async startGame(gameId: string): Promise<string> {
+        return await this.connection.invoke('StartGame', { gameId })
+    }
+
+    async joinGame(gameId: string, playerName: string): Promise<void> {
+        return await this.connection.invoke('JoinGame', { gameId, playerName })
+    }
+
+    async makeGuess(guess: Guess): Promise<void> {
+        return await this.connection.invoke('MakeGuess', guess)
+    }
+
+    handleSetGuessed(func: (s: SetGuessed) => void){
+        this.connection.on('SetGuessed', func);
+    }
+
+    handleBadGuess(func: () => void){
+        this.connection.on('BadGuess', func);
+    }
+
+    handlePlayerJoined(func: (joinedMessage: { playerName: string }) => void){
+        this.connection.on('PlayerJoined', func);
+    }
+
+    handleGameStarted(func: (gameStarted: { board: CardResponse[]}) => void){
+        this.connection.on('GameStarted', func);
+    }
 }

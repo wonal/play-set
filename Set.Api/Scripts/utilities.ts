@@ -132,8 +132,8 @@ export function sleep(time: number) {
     return promise;
 }
 
-export function getName() {
-    let name = window.prompt("You found all sets! Enter in your name here: ");
+export function getName(message: string) {
+    let name = window.prompt(message);
     if (name === null || name === "") {
         name = "Anonymous";
     }
