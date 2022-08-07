@@ -59,10 +59,10 @@ export function resetBorder(board: CardImage []) {
     }
 }
 
-export function createCardImage(count: string, fill: string, color: string, shape: string, border: string) {
+export function createCardImage(count: string, fill: string, color: string, shape: string, border: string, version: number = 0) {
     const cardValue = `${count},${fill},${color},${shape}`;
     const cardImage = document.createElement("img");
-    cardImage.src = `/images/${cardValue}.png`;
+    cardImage.src = `/images/${version}/${cardValue}.png`;
     cardImage.alt = cardValue;
     cardImage.id = cardValue;
     cardImage.className = border;

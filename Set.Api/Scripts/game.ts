@@ -106,6 +106,7 @@ export class Game {
     dailyScores: Scores [];
     setHistory: string [] [];
     gameTime?: string;
+    version: number;
     dailyState = new DailyState();
     
     constructor() {
@@ -118,6 +119,7 @@ export class Game {
         this.dailyScores = [];
         this.setHistory = [];
         this.gameText = "";
+        this.version = 0;
 
         this.createGame();
     }
@@ -130,6 +132,7 @@ export class Game {
         this.dailyScores = newGame.dailyScores;
         this.updateBoard(newGame.cards);
         this.gameText = "Cards Remaining: " + newGame.cardsRemaining;
+        this.version = newGame.version;
         const startData = await getStartTime(this.gameID);
         this.stopWatch = new Stopwatch(startData.startTime);
         this.renderGame();
@@ -176,7 +179,7 @@ export class Game {
         const board = document.getElementById('board')!;
         board.innerHTML = "";
         for (const cardObj of this.board) {
-            const newCard = createCardImage(cardObj.count, cardObj.fill, cardObj.color, cardObj.shape, cardObj.cardBorder);
+            const newCard = createCardImage(cardObj.count, cardObj.fill, cardObj.color, cardObj.shape, cardObj.cardBorder, this.version);
             newCard.addEventListener("click", this.markCard.bind(this));
             board.appendChild(newCard);
         }
@@ -207,7 +210,7 @@ export class Game {
                 const column = document.createElement("div");
                 column.className = "previouscolumn";
                 const characteristics = set.split(",");
-                const card = createCardImage(characteristics[0], characteristics[1], characteristics[2], characteristics[3], VALID_BORDER);
+                const card = createCardImage(characteristics[0], characteristics[1], characteristics[2], characteristics[3], VALID_BORDER, this.version);
                 card.className = "history previousset";
                 div.appendChild(column);
                 column.appendChild(card);
