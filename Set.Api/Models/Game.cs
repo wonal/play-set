@@ -15,6 +15,7 @@ namespace SetApi.Models
         public bool WinRecorded { get; set; }
         public int SeedValue { get; private set; }
         public DateTime GameDay { get; set; }
+        public DisplayVersion DisplayVersion { get; set; }
 
         public Game(int? seedValue, DateTime gameDay)
         {
@@ -22,6 +23,7 @@ namespace SetApi.Models
             SeedValue = seedValue ?? random.Next(int.MinValue, int.MaxValue);
             Deck = new Deck(SeedValue);
             GameDay = gameDay;
+            DisplayVersion = random.Next(0,101) <= 10 ? DisplayVersion.Nemo : DisplayVersion.Original;
             CreateGame();
         }
 

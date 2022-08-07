@@ -5,8 +5,8 @@
     border-radius:25px;
 }
 
-.default{
-    border: 5px solid white
+.default {
+    border: 5px solid #e5ded7
 }
 
 .selected{
@@ -29,7 +29,7 @@
     border: 0px solid white
 }
 
-body{
+body {
     background-color: #e5ded7;
 }
 
@@ -159,14 +159,14 @@ button{
 
 }
 
-.sethistory{
+.sethistory {
     padding-top: 25px;
     padding-left: 25px;
     padding-right: 25px;
     border-radius: 25px;
     width: 200px;
     height: 620px;
-    background-color: #efeae6;
+    background-color: #e5ded7;
     overflow: auto;
 }
 

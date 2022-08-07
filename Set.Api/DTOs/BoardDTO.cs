@@ -11,5 +11,6 @@ namespace SetApi.Models
         public List<Player> TopScores { get; set; }
         public List<Player> DailyScores { get; set; }
         public int CardsRemaining { get; set; }
+        public DisplayVersion Version { get; set; }
     }
 }
