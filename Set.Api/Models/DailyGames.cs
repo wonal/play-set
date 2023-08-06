@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SetApi.Models;
+using System;
 
 namespace Set.Api.Models
 {
@@ -7,7 +8,9 @@ namespace Set.Api.Models
         public static int GetSeed(DateTime dateTime)
         {
             var currentDay = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day);
-            return (int)(currentDay.Ticks % int.MaxValue); 
+            var seed = (int)(currentDay.Ticks % int.MaxValue);
+            var game = new Game(seed, DateTime.Today);
+            return game.SeedValue;
         }
     }
 }

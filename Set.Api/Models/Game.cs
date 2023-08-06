@@ -15,6 +15,7 @@ namespace SetApi.Models
         public bool WinRecorded { get; set; }
         public int SeedValue { get; private set; }
         public DateTime GameDay { get; set; }
+        public DisplayVersion DisplayVersion { get; set; }
 
         public Game(int? seedValue, DateTime gameDay)
         {
@@ -23,6 +24,7 @@ namespace SetApi.Models
             Deck = new Deck(SeedValue);
             GameDay = gameDay;
             InitializeGame();
+            DisplayVersion = DisplayVersion.Original;
         }
 
         private void InitializeGame()

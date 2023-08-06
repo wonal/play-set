@@ -8,7 +8,8 @@ export interface NewGame{
     cards: CardResponse [],
     topScores: Scores [],
     dailyScores: Scores [],
-    cardsRemaining: number
+    cardsRemaining: number,
+    version: number
 }
 
 export interface StartTime{
