@@ -23,7 +23,7 @@ namespace SetApi.Models
             SeedValue = seedValue ?? random.Next(int.MinValue, int.MaxValue);
             Deck = new Deck(SeedValue);
             GameDay = gameDay;
-            DisplayVersion = random.Next(0,101) <= 10 ? DisplayVersion.Nemo : DisplayVersion.Original;
+            DisplayVersion = DisplayVersion.Original;
             CreateGame();
         }
 
