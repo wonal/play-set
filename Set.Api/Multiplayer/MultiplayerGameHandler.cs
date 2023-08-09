@@ -84,8 +84,9 @@ namespace Set.Api.Multiplayer
 
                 lock(Games)
                 {
-                    foreach(var game in gamesToRemove)
+                    foreach (var game in gamesToRemove)
                     {
+                        Games[game].Item2.TryComplete();
                         Games.Remove(game);
                     }
                 }

@@ -22,15 +22,15 @@ namespace Set.Api.Multiplayer
             _players.Add(new MultiplayerPlayer(playerId, playerName, 0));
         }
 
-        public async Task<bool> MakeGuess(string playerId, Card card1, Card card2, Card card3)
+        public async Task MakeGuess(string playerId, Card card1, Card card2, Card card3)
         {
             if(ActionCooldownTime > DateTime.UtcNow)
             {
-                return false;
+                return;
             }
 
             var player = Players.FirstOrDefault(x => x.Id == playerId);
-            if (player is null) return false;
+            if (player is null) return;
 
             var success = Game.MakeGuess(card1, card2, card3);
             if (success)
@@ -49,17 +49,16 @@ namespace Set.Api.Multiplayer
             {
                 await DispatcherToPlayer(playerId).BadGuess();
             }
-            return success;
+            return;
         }
 
         public Game Game { get; }
 
-        public async Task<string> JoinGame(string playerId, string name)
+        public async Task JoinGame(string playerId, string name)
         {
             var player = new MultiplayerPlayer(playerId, name, 0);
             _players.Add(player);
             await Dispatcher.PlayerJoined(name);
-            return player.Id;
         }
 
         public async Task StartGame(string playerId)
