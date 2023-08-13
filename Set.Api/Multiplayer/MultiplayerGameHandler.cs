@@ -3,109 +3,126 @@ using Set.Api.Multiplayer.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Channels;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Set.Api.Multiplayer
+namespace Set.Api.Multiplayer;
+
+public class MultiplayerGameHandler
 {
-    public class MultiplayerGameHandler
+    public MultiplayerGameHandler(IHubContext<GameHub> hub)
     {
-        public MultiplayerGameHandler(IHubContext<GameHub> hub)
+        _hub = hub;
+        _ = PruneCompletedGames();
+    }
+
+    public Dictionary<string, (MultiplayerGame, SemaphoreSlim)> Games = new Dictionary<string, (MultiplayerGame, SemaphoreSlim)>();
+
+    public MultiplayerGame CreateGame(string playerName, string connectionId)
+    {
+        MultiplayerGame game = null;
+
+        lock(Games)
         {
-            _hub = hub;
-            _ = PruneCompletedGames();
+            string gameId = null;
+            do
+            {
+                gameId = GenerateGameId();
+            }
+            while(Games.ContainsKey(gameId));
+
+            game = new MultiplayerGame(
+                gameId,
+                new SetApi.Models.Game(null, DateTime.UtcNow),
+                connectionIds => new MultiplayerMessageDispatcher(_hub.Clients.Clients(connectionIds)),
+                connectionId,
+                playerName);
+
+            Games.Add(gameId, (game, new SemaphoreSlim(1)));
         }
 
-        public Dictionary<string, (MultiplayerGame, ChannelWriter<Func<Task>>)> Games = new Dictionary<string, (MultiplayerGame, ChannelWriter<Func<Task>>)>();
+        return game;
+    }
 
-        public MultiplayerGame CreateGame(string playerName, string connectionId)
+    public async Task<bool> JoinGame(string playerName, string gameId, string connectionId)
+    {
+        using var gameHandle = await GetGame(gameId);
+        return await gameHandle.Game.JoinGame(connectionId, playerName);
+    }
+
+    public async Task StartGame(string gameId, string connectionId)
+    {
+        using var gameHandle = await GetGame(gameId);
+        await gameHandle.Game.StartGame(connectionId);
+    }
+
+    public async Task MakeGuess(string connectionId, GuessDTO guess)
+    {
+        using var gameHandle = await GetGame(connectionId);
+        await gameHandle.Game.MakeGuess(connectionId, guess.Card1, guess.Card2, guess.Card3);
+    }
+
+    private async Task PruneCompletedGames()
+    {
+        while (true)
         {
-            MultiplayerGame game = null;
+            var gamesToRemove = new List<string>();
+            foreach(var game in Games)
+            {
+                if(game.Value.Item1.Game.WinState || game.Value.Item1.Game.GameTime.StartTime - DateTime.UtcNow > TimeSpan.FromHours(12))
+                {
+                    gamesToRemove.Add(game.Key);
+                }
+            }
 
             lock(Games)
             {
-                string gameId = null;
-                do
+                foreach (var game in gamesToRemove)
                 {
-                    gameId = GenerateGameId();
+                    Games[game].Item2.Dispose();
+                    Games.Remove(game);
                 }
-                while(Games.ContainsKey(gameId));
-
-                game = new MultiplayerGame(
-                    gameId,
-                    new SetApi.Models.Game(null, DateTime.UtcNow),
-                    connectionIds => new MultiplayerMessageDispatcher(_hub.Clients.Clients(connectionIds)),
-                    connectionId,
-                    playerName);
-
-                var channel = Channel.CreateBounded<Func<Task>>(10);
-                _ = Task.Run(async () => {
-                    await foreach(var f in channel.Reader.ReadAllAsync())
-                    {
-                        await f();
-                    }
-                });
-                Games.Add(gameId, (game, channel.Writer));
             }
 
-            return game;
+            await Task.Delay(TimeSpan.FromMinutes(5));
         }
+    }
 
-        public async Task JoinGame(string playerName, string gameId, string connectionId)
+    static char[] GameNameChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
+    private readonly IHubContext<GameHub> _hub;
+
+    public string GenerateGameId()
+    {
+        var gameId = new StringBuilder();
+        for(var i = 0; i < 6; i++)
         {
-            var (game, channelWriter) = Games[gameId];
-            await channelWriter.WriteAsync(() => game.JoinGame(connectionId, playerName));
+            gameId.Append(GameNameChars[Random.Shared.Next(GameNameChars.Length)]);
         }
+        return gameId.ToString();
+    }
 
-        public async Task StartGame(string gameId, string connectionId)
-        {
-            var (game, channelWriter) = Games[gameId];
-            await channelWriter.WriteAsync(() => game.StartGame(connectionId));
-        }
+    private async Task<GameHandle> GetGame(string connectionId)
+    {
+        var (game, sem) = Games[connectionId];
+        await sem.WaitAsync();
+        return new GameHandle(game, sem);
+    }
+}
 
-        public async Task MakeGuess(string connectionId, GuessDTO guess)
-        {
-            var (game, channelWriter) = Games[guess.GameID];
-            await channelWriter.WriteAsync(() => game.MakeGuess(connectionId, guess.Card1, guess.Card2, guess.Card3));
-        }
+struct GameHandle : IDisposable
+{
+    private readonly SemaphoreSlim _sem;
 
-        private async Task PruneCompletedGames()
-        {
-            while (true)
-            {
-                var gamesToRemove = new List<string>();
-                foreach(var game in Games)
-                {
-                    if(game.Value.Item1.Game.WinState || game.Value.Item1.Game.GameTime.StartTime - DateTime.UtcNow > TimeSpan.FromHours(12))
-                    {
-                        gamesToRemove.Add(game.Key);
-                    }
-                }
+    public GameHandle(MultiplayerGame game, SemaphoreSlim sem)
+    {
+        Game = game;
+        _sem = sem;
+    }
 
-                lock(Games)
-                {
-                    foreach (var game in gamesToRemove)
-                    {
-                        Games[game].Item2.TryComplete();
-                        Games.Remove(game);
-                    }
-                }
+    public MultiplayerGame Game { get; private set; }
 
-                await Task.Delay(TimeSpan.FromMinutes(5));
-            }
-        }
-
-        static char[] GameNameChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
-        private readonly IHubContext<GameHub> _hub;
-
-        public string GenerateGameId()
-        {
-            var gameId = new StringBuilder();
-            for(var i = 0; i < 6; i++)
-            {
-                gameId.Append(GameNameChars[Random.Shared.Next(GameNameChars.Length)]);
-            }
-            return gameId.ToString();
-        }
+    public void Dispose()
+    {
+        _sem.Release();
     }
 }

@@ -19,8 +19,7 @@ namespace SetApi.Models
 
         public Game(int? seedValue, DateTime gameDay)
         {
-            var random = new Random();
-            SeedValue = seedValue ?? random.Next(int.MinValue, int.MaxValue);
+            SeedValue = seedValue ?? Random.Shared.Next(int.MinValue, int.MaxValue);
             Deck = new Deck(SeedValue);
             GameDay = gameDay;
             InitializeGame();

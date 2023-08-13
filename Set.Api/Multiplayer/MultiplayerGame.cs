@@ -54,11 +54,16 @@ namespace Set.Api.Multiplayer
 
         public Game Game { get; }
 
-        public async Task JoinGame(string playerId, string name)
+        public async Task<bool> JoinGame(string playerId, string name)
         {
+            if (Started)
+            {
+                return false;
+            }
             var player = new MultiplayerPlayer(playerId, name, 0);
             _players.Add(player);
             await Dispatcher.PlayerJoined(name);
+            return true;
         }
 
         public async Task StartGame(string playerId)

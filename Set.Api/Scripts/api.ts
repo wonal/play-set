@@ -122,7 +122,7 @@ export class MultiplayerClient {
         return await this.connection.invoke('StartGame', { gameId })
     }
 
-    async joinGame(gameId: string, playerName: string): Promise<void> {
+    async joinGame(gameId: string, playerName: string): Promise<boolean> {
         return await this.connection.invoke('JoinGame', { gameId, playerName })
     }
 

@@ -1,4 +1,4 @@
-import { MultiplayerClient, postWin, SetGuessed } from "./api.js";
+import { MultiplayerClient, SetGuessed } from "./api.js";
 import { Card, SelectedCards } from "./cards.js";
 import { COLORS, COUNTS, DEFAULT_BORDER, FILLS, INVALID_BORDER, SELECTED_BORDER, SHAPES, VALID_BORDER, WIN_STATE } from "./constants.js";
 import { Stopwatch } from "./stopwatch.js";
@@ -17,6 +17,7 @@ export class MultiplayerGame {
     playerName: string;
     client: MultiplayerClient;
     setHistory: string [] [];
+    initialized: boolean;
     
     constructor() {
         this.client = new MultiplayerClient();
@@ -29,10 +30,12 @@ export class MultiplayerGame {
         this.gameText = "";
         this.setHistory = [];
         this.playerName = "";
+        this.initialized = false;
         document.getElementById("startMultiplayerGameButton")!.addEventListener('click', this.startGame); 
     }
 
     async initialize() {
+        if(this.initialized) return;
         this.client.handleGameStarted(this.handleGameStarted);
         this.client.handlePlayerJoined(this.handlePlayerJoined);
         this.client.handleBadGuess(this.handleBadGuess);
@@ -56,10 +59,13 @@ export class MultiplayerGame {
         await this.initialize();
         const name = getName("Enter a user name:")
         const gameId = getName("Enter the id of the game to join:")
-        this.playerName = name;
-        this.gameID = gameId;
-        await this.client.joinGame(gameId, name);
-        this.renderGame();
+        const joined = await this.client.joinGame(gameId, name);
+        if(joined){
+            this.playerName = name;
+            this.gameID = gameId;
+            this.renderGame();
+        }
+        else alert("The game has already started");
     }
 
     handleGameStarted = (gameStarted: { board: CardResponse[] }) => {

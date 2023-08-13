@@ -30,7 +30,7 @@ namespace SetApi.Models
                     }
                 }
             }
-            Deck.Shuffle(deck, seedValue);
+            Shuffle(deck, seedValue);
             return deck;
         }
 
