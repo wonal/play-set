@@ -1,0 +1,17 @@
+[Unit]
+Description= .NET Web API app
+
+[Service]
+WorkingDirectory=/var/www/playset.alliwong.com/publish
+ExecStart=/usr/bin/dotnet /var/www/playset.alliwong.com/publish/Set.Api.dll
+Restart=always
+
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=dotnet-example
+User=setplayer
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+
+[Install]
+WantedBy=multi-user.target
