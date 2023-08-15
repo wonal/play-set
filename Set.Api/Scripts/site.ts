@@ -55,4 +55,5 @@ function displayScoreTab(element: HTMLElement, tab: string) {
     const dailyScores = document.getElementById("dailybutton")!;
     displayScoreTab(dailyScores, 'dailyscore');
     dailyScores.addEventListener("click", passDailyScore);
+    document.documentElement.style.touchAction = "manipulation";
 })()
